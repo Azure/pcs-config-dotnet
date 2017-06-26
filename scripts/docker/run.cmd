@@ -21,7 +21,7 @@ IF %ERRORLEVEL% NEQ 0 GOTO FAIL
 :: Depending on which settings and which dependencies are needed, edit the list of variables
 echo Starting UIConfig ...
 docker run -it -p %PCS_UICONFIG_WEBSERVICE_PORT%:8080 ^
-    -e PCS_UICONFIG_WEBSERVICE_PORT=%PCS_UICONFIG_WEBSERVICE_PORT% ^
+    -e PCS_UICONFIG_WEBSERVICE_PORT=8080 ^
     %DOCKER_IMAGE%
 
 :: - - - - - - - - - - - - - -
