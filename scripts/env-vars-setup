@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+#  Prepare the environment variables used by the application.
+
+# The port where this project's web service is listening
+export PCS_UICONFIG_WEBSERVICE_PORT="9005"
