@@ -27,12 +27,12 @@ Steps using Visual Studio 2017:
 Run and Debug with IntelliJ Rider
 =================================
 
-1. Open the solution using the `pcs-storage-adapter-dotnet.sln` file.
+1. Open the solution using the `pcs-uiconfig-dotnet.sln` file.
 1. When the solution is loaded, got to `Run -> Edit Configurations` and
    create a new `.NET Project` configuration.
 1. In the configuration select the WebService project
 1. Add a new environment variable with name
-   `PCS_STORAGEADAPTER_WEBSERVICE_PORT` and value `9022`.
+   `PCS_UICONFIG_WEBSERVICE_PORT` and value `9005`.
 1. Save the settings and run the configuration just created, from the IDE
    toolbar.
 1. You should see the service bootstrap messages in IntelliJ Run window,
@@ -96,6 +96,10 @@ to install in your environment, so that you can run all the scripts
 and ensure that your IDE works as expected.
 
 * [.NET Core](https://dotnet.github.io)
+
+We provide also a
+[Java version](https://github.com/Azure/pcs-uiconfig-java)
+of this project and other Azure IoT PCS components.
 
 ## IDE
 
