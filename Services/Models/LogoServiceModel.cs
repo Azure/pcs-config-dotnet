@@ -15,7 +15,7 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services.Models
 
         static LogoServiceModel()
         {
-            var folder = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
+            var folder = Path.GetDirectoryName(typeof(LogoServiceModel).GetTypeInfo().Assembly.Location);
             var path = $@"{folder}\Content\DefaultLogo.svg";
             var bytes = File.ReadAllBytes(path);
             Default = new LogoServiceModel

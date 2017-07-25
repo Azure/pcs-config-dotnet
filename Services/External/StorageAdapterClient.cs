@@ -8,19 +8,20 @@ using Microsoft.Azure.IoTSolutions.UIConfig.Services.Exceptions;
 using Microsoft.Azure.IoTSolutions.UIConfig.Services.Http;
 using Microsoft.Azure.IoTSolutions.UIConfig.Services.Runtime;
 using Newtonsoft.Json;
-using HttpClient = Microsoft.Azure.IoTSolutions.UIConfig.Services.Http.HttpClient;
 
 namespace Microsoft.Azure.IoTSolutions.UIConfig.Services.External
 {
     public class StorageAdapterClient : IStorageAdapterClient
     {
-        private readonly IServicesConfig config;
-        private readonly HttpClient httpClient;
+        private readonly IHttpClient httpClient;
+        private readonly ILogger logger;
+        private readonly string serviceUri;
 
-        public StorageAdapterClient(IServicesConfig config, ILogger logger)
+        public StorageAdapterClient(IHttpClient httpClient, IServicesConfig config, ILogger logger)
         {
-            this.config = config;
-            this.httpClient = new HttpClient(logger);
+            this.httpClient = httpClient;
+            this.logger = logger;
+            this.serviceUri = config.StorageAdapterApiUrl;
         }
 
         public async Task<ValueApiModel> GetAsync(string collectionId, string key)
@@ -76,7 +77,7 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services.External
         private HttpRequest CreateRequest(string path, ValueApiModel content = null)
         {
             var request = new HttpRequest();
-            request.SetUriFromString($"{config.StorageAdapterApiUrl}/{path}");
+            request.SetUriFromString($"{serviceUri}/{path}");
             request.Options.AllowInsecureSSLServer = true;
 
             if (content != null)
@@ -93,6 +94,13 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services.External
             {
                 return;
             }
+
+            logger.Info($"StorageAdapter returns {response.StatusCode} for request {request.Uri}", () => new
+            {
+                request.Uri,
+                response.StatusCode,
+                response.Content
+            });
 
             switch (response.StatusCode)
             {

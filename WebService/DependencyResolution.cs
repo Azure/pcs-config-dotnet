@@ -6,6 +6,7 @@ using Autofac.Extensions.DependencyInjection;
 using Microsoft.Azure.IoTSolutions.UIConfig.Services;
 using Microsoft.Azure.IoTSolutions.UIConfig.Services.Diagnostics;
 using Microsoft.Azure.IoTSolutions.UIConfig.Services.External;
+using Microsoft.Azure.IoTSolutions.UIConfig.Services.Http;
 using Microsoft.Azure.IoTSolutions.UIConfig.Services.Runtime;
 using Microsoft.Azure.IoTSolutions.UIConfig.WebService.Runtime;
 using Microsoft.Extensions.DependencyInjection;
@@ -65,6 +66,9 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService
             // leaks, but not so good for the overall performance.
             builder.RegisterType<Storage>().As<IStorage>().SingleInstance();
             builder.RegisterType<StorageAdapterClient>().As<IStorageAdapterClient>().SingleInstance();
+
+            var httpClient = new HttpClient(logger);
+            builder.RegisterInstance(httpClient).As<IHttpClient>().SingleInstance();
         }
 
         private static void RegisterFactory(IContainer container)

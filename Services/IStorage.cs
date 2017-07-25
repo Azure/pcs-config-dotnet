@@ -13,9 +13,9 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services
         Task<LogoServiceModel> GetLogoAsync();
         Task<LogoServiceModel> SetLogoAsync(LogoServiceModel model);
         Task<IEnumerable<DeviceGroupServiceModel>> GetAllDeviceGroupsAsync();
-        Task<DeviceGroupServiceModel> GetDeviceGroup(string id);
-        Task<DeviceGroupServiceModel> CreateDeviceGroup(DeviceGroupServiceModel input);
-        Task<DeviceGroupServiceModel> UpdateDeviceGroup(string id, DeviceGroupServiceModel input, string etag);
-        Task DeleteDeviceGroup(string id);
+        Task<DeviceGroupServiceModel> GetDeviceGroupAsync(string id);
+        Task<DeviceGroupServiceModel> CreateDeviceGroupAsync(DeviceGroupServiceModel input);
+        Task<DeviceGroupServiceModel> UpdateDeviceGroupAsync(string id, DeviceGroupServiceModel input, string etag);
+        Task DeleteDeviceGroupAsync(string id);
     }
 }

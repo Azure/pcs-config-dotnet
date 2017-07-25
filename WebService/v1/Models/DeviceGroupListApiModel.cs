@@ -11,14 +11,14 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService.v1.Models
 {
     public class DeviceGroupListApiModel
     {
-        public IEnumerable<DeviceGroupApiModel> Item { get; set; }
+        public IEnumerable<DeviceGroupApiModel> Items { get; set; }
 
         [JsonProperty("$metadata")]
         public Dictionary<string, string> Metadata { get; set; }
 
         public DeviceGroupListApiModel(IEnumerable<DeviceGroupServiceModel> models)
         {
-            Item = models.Select(m => new DeviceGroupApiModel(m));
+            Items = models.Select(m => new DeviceGroupApiModel(m));
 
             Metadata = new Dictionary<string, string>
             {

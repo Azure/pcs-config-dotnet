@@ -39,11 +39,14 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService.v1.Controllers
         }
 
         [HttpPut("solution-logo")]
-        public async Task SetLogoAsync([FromBody]byte[] image)
+        public async Task SetLogoAsync()
         {
+            var bytes = new byte[Request.Body.Length];
+            Request.Body.Read(bytes, 0, (int)Request.Body.Length);
+
             var model = new LogoServiceModel
             {
-                Image = Convert.ToBase64String(image),
+                Image = Convert.ToBase64String(bytes),
                 Type = Request.Headers["content-type"]
             };
 

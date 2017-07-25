@@ -2,6 +2,9 @@
 
 using System.Net;
 using System.Net.Http.Headers;
+using System.Runtime.CompilerServices;
+
+[assembly: InternalsVisibleTo("Services.Test")]
 
 namespace Microsoft.Azure.IoTSolutions.UIConfig.Services.Http
 {

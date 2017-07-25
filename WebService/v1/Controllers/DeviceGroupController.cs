@@ -28,7 +28,7 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService.v1.Controllers
         [HttpGet("{id}")]
         public async Task<DeviceGroupApiModel> GetAsync(string id)
         {
-            return new DeviceGroupApiModel(await storage.GetDeviceGroup(id));
+            return new DeviceGroupApiModel(await storage.GetDeviceGroupAsync(id));
         }
 
         [HttpPost]
@@ -40,7 +40,7 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService.v1.Controllers
                 Conditions = input.Conditions
             };
 
-            return new DeviceGroupApiModel(await storage.CreateDeviceGroup(model));
+            return new DeviceGroupApiModel(await storage.CreateDeviceGroupAsync(model));
         }
 
         [HttpPut("{id}")]
@@ -52,13 +52,13 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService.v1.Controllers
                 Conditions = input.Conditions
             };
 
-            return new DeviceGroupApiModel(await storage.UpdateDeviceGroup(id, model, input.ETag));
+            return new DeviceGroupApiModel(await storage.UpdateDeviceGroupAsync(id, model, input.ETag));
         }
 
         [HttpDelete("{id}")]
         public async Task DeleteAsync(string id)
         {
-            await storage.DeleteDeviceGroup(id);
+            await storage.DeleteDeviceGroupAsync(id);
         }
     }
 }
