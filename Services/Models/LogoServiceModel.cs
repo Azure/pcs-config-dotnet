@@ -1,6 +1,5 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 
-
 using System.IO;
 using System.Reflection;
 
@@ -11,7 +10,7 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services.Models
         public string Image { get; set; }
         public string Type { get; set; }
 
-        public static LogoServiceModel Default;
+        public static readonly LogoServiceModel Default;
 
         static LogoServiceModel()
         {

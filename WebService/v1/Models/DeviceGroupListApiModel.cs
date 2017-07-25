@@ -2,7 +2,6 @@
 
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.Azure.IoTSolutions.UIConfig.Services;
 using Microsoft.Azure.IoTSolutions.UIConfig.Services.Models;
 using Newtonsoft.Json;
 

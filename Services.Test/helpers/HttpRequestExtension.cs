@@ -6,7 +6,7 @@ using Newtonsoft.Json;
 
 namespace Services.Test.helpers
 {
-    static class IHttpRequestExtension
+    internal static class HttpRequestExtension
     {
         public static bool Check(this IHttpRequest request, string uri)
         {

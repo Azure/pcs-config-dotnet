@@ -1,6 +1,5 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 
-
 namespace Microsoft.Azure.IoTSolutions.UIConfig.Services.Models
 {
     public class DeviceGroupServiceModel

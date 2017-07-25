@@ -4,7 +4,7 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services.Runtime
 {
     public interface IServicesConfig
     {
-        string StorageAdapterApiUrl { get; set; }
+        string StorageAdapterApiUrl { get; }
     }
 
     public class ServicesConfig : IServicesConfig

@@ -7,7 +7,7 @@ using Moq;
 
 namespace WebService.Test.helpers
 {
-    class MockHttpContext : IDisposable
+    internal sealed class MockHttpContext : IDisposable
     {
         private readonly HeaderDictionary requestHeaders = new HeaderDictionary();
         private readonly HeaderDictionary responseHeaders = new HeaderDictionary();
@@ -17,6 +17,8 @@ namespace WebService.Test.helpers
 
         public MockHttpContext()
         {
+            disposedValue = false;
+
             var request = new Mock<HttpRequest>();
             request.SetupGet(x => x.Headers).Returns(requestHeaders);
             request.SetupGet(x => x.Body).Returns(requestBody);
@@ -56,9 +58,9 @@ namespace WebService.Test.helpers
         public HttpContext Object => mockContext.Object;
 
         #region IDisposable Support
-        private bool disposedValue = false;
+        private bool disposedValue;
 
-        protected virtual void Dispose(bool disposing)
+        private void Dispose(bool disposing)
         {
             if (!disposedValue)
             {

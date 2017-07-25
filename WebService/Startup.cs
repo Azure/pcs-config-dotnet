@@ -33,6 +33,9 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService
         // Configure method below.
         public IServiceProvider ConfigureServices(IServiceCollection services)
         {
+            // Add CORS service
+            services.AddCors();
+
             // Add controllers as services so they'll be resolved.
             services.AddMvc().AddControllersAsServices();
 
@@ -51,6 +54,9 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService
             IApplicationLifetime appLifetime)
         {
             loggerFactory.AddConsole(this.Configuration.GetSection("Logging"));
+
+            // Enable CORS with any header, method and origin
+            app.UseCors(build => build.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin());
 
             app.UseMvc();
 

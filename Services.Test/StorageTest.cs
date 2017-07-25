@@ -229,7 +229,7 @@ namespace Services.Test
                     It.Is<string>(s => s == Storage.DeviceGroupCollectionId)),
                     Times.Once);
 
-            Assert.Equal(result.Count(), groups.Length);
+            Assert.Equal(result.Count, groups.Length);
             foreach (var g in result)
             {
                 var item = items.Single(i => i.Key == g.Id);
