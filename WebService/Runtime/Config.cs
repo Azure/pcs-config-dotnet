@@ -21,6 +21,9 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService.Runtime
         private const string ApplicationKey = "UIConfig:";
         private const string PortKey = ApplicationKey + "webservice_port";
 
+        private const string StorageAdapterKey = "StorageAdapter:";
+        private const string StorageAdapterUrlKey = StorageAdapterKey + "webservice_url";
+
         /// <summary>Web service listening port</summary>
         public int Port { get; }
 
@@ -33,6 +36,7 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService.Runtime
 
             this.ServicesConfig = new ServicesConfig
             {
+                StorageAdapterApiUrl = configData.GetString(StorageAdapterUrlKey)
             };
         }
 
