@@ -3,7 +3,6 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.IoTSolutions.UIConfig.Services;
-using Microsoft.Azure.IoTSolutions.UIConfig.Services.Models;
 using Microsoft.Azure.IoTSolutions.UIConfig.WebService.v1.Filters;
 using Microsoft.Azure.IoTSolutions.UIConfig.WebService.v1.Models;
 
@@ -19,7 +18,7 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService.v1.Controllers
             this.storage = storage;
         }
 
-        [HttpGet("")]
+        [HttpGet]
         public async Task<DeviceGroupListApiModel> GetAllAsync()
         {
             return new DeviceGroupListApiModel(await storage.GetAllDeviceGroupsAsync());
@@ -34,25 +33,13 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService.v1.Controllers
         [HttpPost]
         public async Task<DeviceGroupApiModel> CreateAsync([FromBody]DeviceGroupApiModel input)
         {
-            var model = new DeviceGroupServiceModel
-            {
-                DisplayName = input.DisplayName,
-                Conditions = input.Conditions
-            };
-
-            return new DeviceGroupApiModel(await storage.CreateDeviceGroupAsync(model));
+            return new DeviceGroupApiModel(await storage.CreateDeviceGroupAsync(input.ToServiceModel()));
         }
 
         [HttpPut("{id}")]
         public async Task<DeviceGroupApiModel> UpdateAsync(string id, [FromBody]DeviceGroupApiModel input)
         {
-            var model = new DeviceGroupServiceModel
-            {
-                DisplayName = input.DisplayName,
-                Conditions = input.Conditions
-            };
-
-            return new DeviceGroupApiModel(await storage.UpdateDeviceGroupAsync(id, model, input.ETag));
+            return new DeviceGroupApiModel(await storage.UpdateDeviceGroupAsync(id, input.ToServiceModel(), input.ETag));
         }
 
         [HttpDelete("{id}")]

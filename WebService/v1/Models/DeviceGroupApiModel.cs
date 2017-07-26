@@ -33,5 +33,14 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService.v1.Models
                 { "$url", $"/{Version.Path}/devicegroups/{model.Id}" }
             };
         }
+
+        public DeviceGroupServiceModel ToServiceModel()
+        {
+            return new DeviceGroupServiceModel
+            {
+                DisplayName = this.DisplayName,
+                Conditions = this.Conditions
+            };
+        }
     }
 }
