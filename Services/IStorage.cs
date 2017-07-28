@@ -8,8 +8,10 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services
 {
     public interface IStorage
     {
-        Task<object> GetSettingsAsync();
-        Task<object> SetSettingsAsync(object settings);
+        Task<object> GetThemeAsync();
+        Task<object> SetThemeAsync(object theme);
+        Task<object> GetUserSetting(string id);
+        Task<object> SetUserSetting(string id, object setting);
         Task<LogoServiceModel> GetLogoAsync();
         Task<LogoServiceModel> SetLogoAsync(LogoServiceModel model);
         Task<IEnumerable<DeviceGroupServiceModel>> GetAllDeviceGroupsAsync();
