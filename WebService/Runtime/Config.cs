@@ -11,6 +11,9 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService.Runtime
         /// <summary>Web service listening port</summary>
         int Port { get; }
 
+        /// <summary>CORS whitelist, in form { "origins": [], "methods": [], "headers": [] }</summary>
+        string CorsWhitelist { get; }
+
         /// <summary>Service layer configuration</summary>
         IServicesConfig ServicesConfig { get; }
     }
@@ -20,6 +23,7 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService.Runtime
     {
         private const string ApplicationKey = "UIConfig:";
         private const string PortKey = ApplicationKey + "webservice_port";
+        private const string CorsWhitelistKey = ApplicationKey + "cors_whitelist";
 
         private const string StorageAdapterKey = "StorageAdapter:";
         private const string StorageAdapterUrlKey = StorageAdapterKey + "webservice_url";
@@ -27,12 +31,16 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService.Runtime
         /// <summary>Web service listening port</summary>
         public int Port { get; }
 
+        /// <summary>CORS whitelist, in form { "origins": [], "methods": [], "headers": [] }</summary>
+        public string CorsWhitelist { get; }
+
         /// <summary>Service layer configuration</summary>
         public IServicesConfig ServicesConfig { get; }
 
         public Config(IConfigData configData)
         {
             this.Port = configData.GetInt(PortKey);
+            this.CorsWhitelist = configData.GetString(CorsWhitelistKey);
 
             this.ServicesConfig = new ServicesConfig
             {
