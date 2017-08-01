@@ -11,7 +11,7 @@ prompt, without configuring anything outside of the IDE.
 
 Steps using Visual Studio 2017:
 
-1. Open the solution using the `pcs-uiconfig.sln` file.
+1. Open the solution using the `pcs-ui-config.sln` file.
 1. When the solution is loaded, right click on the `WebService` project,
    select `Properties` and go to the `Debug` section.
 1. Add a new environment variable with name
@@ -27,7 +27,7 @@ Steps using Visual Studio 2017:
 Run and Debug with IntelliJ Rider
 =================================
 
-1. Open the solution using the `pcs-uiconfig.sln` file.
+1. Open the solution using the `pcs-ui-config.sln` file.
 1. When the solution is loaded, got to `Run -> Edit Configurations` and
    create a new `.NET Project` configuration.
 1. In the configuration select the WebService project
@@ -98,7 +98,7 @@ and ensure that your IDE works as expected.
 * [.NET Core](https://dotnet.github.io)
 
 We provide also a
-[Java version](https://github.com/Azure/pcs-uiconfig-java)
+[Java version](https://github.com/Azure/pcs-ui-config-java)
 of this project and other Azure IoT PCS components.
 
 ## IDE
@@ -156,7 +156,7 @@ workstation, using the tools installed in your OS.
 
 If you use ReSharper or Rider, you can load the code style settings from
 the repository, stored in
-[pcs-uiconfig.sln.DotSettings](pcs-uiconfig.sln.DotSettings)
+[pcs-ui-config.sln.DotSettings](pcs-ui-config.sln.DotSettings)
 
 Some quick notes about the project code style:
 
