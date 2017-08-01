@@ -19,26 +19,38 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService.v1.Controllers
             this.storage = storage;
         }
 
-        [HttpGet("solution-settings")]
-        public async Task<object> GetSettingsAsync()
+        [HttpGet("solution-settings/theme")]
+        public async Task<object> GetThemeAsync()
         {
-            return await storage.GetSettingsAsync();
+            return await storage.GetThemeAsync();
         }
 
-        [HttpPut("solution-settings")]
-        public async Task<object> SetSettingsAsync([FromBody]object settings)
+        [HttpPut("solution-settings/theme")]
+        public async Task<object> SetThemeAsync([FromBody]object theme)
         {
-            return await storage.SetSettingsAsync(settings);
+            return await storage.SetThemeAsync(theme);
         }
 
-        [HttpGet("solution-logo")]
+        [HttpGet("user-settings/{id}")]
+        public async Task<object> GetUserSettingAsync(string id)
+        {
+            return await storage.GetUserSetting(id);
+        }
+
+        [HttpPut("user-settings/{id}")]
+        public async Task<object> SetUserSettingAsync(string id, [FromBody]object setting)
+        {
+            return await storage.SetUserSetting(id, setting);
+        }
+
+        [HttpGet("solution-settings/logo")]
         public async Task GetLogoAsync()
         {
             var model = await storage.GetLogoAsync();
             SetImageResponse(model);
         }
 
-        [HttpPut("solution-logo")]
+        [HttpPut("solution-settings/logo")]
         public async Task SetLogoAsync()
         {
             var bytes = new byte[Request.Body.Length];

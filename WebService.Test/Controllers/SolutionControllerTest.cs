@@ -25,58 +25,114 @@ namespace WebService.Test.Controllers
         }
 
         [Fact]
-        public async Task GetSettingsAsyncTest()
+        public async Task GetThemeAsyncTest()
         {
             var name = rand.NextString();
             var description = rand.NextString();
 
             mockStorage
-                .Setup(x => x.GetSettingsAsync())
+                .Setup(x => x.GetThemeAsync())
                 .ReturnsAsync(new
                 {
                     Name = name,
                     Description = description
                 });
 
-            var result = await controller.GetSettingsAsync() as dynamic;
+            var result = await controller.GetThemeAsync() as dynamic;
 
             mockStorage
-                .Verify(x => x.GetSettingsAsync(), Times.Once);
+                .Verify(x => x.GetThemeAsync(), Times.Once);
 
             Assert.Equal(result.Name.ToString(), name);
             Assert.Equal(result.Description.ToString(), description);
         }
 
         [Fact]
-        public async Task SetSettingsAsyncTest()
+        public async Task SetThemeAsyncTest()
         {
             var name = rand.NextString();
             var description = rand.NextString();
 
             mockStorage
-                .Setup(x => x.SetSettingsAsync(It.IsAny<object>()))
+                .Setup(x => x.SetThemeAsync(It.IsAny<object>()))
                 .ReturnsAsync(new
                 {
                     Name = name,
                     Description = description
                 });
 
-            var result = await controller.SetSettingsAsync(new
+            var result = await controller.SetThemeAsync(new
             {
                 Name = name,
                 Description = description
             }) as dynamic;
 
             mockStorage
-                .Verify(x => x.SetSettingsAsync(
-                    It.Is<object>(o => CheckSettings(o, name, description))),
+                .Verify(x => x.SetThemeAsync(
+                    It.Is<object>(o => CheckTheme(o, name, description))),
                     Times.Once);
 
             Assert.Equal(result.Name.ToString(), name);
             Assert.Equal(result.Description.ToString(), description);
         }
 
-        private bool CheckSettings(object obj, string name, string description)
+        [Fact]
+        public async Task GetUserSettingAsyncTest()
+        {
+            var id = this.rand.NextString();
+            var name = rand.NextString();
+            var description = rand.NextString();
+
+            mockStorage
+                .Setup(x => x.GetUserSetting(It.IsAny<string>()))
+                .ReturnsAsync(new
+                {
+                    Name = name,
+                    Description = description
+                });
+
+            var result = await controller.GetUserSettingAsync(id) as dynamic;
+
+            mockStorage
+                .Verify(x => x.GetUserSetting(
+                    It.Is<string>(s => s == id)), Times.Once);
+
+            Assert.Equal(result.Name.ToString(), name);
+            Assert.Equal(result.Description.ToString(), description);
+        }
+
+        [Fact]
+        public async Task SetUserSettingAsyncTest()
+        {
+            var id = this.rand.NextString();
+            var name = rand.NextString();
+            var description = rand.NextString();
+
+            mockStorage
+                .Setup(x => x.SetUserSetting(It.IsAny<string>(), It.IsAny<object>()))
+                .ReturnsAsync(new
+                {
+                    Name = name,
+                    Description = description
+                });
+
+            var result = await controller.SetUserSettingAsync(id, new
+            {
+                Name = name,
+                Description = description
+            }) as dynamic;
+
+            mockStorage
+                .Verify(x => x.SetUserSetting(
+                        It.Is<string>(s => s == id),
+                        It.Is<object>(o => CheckTheme(o, name, description))),
+                    Times.Once);
+
+            Assert.Equal(result.Name.ToString(), name);
+            Assert.Equal(result.Description.ToString(), description);
+        }
+
+        private bool CheckTheme(object obj, string name, string description)
         {
             var dynamiceObj = obj as dynamic;
             return dynamiceObj.Name.ToString() == name && dynamiceObj.Description.ToString() == description;

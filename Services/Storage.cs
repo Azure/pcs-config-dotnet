@@ -13,9 +13,10 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services
     public class Storage : IStorage
     {
         private readonly IStorageAdapterClient client;
-        internal static string SolutionCollectionId = "solution";
-        internal static string SettingsKey = "settings";
+        internal static string SolutionCollectionId = "solution-settings";
+        internal static string ThemeKey = "theme";
         internal static string LogoKey = "logo";
+        internal static string UserCollectionId = "user-settings";
         internal static string DeviceGroupCollectionId = "deviceGroups";
 
         public Storage(IStorageAdapterClient client)
@@ -23,23 +24,43 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services
             this.client = client;
         }
 
-        public async Task<object> GetSettingsAsync()
+        public async Task<object> GetThemeAsync()
         {
             try
             {
-                var response = await client.GetAsync(SolutionCollectionId, SettingsKey);
+                var response = await client.GetAsync(SolutionCollectionId, ThemeKey);
                 return JsonConvert.DeserializeObject(response.Data);
             }
             catch (ResourceNotFoundException)
             {
-                return SettingsServiceModel.Default;
+                return ThemeServiceModel.Default;
             }
         }
 
-        public async Task<object> SetSettingsAsync(object settings)
+        public async Task<object> SetThemeAsync(object theme)
         {
-            var value = JsonConvert.SerializeObject(settings);
-            var response = await client.UpdateAsync(SolutionCollectionId, SettingsKey, value, "*");
+            var value = JsonConvert.SerializeObject(theme);
+            var response = await client.UpdateAsync(SolutionCollectionId, ThemeKey, value, "*");
+            return JsonConvert.DeserializeObject(response.Data);
+        }
+
+        public async Task<object> GetUserSetting(string id)
+        {
+            try
+            {
+                var response = await client.GetAsync(UserCollectionId, id);
+                return JsonConvert.DeserializeObject(response.Data);
+            }
+            catch (ResourceNotFoundException)
+            {
+                return new object();
+            }
+        }
+
+        public async Task<object> SetUserSetting(string id, object setting)
+        {
+            var value = JsonConvert.SerializeObject(setting);
+            var response = await client.UpdateAsync(UserCollectionId, id, value, "*");
             return JsonConvert.DeserializeObject(response.Data);
         }
 

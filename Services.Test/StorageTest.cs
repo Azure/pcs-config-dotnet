@@ -28,7 +28,7 @@ namespace Services.Test
         }
 
         [Fact]
-        public async Task GetSettingsAsyncTest()
+        public async Task GetThemeAsyncTest()
         {
             var name = rand.NextString();
             var description = rand.NextString();
@@ -44,12 +44,12 @@ namespace Services.Test
                     })
                 });
 
-            var result = await storage.GetSettingsAsync() as dynamic;
+            var result = await storage.GetThemeAsync() as dynamic;
 
             mockClient
                 .Verify(x => x.GetAsync(
                     It.Is<string>(s => s == Storage.SolutionCollectionId),
-                    It.Is<string>(s => s == Storage.SettingsKey)),
+                    It.Is<string>(s => s == Storage.ThemeKey)),
                     Times.Once);
 
             Assert.Equal(result.Name.ToString(), name);
@@ -57,31 +57,31 @@ namespace Services.Test
         }
 
         [Fact]
-        public async Task GetSettingsAsyncDefaultTest()
+        public async Task GetThemeAsyncDefaultTest()
         {
             mockClient
                 .Setup(x => x.GetAsync(It.IsAny<string>(), It.IsAny<string>()))
                 .ThrowsAsync(new ResourceNotFoundException());
 
-            var result = await storage.GetSettingsAsync() as dynamic;
+            var result = await storage.GetThemeAsync() as dynamic;
 
             mockClient
                 .Verify(x => x.GetAsync(
                     It.Is<string>(s => s == Storage.SolutionCollectionId),
-                    It.Is<string>(s => s == Storage.SettingsKey)),
+                    It.Is<string>(s => s == Storage.ThemeKey)),
                     Times.Once);
 
-            Assert.Equal(result.Name.ToString(), SettingsServiceModel.Default.Name);
-            Assert.Equal(result.Description.ToString(), SettingsServiceModel.Default.Description);
+            Assert.Equal(result.Name.ToString(), ThemeServiceModel.Default.Name);
+            Assert.Equal(result.Description.ToString(), ThemeServiceModel.Default.Description);
         }
 
         [Fact]
-        public async Task SetSettingsAsyncTest()
+        public async Task SetThemeAsyncTest()
         {
             var name = rand.NextString();
             var description = rand.NextString();
 
-            var settings = new
+            var theme = new
             {
                 Name = name,
                 Description = description
@@ -91,17 +91,81 @@ namespace Services.Test
                 .Setup(x => x.UpdateAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
                 .ReturnsAsync(new ValueApiModel
                 {
-                    Data = JsonConvert.SerializeObject(settings)
+                    Data = JsonConvert.SerializeObject(theme)
                 });
 
-            var result = await storage.SetSettingsAsync(settings) as dynamic;
+            var result = await storage.SetThemeAsync(theme) as dynamic;
 
             mockClient
                 .Verify(x => x.UpdateAsync(
                     It.Is<string>(s => s == Storage.SolutionCollectionId),
-                    It.Is<string>(s => s == Storage.SettingsKey),
-                    It.Is<string>(s => s == JsonConvert.SerializeObject(settings)),
+                    It.Is<string>(s => s == Storage.ThemeKey),
+                    It.Is<string>(s => s == JsonConvert.SerializeObject(theme)),
                     It.Is<string>(s => s == "*")),
+                    Times.Once);
+
+            Assert.Equal(result.Name.ToString(), name);
+            Assert.Equal(result.Description.ToString(), description);
+        }
+
+        [Fact]
+        public async Task GetUserSettingAsyncTest()
+        {
+            var id = this.rand.NextString();
+            var name = rand.NextString();
+            var description = rand.NextString();
+
+            mockClient
+                .Setup(x => x.GetAsync(It.IsAny<string>(), It.IsAny<string>()))
+                .ReturnsAsync(new ValueApiModel
+                {
+                    Data = JsonConvert.SerializeObject(new
+                    {
+                        Name = name,
+                        Description = description
+                    })
+                });
+
+            var result = await storage.GetUserSetting(id) as dynamic;
+
+            mockClient
+                .Verify(x => x.GetAsync(
+                    It.Is<string>(s => s == Storage.UserCollectionId),
+                    It.Is<string>(s => s == id)),
+                    Times.Once);
+
+            Assert.Equal(result.Name.ToString(), name);
+            Assert.Equal(result.Description.ToString(), description);
+        }
+
+        [Fact]
+        public async Task SetUserSettingAsyncTest()
+        {
+            var id = this.rand.NextString();
+            var name = rand.NextString();
+            var description = rand.NextString();
+
+            var setting = new
+            {
+                Name = name,
+                Description = description
+            };
+
+            mockClient
+                .Setup(x => x.UpdateAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
+                .ReturnsAsync(new ValueApiModel
+                {
+                    Data = JsonConvert.SerializeObject(setting)
+                });
+
+            var result = await storage.SetUserSetting(id, setting) as dynamic;
+
+            mockClient
+                .Verify(x => x.UpdateAsync(
+                        It.Is<string>(s => s == Storage.UserCollectionId),
+                        It.Is<string>(s => s == id),
+                        It.Is<string>(s => s == JsonConvert.SerializeObject(setting)),
+                        It.Is<string>(s => s == "*")),
                     Times.Once);
 
             Assert.Equal(result.Name.ToString(), name);
