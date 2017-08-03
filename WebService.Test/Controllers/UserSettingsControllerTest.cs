@@ -13,13 +13,13 @@ namespace WebService.Test.Controllers
     public class UserSettingsControllerTest
     {
         private readonly Mock<IStorage> mockStorage;
-        private readonly SolutionSettingsController controller;
+        private readonly UserSettingsController controller;
         private readonly Random rand;
 
         public UserSettingsControllerTest()
         {
             mockStorage = new Mock<IStorage>();
-            controller = new SolutionSettingsController(mockStorage.Object);
+            controller = new UserSettingsController(mockStorage.Object);
             rand = new Random();
         }
 
