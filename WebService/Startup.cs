@@ -79,13 +79,13 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService
                 model = JsonConvert.DeserializeObject<CorsWhitelistModel>(config.CorsWhitelist);
                 if (model == null)
                 {
-                    logger.Info("Invalid CORS whitelist. Ignored", () => new { config.CorsWhitelist });
+                    logger.Error("Invalid CORS whitelist. Ignored", () => new { config.CorsWhitelist });
                     return;
                 }
             }
             catch (Exception ex)
             {
-                logger.Info("Invalid CORS whitelist. Ignored", () => new { config.CorsWhitelist, ex.Message });
+                logger.Error("Invalid CORS whitelist. Ignored", () => new { config.CorsWhitelist, ex.Message });
                 return;
             }
 
