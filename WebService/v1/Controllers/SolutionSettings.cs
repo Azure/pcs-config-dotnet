@@ -10,11 +10,11 @@ using Microsoft.Azure.IoTSolutions.UIConfig.WebService.v1.Filters;
 namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService.v1.Controllers
 {
     [Route(Version.Path), TypeFilter(typeof(ExceptionsFilterAttribute))]
-    public class SolutionController : Controller
+    public class SolutionSettingsController : Controller
     {
         private readonly IStorage storage;
 
-        public SolutionController(IStorage storage)
+        public SolutionSettingsController(IStorage storage)
         {
             this.storage = storage;
         }
@@ -29,18 +29,6 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService.v1.Controllers
         public async Task<object> SetThemeAsync([FromBody]object theme)
         {
             return await storage.SetThemeAsync(theme);
-        }
-
-        [HttpGet("user-settings/{id}")]
-        public async Task<object> GetUserSettingAsync(string id)
-        {
-            return await storage.GetUserSetting(id);
-        }
-
-        [HttpPut("user-settings/{id}")]
-        public async Task<object> SetUserSettingAsync(string id, [FromBody]object setting)
-        {
-            return await storage.SetUserSetting(id, setting);
         }
 
         [HttpGet("solution-settings/logo")]

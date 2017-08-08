@@ -14,13 +14,13 @@ namespace WebService.Test.Controllers
     public class SolutionControllerTest
     {
         private readonly Mock<IStorage> mockStorage;
-        private readonly SolutionController controller;
+        private readonly SolutionSettingsController controller;
         private readonly Random rand;
 
         public SolutionControllerTest()
         {
             mockStorage = new Mock<IStorage>();
-            controller = new SolutionController(mockStorage.Object);
+            controller = new SolutionSettingsController(mockStorage.Object);
             rand = new Random();
         }
 
@@ -70,62 +70,6 @@ namespace WebService.Test.Controllers
             mockStorage
                 .Verify(x => x.SetThemeAsync(
                     It.Is<object>(o => CheckTheme(o, name, description))),
-                    Times.Once);
-
-            Assert.Equal(result.Name.ToString(), name);
-            Assert.Equal(result.Description.ToString(), description);
-        }
-
-        [Fact]
-        public async Task GetUserSettingAsyncTest()
-        {
-            var id = this.rand.NextString();
-            var name = rand.NextString();
-            var description = rand.NextString();
-
-            mockStorage
-                .Setup(x => x.GetUserSetting(It.IsAny<string>()))
-                .ReturnsAsync(new
-                {
-                    Name = name,
-                    Description = description
-                });
-
-            var result = await controller.GetUserSettingAsync(id) as dynamic;
-
-            mockStorage
-                .Verify(x => x.GetUserSetting(
-                    It.Is<string>(s => s == id)), Times.Once);
-
-            Assert.Equal(result.Name.ToString(), name);
-            Assert.Equal(result.Description.ToString(), description);
-        }
-
-        [Fact]
-        public async Task SetUserSettingAsyncTest()
-        {
-            var id = this.rand.NextString();
-            var name = rand.NextString();
-            var description = rand.NextString();
-
-            mockStorage
-                .Setup(x => x.SetUserSetting(It.IsAny<string>(), It.IsAny<object>()))
-                .ReturnsAsync(new
-                {
-                    Name = name,
-                    Description = description
-                });
-
-            var result = await controller.SetUserSettingAsync(id, new
-            {
-                Name = name,
-                Description = description
-            }) as dynamic;
-
-            mockStorage
-                .Verify(x => x.SetUserSetting(
-                        It.Is<string>(s => s == id),
-                        It.Is<object>(o => CheckTheme(o, name, description))),
                     Times.Once);
 
             Assert.Equal(result.Name.ToString(), name);
