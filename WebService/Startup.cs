@@ -75,7 +75,17 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService
         {
             var logger = this.ApplicationContainer.Resolve<Services.Diagnostics.ILogger>();
             var client = this.ApplicationContainer.ResolveOptional<IAuthClient>();
-            var protocols = client.GetAllAsync().Result;
+
+            ProtocolListApiModel protocols;
+            try
+            {
+                protocols = client.GetAllAsync().Result;
+            }
+            catch (Exception ex)
+            {
+                logger.Error("Failed to load authentication protocols", () => new { ex.Message });
+                return;
+            }
 
             // Currently, only AAD Global is supported
             var protocol = protocols.Items.FirstOrDefault(p => p.Type == "oauth.AAD.Global");
@@ -107,7 +117,7 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService
                 return;
             }
 
-            logger.Warn("No supported authentication protocol found", () => new { protocols });
+            logger.Error("No supported authentication protocol found", () => new { protocols });
         }
 
         private void BuildCorsPolicy(CorsPolicyBuilder builder)
