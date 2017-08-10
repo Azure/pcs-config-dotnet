@@ -7,6 +7,7 @@ using Autofac.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Azure.IoTSolutions.UIConfig.WebService.External;
 using Microsoft.Azure.IoTSolutions.UIConfig.WebService.Runtime;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -61,11 +62,47 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService
 
             app.UseCors(this.BuildCorsPolicy);
 
+            ConfigureAuth(app);
+
             app.UseMvc();
 
             // If you want to dispose of resources that have been resolved in the
             // application container, register for the "ApplicationStopped" event.
             appLifetime.ApplicationStopped.Register(() => this.ApplicationContainer.Dispose());
+        }
+
+        private void ConfigureAuth(IApplicationBuilder app)
+        {
+            var logger = this.ApplicationContainer.Resolve<Services.Diagnostics.ILogger>();
+            var client = this.ApplicationContainer.ResolveOptional<IAuthClient>();
+            var protcols = client.GetAllAsync().Result;
+
+            // Currently, only AAD Global is supported
+            var protocol = protcols.Items.FirstOrDefault(p => p.Type == "oauth.AAD.Global");
+            if (protocol != null)
+            {
+                if (!protocol.Parameters.ContainsKey("tenantId") || !protocol.Parameters.ContainsKey("clientId"))
+                {
+                    logger.Error("Missing tenantId/clientId, ignore protocol", () => new { protocol });
+                }
+                else
+                {
+                    var tenantId = protocol.Parameters["tenantId"];
+                    var clientId = protocol.Parameters["clientId"];
+
+                    app.UseJwtBearerAuthentication(new JwtBearerOptions
+                    {
+                        Authority = $"https://login.microsoftonline.com/{tenantId}", //Required?
+                        Audience = clientId
+                    });
+
+                    logger.Info("JwtBearer authentication setup successfully", () => new { protocol });
+                }
+
+                return;
+            }
+
+            logger.Warn("No supported authentication protocol found", () => new { protcols });
         }
 
         private void BuildCorsPolicy(CorsPolicyBuilder builder)
