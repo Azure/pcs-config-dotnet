@@ -75,10 +75,10 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService
         {
             var logger = this.ApplicationContainer.Resolve<Services.Diagnostics.ILogger>();
             var client = this.ApplicationContainer.ResolveOptional<IAuthClient>();
-            var protcols = client.GetAllAsync().Result;
+            var protocols = client.GetAllAsync().Result;
 
             // Currently, only AAD Global is supported
-            var protocol = protcols.Items.FirstOrDefault(p => p.Type == "oauth.AAD.Global");
+            var protocol = protocols.Items.FirstOrDefault(p => p.Type == "oauth.AAD.Global");
             if (protocol != null)
             {
                 if (!protocol.Parameters.ContainsKey("tenantId") || !protocol.Parameters.ContainsKey("clientId"))
@@ -90,11 +90,16 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService
                     var tenantId = protocol.Parameters["tenantId"];
                     var clientId = protocol.Parameters["clientId"];
 
-                    app.UseJwtBearerAuthentication(new JwtBearerOptions
+                    var options = new JwtBearerOptions
                     {
                         Authority = $"https://login.microsoftonline.com/{tenantId}", //Required?
                         Audience = clientId
-                    });
+                    };
+
+                    options.SecurityTokenValidators.Clear();
+                    options.SecurityTokenValidators.Add(new SecurityTokenSignatureAlgorithmValidator(protocols.SupportedSignatureAlgorithms));
+
+                    app.UseJwtBearerAuthentication(options);
 
                     logger.Info("JwtBearer authentication setup successfully", () => new { protocol });
                 }
@@ -102,7 +107,7 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService
                 return;
             }
 
-            logger.Warn("No supported authentication protocol found", () => new { protcols });
+            logger.Warn("No supported authentication protocol found", () => new { protocols });
         }
 
         private void BuildCorsPolicy(CorsPolicyBuilder builder)
