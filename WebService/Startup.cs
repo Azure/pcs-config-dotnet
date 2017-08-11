@@ -62,62 +62,14 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService
 
             app.UseCors(this.BuildCorsPolicy);
 
-            ConfigureAuth(app);
+            var authClient = this.ApplicationContainer.Resolve<IAuthClient>();
+            authClient.ConfigureApplication(app).Wait();
 
             app.UseMvc();
 
             // If you want to dispose of resources that have been resolved in the
             // application container, register for the "ApplicationStopped" event.
             appLifetime.ApplicationStopped.Register(() => this.ApplicationContainer.Dispose());
-        }
-
-        private void ConfigureAuth(IApplicationBuilder app)
-        {
-            var logger = this.ApplicationContainer.Resolve<Services.Diagnostics.ILogger>();
-            var client = this.ApplicationContainer.ResolveOptional<IAuthClient>();
-
-            ProtocolListApiModel protocols;
-            try
-            {
-                protocols = client.GetAllAsync().Result;
-            }
-            catch (Exception ex)
-            {
-                logger.Error("Failed to load authentication protocols", () => new { ex.Message });
-                return;
-            }
-
-            // Currently, only AAD Global is supported
-            var protocol = protocols.Items.FirstOrDefault(p => p.Type == "oauth.AAD.Global");
-            if (protocol != null)
-            {
-                if (!protocol.Parameters.ContainsKey("tenantId") || !protocol.Parameters.ContainsKey("clientId"))
-                {
-                    logger.Error("Missing tenantId/clientId, ignore protocol", () => new { protocol });
-                }
-                else
-                {
-                    var tenantId = protocol.Parameters["tenantId"];
-                    var clientId = protocol.Parameters["clientId"];
-
-                    var options = new JwtBearerOptions
-                    {
-                        Authority = $"https://login.microsoftonline.com/{tenantId}", //Required?
-                        Audience = clientId
-                    };
-
-                    options.SecurityTokenValidators.Clear();
-                    options.SecurityTokenValidators.Add(new SecurityTokenSignatureAlgorithmValidator(protocols.SupportedSignatureAlgorithms));
-
-                    app.UseJwtBearerAuthentication(options);
-
-                    logger.Info("JwtBearer authentication setup successfully", () => new { protocol });
-                }
-
-                return;
-            }
-
-            logger.Error("No supported authentication protocol found", () => new { protocols });
         }
 
         private void BuildCorsPolicy(CorsPolicyBuilder builder)

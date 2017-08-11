@@ -7,7 +7,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using Microsoft.IdentityModel.Tokens;
 
-namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService
+namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService.External
 {
     public class SecurityTokenSignatureAlgorithmValidator : ISecurityTokenValidator
     {
@@ -42,12 +42,12 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService
             var token = new JwtSecurityToken(securityToken);
             Debug.WriteLine(token.Header.Alg);
 
-            if (!supportedSignatureAlgorithms.Contains(token.Header.Alg))
+            if (!this.supportedSignatureAlgorithms.Contains(token.Header.Alg))
             {
-                throw new SecurityTokenInvalidSignatureException("Unsupported signature algorithm");
+                throw new SecurityTokenInvalidSignatureException("No supported signature algorithm");
             }
 
-            return handler.ValidateToken(securityToken, validationParameters, out validatedToken);
+            return this.handler.ValidateToken(securityToken, validationParameters, out validatedToken);
         }
     }
 }

@@ -1,8 +1,10 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 
+using System;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.Azure.IoTSolutions.UIConfig.Services.Diagnostics;
 using Microsoft.Azure.IoTSolutions.UIConfig.Services.Exceptions;
 using Microsoft.Azure.IoTSolutions.UIConfig.Services.Http;
@@ -61,6 +63,84 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService.External
                 default:
                     throw new HttpRequestException($"Http request failed, status code = {response.StatusCode}, content = {response.Content}, request URL = {request.Uri}");
             }
+        }
+
+        public async Task ConfigureApplication(IApplicationBuilder app)
+        {
+            var setup = false;
+            ProtocolListApiModel protocols = null;
+
+            try
+            {
+                protocols = await GetAllAsync();
+            }
+            catch (Exception ex)
+            {
+                logger.Error("Failed to load authentication protocols", () => new { ex.Message });
+            }
+
+            if (protocols != null)
+            {
+                foreach (var protocol in protocols.Items)
+                {
+                    switch (protocol.Type)
+                    {
+                        // Currently, only AAD Global is supported
+                        case "oauth.AAD.Global":
+                            setup = SetupGlobalAAD(app, protocol, protocols);
+                            break;
+
+                        default:
+                            logger.Error("Unsupported authentication protocol", () => new { protocol });
+                            break;
+                    }
+                }
+            }
+
+            if (!setup)
+            {
+                SetupNullValidator(app);
+            }
+        }
+
+        private bool SetupGlobalAAD(IApplicationBuilder app, ProtocolApiModel protocol, ProtocolListApiModel protocols)
+        {
+            if (!protocol.Parameters.ContainsKey("tenantId") || !protocol.Parameters.ContainsKey("clientId"))
+            {
+                logger.Error("Missing tenantId/clientId, ignore protocol", () => new { protocol });
+                return false;
+            }
+
+            var tenantId = protocol.Parameters["tenantId"];
+            var clientId = protocol.Parameters["clientId"];
+            var supportedSignatureAlgorithms = protocols.SupportedSignatureAlgorithms;
+
+            var options = new JwtBearerOptions
+            {
+                Authority = $"https://login.microsoftonline.com/{tenantId}", //Required?
+                Audience = clientId
+            };
+
+            if (supportedSignatureAlgorithms != null)
+            {
+                options.SecurityTokenValidators.Clear();
+                options.SecurityTokenValidators.Add(new SecurityTokenSignatureAlgorithmValidator(supportedSignatureAlgorithms));
+            }
+
+            app.UseJwtBearerAuthentication(options);
+
+            logger.Info("JwtBearer authentication setup successfully", () => new { tenantId, clientId, supportedSignatureAlgorithms });
+            return true;
+        }
+
+        private void SetupNullValidator(IApplicationBuilder app)
+        {
+            var options = new JwtBearerOptions();
+            options.SecurityTokenValidators.Clear();
+            options.SecurityTokenValidators.Add(new SecurityTokenNullValidator());
+            app.UseJwtBearerAuthentication(options);
+
+            logger.Info("Null authentication setup. All call to authorized API will return `Unauthorized`", () => { });
         }
     }
 }
