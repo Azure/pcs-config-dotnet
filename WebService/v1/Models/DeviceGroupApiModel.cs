@@ -15,7 +15,7 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService.v1.Models
         public string DisplayName { get; set; }
 
         [JsonProperty("Conditions")]
-        public object Conditions { get; set; }
+        public IList<DeviceGroupConditionModel> Conditions { get; set; }
 
         [JsonProperty("ETag")]
         public string ETag { get; set; }

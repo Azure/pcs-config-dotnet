@@ -1,12 +1,14 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Azure.IoTSolutions.UIConfig.Services;
 using Microsoft.Azure.IoTSolutions.UIConfig.Services.Exceptions;
 using Microsoft.Azure.IoTSolutions.UIConfig.Services.External;
 using Microsoft.Azure.IoTSolutions.UIConfig.Services.Models;
+using Microsoft.Azure.IoTSolutions.UIConfig.WebService.v1.Models;
 using Moq;
 using Newtonsoft.Json;
 using Services.Test.helpers;
@@ -261,17 +263,41 @@ namespace Services.Test
                 new DeviceGroupServiceModel
                 {
                     DisplayName = rand.NextString(),
-                    Conditions = rand.NextString()
+                    Conditions = new List<DeviceGroupConditionModel>()
+                    {
+                        new DeviceGroupConditionModel()
+                        {
+                            Key = rand.NextString(),
+                            Operator = OperatorType.EQ,
+                            Value = rand.NextString()
+                        }
+                    }
                 },
                 new DeviceGroupServiceModel
                 {
                     DisplayName = rand.NextString(),
-                    Conditions = rand.NextString()
+                    Conditions = new List<DeviceGroupConditionModel>()
+                    {
+                        new DeviceGroupConditionModel()
+                        {
+                            Key = rand.NextString(),
+                            Operator = OperatorType.EQ,
+                            Value = rand.NextString()
+                        }
+                    }
                 },
                 new DeviceGroupServiceModel
                 {
                     DisplayName = rand.NextString(),
-                    Conditions = rand.NextString()
+                    Conditions = new List<DeviceGroupConditionModel>()
+                    {
+                        new DeviceGroupConditionModel()
+                        {
+                            Key = rand.NextString(),
+                            Operator = OperatorType.EQ,
+                            Value = rand.NextString()
+                        }
+                    }
                 }
             };
 
@@ -299,7 +325,9 @@ namespace Services.Test
                 var item = items.Single(i => i.Key == g.Id);
                 var group = JsonConvert.DeserializeObject<DeviceGroupServiceModel>(item.Data);
                 Assert.Equal(g.DisplayName, group.DisplayName);
-                Assert.Equal(g.Conditions, group.Conditions);
+                Assert.Equal(g.Conditions.First().Key, group.Conditions.First().Key);
+                Assert.Equal(g.Conditions.First().Operator, group.Conditions.First().Operator);
+                Assert.Equal(g.Conditions.First().Value, group.Conditions.First().Value);
             }
         }
 
@@ -308,7 +336,15 @@ namespace Services.Test
         {
             var groupId = rand.NextString();
             var displayName = rand.NextString();
-            var conditions = rand.NextString();
+            var conditions = new List<DeviceGroupConditionModel>()
+            {
+                new DeviceGroupConditionModel()
+                {
+                    Key = rand.NextString(),
+                    Operator = OperatorType.EQ,
+                    Value = rand.NextString()
+                }
+            };
             var etag = rand.NextString();
 
             mockClient
@@ -333,7 +369,9 @@ namespace Services.Test
                     Times.Once);
 
             Assert.Equal(result.DisplayName, displayName);
-            Assert.Equal(result.Conditions, conditions);
+            Assert.Equal(result.Conditions.First().Key, conditions.First().Key);
+            Assert.Equal(result.Conditions.First().Operator, conditions.First().Operator);
+            Assert.Equal(result.Conditions.First().Value, conditions.First().Value);
         }
 
         [Fact]
@@ -341,7 +379,15 @@ namespace Services.Test
         {
             var groupId = rand.NextString();
             var displayName = rand.NextString();
-            var conditions = rand.NextString();
+            var conditions = new List<DeviceGroupConditionModel>()
+            {
+                new DeviceGroupConditionModel()
+                {
+                    Key = rand.NextString(),
+                    Operator = OperatorType.EQ,
+                    Value = rand.NextString()
+                }
+            };
             var etag = rand.NextString();
 
             var group = new DeviceGroupServiceModel
@@ -369,7 +415,9 @@ namespace Services.Test
 
             Assert.Equal(result.Id, groupId);
             Assert.Equal(result.DisplayName, displayName);
-            Assert.Equal(result.Conditions, conditions);
+            Assert.Equal(result.Conditions.First().Key, conditions.First().Key);
+            Assert.Equal(result.Conditions.First().Operator, conditions.First().Operator);
+            Assert.Equal(result.Conditions.First().Value, conditions.First().Value);
             Assert.Equal(result.ETag, etag);
         }
 
@@ -378,7 +426,15 @@ namespace Services.Test
         {
             var groupId = rand.NextString();
             var displayName = rand.NextString();
-            var conditions = rand.NextString();
+            var conditions = new List<DeviceGroupConditionModel>()
+            {
+                new DeviceGroupConditionModel()
+                {
+                    Key = rand.NextString(),
+                    Operator = OperatorType.EQ,
+                    Value = rand.NextString()
+                }
+            };
             var etagOld = rand.NextString();
             var etagNew = rand.NextString();
 
@@ -409,7 +465,9 @@ namespace Services.Test
 
             Assert.Equal(result.Id, groupId);
             Assert.Equal(result.DisplayName, displayName);
-            Assert.Equal(result.Conditions, conditions);
+            Assert.Equal(result.Conditions.First().Key, conditions.First().Key);
+            Assert.Equal(result.Conditions.First().Operator, conditions.First().Operator);
+            Assert.Equal(result.Conditions.First().Value, conditions.First().Value);
             Assert.Equal(result.ETag, etagNew);
         }
 
