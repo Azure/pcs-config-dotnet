@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Azure.IoTSolutions.UIConfig.Services;
@@ -35,21 +36,45 @@ namespace WebService.Test.Controllers
                 {
                     Id = rand.NextString(),
                     DisplayName = rand.NextString(),
-                    Conditions = rand.NextString(),
+                    Conditions = new List<DeviceGroupConditionModel>()
+                    {
+                        new DeviceGroupConditionModel()
+                        {
+                            Key = rand.NextString(),
+                            Operator = OperatorType.EQ,
+                            Value = rand.NextString()
+                        }
+                    },
                     ETag = rand.NextString()
                 },
                 new DeviceGroupServiceModel
                 {
                     Id = rand.NextString(),
                     DisplayName = rand.NextString(),
-                    Conditions = rand.NextString(),
+                    Conditions = new List<DeviceGroupConditionModel>()
+                    {
+                        new DeviceGroupConditionModel()
+                        {
+                            Key = rand.NextString(),
+                            Operator = OperatorType.EQ,
+                            Value = rand.NextString()
+                        }
+                    },
                     ETag = rand.NextString()
                 },
                 new DeviceGroupServiceModel
                 {
                     Id = rand.NextString(),
                     DisplayName = rand.NextString(),
-                    Conditions = rand.NextString(),
+                    Conditions = new List<DeviceGroupConditionModel>()
+                    {
+                        new DeviceGroupConditionModel()
+                        {
+                            Key = rand.NextString(),
+                            Operator = OperatorType.EQ,
+                            Value = rand.NextString()
+                        }
+                    },
                     ETag = rand.NextString()
                 }
             };
@@ -78,7 +103,15 @@ namespace WebService.Test.Controllers
         {
             var groupId = rand.NextString();
             var displayName = rand.NextString();
-            var conditions = rand.NextString();
+            var conditions = new List<DeviceGroupConditionModel>()
+            {
+                new DeviceGroupConditionModel()
+                {
+                    Key = rand.NextString(),
+                    Operator = OperatorType.EQ,
+                    Value = rand.NextString()
+                }
+            };
             var etag = rand.NextString();
 
             mockStorage
@@ -108,7 +141,15 @@ namespace WebService.Test.Controllers
         {
             var groupId = rand.NextString();
             var displayName = rand.NextString();
-            var conditions = rand.NextString();
+            var conditions = new List<DeviceGroupConditionModel>()
+            {
+                new DeviceGroupConditionModel()
+                {
+                    Key = rand.NextString(),
+                    Operator = OperatorType.EQ,
+                    Value = rand.NextString()
+                }
+            };
             var etag = rand.NextString();
 
             mockStorage
@@ -129,7 +170,7 @@ namespace WebService.Test.Controllers
 
             mockStorage
                 .Verify(x => x.CreateDeviceGroupAsync(
-                    It.Is<DeviceGroupServiceModel>(m => m.DisplayName == displayName && m.Conditions.ToString() == conditions)),
+                    It.Is<DeviceGroupServiceModel>(m => m.DisplayName == displayName && m.Conditions.First() == conditions.First())),
                     Times.Once);
 
             Assert.Equal(result.Id, groupId);
@@ -143,7 +184,15 @@ namespace WebService.Test.Controllers
         {
             var groupId = rand.NextString();
             var displayName = rand.NextString();
-            var conditions = rand.NextString();
+            var conditions = new List<DeviceGroupConditionModel>()
+            {
+                new DeviceGroupConditionModel()
+                {
+                    Key = rand.NextString(),
+                    Operator = OperatorType.EQ,
+                    Value = rand.NextString()
+                }
+            };
             var etagOld = rand.NextString();
             var etagNew = rand.NextString();
 
@@ -168,7 +217,7 @@ namespace WebService.Test.Controllers
             mockStorage
                 .Verify(x => x.UpdateDeviceGroupAsync(
                     It.Is<string>(s => s == groupId),
-                    It.Is<DeviceGroupServiceModel>(m => m.DisplayName == displayName && m.Conditions.ToString() == conditions),
+                    It.Is<DeviceGroupServiceModel>(m => m.DisplayName == displayName && m.Conditions.First() == conditions.First()),
                     It.Is<string>(s => s == etagOld)),
                     Times.Once);
 

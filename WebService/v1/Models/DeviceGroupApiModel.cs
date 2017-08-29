@@ -8,9 +8,16 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService.v1.Models
 {
     public class DeviceGroupApiModel
     {
+        [JsonProperty("Id")]
         public string Id { get; set; }
+
+        [JsonProperty("DisplayName")]
         public string DisplayName { get; set; }
-        public object Conditions { get; set; }
+
+        [JsonProperty("Conditions")]
+        public IList<DeviceGroupConditionModel> Conditions { get; set; }
+
+        [JsonProperty("ETag")]
         public string ETag { get; set; }
 
         [JsonProperty("$metadata")]
