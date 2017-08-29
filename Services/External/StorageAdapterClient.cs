@@ -78,7 +78,10 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services.External
         {
             var request = new HttpRequest();
             request.SetUriFromString($"{serviceUri}/{path}");
-            request.Options.AllowInsecureSSLServer = true;
+            if (this.serviceUri.ToLowerInvariant().StartsWith("https:"))
+            {
+                request.Options.AllowInsecureSSLServer = true;
+            }
 
             if (content != null)
             {
