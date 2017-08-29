@@ -1,7 +1,7 @@
 @ECHO off & setlocal enableextensions enabledelayedexpansion
 
 :: Note: use lowercase names for the Docker images
-SET DOCKER_IMAGE="azureiotpcs/pcs-uiconfig-dotnet"
+SET DOCKER_IMAGE="azureiotpcs/pcs-ui-config-dotnet"
 
 :: Debug|Release
 SET CONFIGURATION=Release
