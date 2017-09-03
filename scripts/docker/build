@@ -56,9 +56,9 @@ build_docker_image() {
     cd out/docker/
 
     if [[ $BUILD_LATEST == "no" ]]; then
-        docker build --tag "$DOCKER_IMAGE:$APP_VERSION" --squash --compress --label "Tags=azure,iot,pcs,configuration,.NET" .
+        docker build --tag "$DOCKER_IMAGE:$APP_VERSION" --squash --compress --label "Tags=Azure,IoT,PCS,configuration,.NET" .
     else
-        docker build --tag "$DOCKER_IMAGE:$APP_VERSION" --tag "$DOCKER_IMAGE:latest" --squash --compress --label "Tags=azure,iot,pcs,configuration,.NET" .
+        docker build --tag "$DOCKER_IMAGE:$APP_VERSION" --tag "$DOCKER_IMAGE:latest" --squash --compress --label "Tags=Azure,IoT,PCS,configuration,.NET" .
     fi
 
     echo "Run './scripts/docker/publish' to publish the image to the registry"
