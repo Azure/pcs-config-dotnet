@@ -1,7 +1,7 @@
 @ECHO off & setlocal enableextensions enabledelayedexpansion
 
-IF "%PCS_UICONFIG_WEBSERVICE_PORT%" == "" (
-    echo Error: the PCS_UICONFIG_WEBSERVICE_PORT environment variable is not defined.
+IF "%PCS_STORAGEADAPTER_WEBSERVICE_URL%" == "" (
+    echo Error: the PCS_STORAGEADAPTER_WEBSERVICE_URL environment variable is not defined.
     exit /B 1
 )
 
