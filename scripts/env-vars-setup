@@ -1,7 +1,13 @@
 #!/usr/bin/env bash
 
-#  Prepare the environment variables used by the application.
+# Usage: source ./scripts/env-vars-setup
+#
+# IMPORTANT NOTES:
+# * use "source" in front of the script path, so that variables are exported in your shell
+# * the variables are set only in the current shell, run this script every time, or automate
+#   the setup using your `~/.bash_profile`.
 
-# The port where this project's web service is listening
-# See https://github.com/Azure/azure-iot-pcs-remote-monitoring-dotnet/wiki/Infrastructure
-export PCS_UICONFIG_WEBSERVICE_PORT="9005"
+# Prepare the environment variables used by the application
+
+# The URL where Storage Adapter web service is listening
+export PCS_STORAGEADAPTER_WEBSERVICE_URL="http://127.0.0.1:9022/v1"
