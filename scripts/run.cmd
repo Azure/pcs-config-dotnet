@@ -59,9 +59,7 @@ IF "%1"=="--in-sandbox" GOTO :RunInSandbox
 
     :: Start the sandbox and run the application
     docker run -it ^
-        -p %PCS_UICONFIG_WEBSERVICE_PORT%:%PCS_UICONFIG_WEBSERVICE_PORT% ^
-        -e "PCS_UICONFIG_WEBSERVICE_PORT=%PCS_UICONFIG_WEBSERVICE_PORT%" ^
-        -e "PCS_UICONFIG_CORS_WHITELIST=%PCS_UICONFIG_CORS_WHITELIST%" ^
+        -p 9005:9005 ^
         -e "PCS_STORAGEADAPTER_WEBSERVICE_URL=%PCS_STORAGEADAPTER_WEBSERVICE_URL%" ^
         -v %PCS_CACHE%\sandbox\.config:/root/.config ^
         -v %PCS_CACHE%\sandbox\.dotnet:/root/.dotnet ^

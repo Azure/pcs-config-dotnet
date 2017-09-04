@@ -1,4 +1,5 @@
 # Usage:
+# - fill in the Document DB connection string
 # - install Docker Compose, see https://docs.docker.com/compose/install
 # - open a console and `cd` into the folder that contains this file
 # - run `docker-compose up`
@@ -6,3 +7,18 @@
 version: "3"
 
 services:
+  uiconfig:
+    image: azureiotpcs/pcs-ui-config-dotnet:latest
+    depends_on:
+      - storageadapter
+    ports:
+      - "9005:9005"
+    environment:
+      - PCS_STORAGEADAPTER_WEBSERVICE_URL=http://storageadapter:9022/v1
+
+  storageadapter:
+    image: azureiotpcs/pcs-storage-adapter-dotnet:latest
+    ports:
+      - "9022:9022"
+    environment:
+      - PCS_STORAGEADAPTER_DOCUMENTDB_CONNSTRING={Document DB Connection string}
