@@ -17,7 +17,7 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services
         internal static string ThemeKey = "theme";
         internal static string LogoKey = "logo";
         internal static string UserCollectionId = "user-settings";
-        internal static string DeviceGroupCollectionId = "deviceGroups";
+        internal static string DeviceGroupCollectionId = "devicegroups";
 
         public Storage(IStorageAdapterClient client)
         {
