@@ -7,6 +7,7 @@ using Autofac.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Azure.IoTSolutions.UIConfig.WebService.External;
 using Microsoft.Azure.IoTSolutions.UIConfig.WebService.Runtime;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -60,6 +61,9 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService
             loggerFactory.AddConsole(this.Configuration.GetSection("Logging"));
 
             app.UseCors(this.BuildCorsPolicy);
+
+            var authClient = this.ApplicationContainer.Resolve<IAuthClient>();
+            authClient.ConfigureApplication(app).Wait();
 
             app.UseMvc();
 
