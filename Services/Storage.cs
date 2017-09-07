@@ -7,28 +7,31 @@ using Microsoft.Azure.IoTSolutions.UIConfig.Services.Exceptions;
 using Microsoft.Azure.IoTSolutions.UIConfig.Services.External;
 using Microsoft.Azure.IoTSolutions.UIConfig.Services.Models;
 using Newtonsoft.Json;
+using System;
+using Microsoft.Azure.IoTSolutions.UIConfig.Services.Runtime;
+using Newtonsoft.Json.Linq;
 
 namespace Microsoft.Azure.IoTSolutions.UIConfig.Services
 {
     public class Storage : IStorage
     {
-        private readonly IStorageAdapterClient client;
+        private readonly IStorageAdapterClient storageClient;
         internal static string SolutionCollectionId = "solution-settings";
         internal static string ThemeKey = "theme";
         internal static string LogoKey = "logo";
         internal static string UserCollectionId = "user-settings";
         internal static string DeviceGroupCollectionId = "devicegroups";
 
-        public Storage(IStorageAdapterClient client)
+        public Storage(IStorageAdapterClient storageClient)
         {
-            this.client = client;
+            this.storageClient = storageClient;
         }
 
         public async Task<object> GetThemeAsync()
         {
             try
             {
-                var response = await client.GetAsync(SolutionCollectionId, ThemeKey);
+                var response = await storageClient.GetAsync(SolutionCollectionId, ThemeKey);
                 return JsonConvert.DeserializeObject(response.Data);
             }
             catch (ResourceNotFoundException)
@@ -40,7 +43,7 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services
         public async Task<object> SetThemeAsync(object theme)
         {
             var value = JsonConvert.SerializeObject(theme);
-            var response = await client.UpdateAsync(SolutionCollectionId, ThemeKey, value, "*");
+            var response = await storageClient.UpdateAsync(SolutionCollectionId, ThemeKey, value, "*");
             return JsonConvert.DeserializeObject(response.Data);
         }
 
@@ -48,7 +51,7 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services
         {
             try
             {
-                var response = await client.GetAsync(UserCollectionId, id);
+                var response = await storageClient.GetAsync(UserCollectionId, id);
                 return JsonConvert.DeserializeObject(response.Data);
             }
             catch (ResourceNotFoundException)
@@ -60,7 +63,7 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services
         public async Task<object> SetUserSetting(string id, object setting)
         {
             var value = JsonConvert.SerializeObject(setting);
-            var response = await client.UpdateAsync(UserCollectionId, id, value, "*");
+            var response = await storageClient.UpdateAsync(UserCollectionId, id, value, "*");
             return JsonConvert.DeserializeObject(response.Data);
         }
 
@@ -68,7 +71,7 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services
         {
             try
             {
-                var response = await client.GetAsync(SolutionCollectionId, LogoKey);
+                var response = await storageClient.GetAsync(SolutionCollectionId, LogoKey);
                 return JsonConvert.DeserializeObject<LogoServiceModel>(response.Data);
             }
             catch (ResourceNotFoundException)
@@ -80,39 +83,39 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services
         public async Task<LogoServiceModel> SetLogoAsync(LogoServiceModel model)
         {
             var value = JsonConvert.SerializeObject(model);
-            var response = await client.UpdateAsync(SolutionCollectionId, LogoKey, value, "*");
+            var response = await storageClient.UpdateAsync(SolutionCollectionId, LogoKey, value, "*");
             return JsonConvert.DeserializeObject<LogoServiceModel>(response.Data);
         }
 
         public async Task<IEnumerable<DeviceGroupServiceModel>> GetAllDeviceGroupsAsync()
         {
-            var response = await client.GetAllAsync(DeviceGroupCollectionId);
+            var response = await storageClient.GetAllAsync(DeviceGroupCollectionId);
             return response.Items.Select(CreateGroupServiceModel);
         }
 
         public async Task<DeviceGroupServiceModel> GetDeviceGroupAsync(string id)
         {
-            var response = await client.GetAsync(DeviceGroupCollectionId, id);
+            var response = await storageClient.GetAsync(DeviceGroupCollectionId, id);
             return CreateGroupServiceModel(response);
         }
 
         public async Task<DeviceGroupServiceModel> CreateDeviceGroupAsync(DeviceGroupServiceModel input)
         {
             var value = JsonConvert.SerializeObject(input, Formatting.Indented, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
-            var response = await client.CreateAsync(DeviceGroupCollectionId, value);
+            var response = await storageClient.CreateAsync(DeviceGroupCollectionId, value);
             return CreateGroupServiceModel(response);
         }
 
         public async Task<DeviceGroupServiceModel> UpdateDeviceGroupAsync(string id, DeviceGroupServiceModel input, string etag)
         {
             var value = JsonConvert.SerializeObject(input, Formatting.Indented, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
-            var response = await client.UpdateAsync(DeviceGroupCollectionId, id, value, etag);
+            var response = await storageClient.UpdateAsync(DeviceGroupCollectionId, id, value, etag);
             return CreateGroupServiceModel(response);
         }
 
         public async Task DeleteDeviceGroupAsync(string id)
         {
-            await client.DeleteAsync(DeviceGroupCollectionId, id);
+            await storageClient.DeleteAsync(DeviceGroupCollectionId, id);
         }
 
         private DeviceGroupServiceModel CreateGroupServiceModel(ValueApiModel input)

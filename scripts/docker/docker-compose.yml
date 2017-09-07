@@ -11,10 +11,14 @@ services:
     image: azureiotpcs/pcs-ui-config-dotnet:latest
     depends_on:
       - storageadapter
+      - devicesimulation
+      - iothubmanager
     ports:
       - "9005:9005"
     environment:
       - PCS_STORAGEADAPTER_WEBSERVICE_URL=http://storageadapter:9022/v1
+      - PCS_DEVICESIMULATION_WEBSERVICE_URL=http://devicesimlation:9003/v1
+      - PCS_IOTHUB_MANAGER_WEBSERVICE_URL=http://iothubmanager:9002/v1
 
   storageadapter:
     image: azureiotpcs/pcs-storage-adapter-dotnet:latest
@@ -22,3 +26,18 @@ services:
       - "9022:9022"
     environment:
       - PCS_STORAGEADAPTER_DOCUMENTDB_CONNSTRING={Document DB Connection string}
+
+  iothubmanager:
+    image: azureiotpcs/iothub-manager-dotnet:latest
+    ports:
+      - "9002:9002"
+    environment:
+      - PCS_IOTHUB_CONNSTRING=${PCS_IOTHUB_CONNSTRING}
+
+  devicesimlation:
+    image: azureiotpcs/pcs-device-simulation-dotnet:latest
+    ports:
+      - "9003:9003"
+    environment:
+      - PCS_IOTHUB_CONNSTRING=${PCS_IOTHUB_CONNSTRING}
+      - PCS_STORAGEADAPTER_WEBSERVICE_URL=${PCS_STORAGEADAPTER_WEBSERVICE_URL}

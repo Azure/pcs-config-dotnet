@@ -13,6 +13,7 @@ using Moq;
 using Newtonsoft.Json;
 using Services.Test.helpers;
 using Xunit;
+using Microsoft.Azure.IoTSolutions.UIConfig.Services.Runtime;
 
 namespace Services.Test
 {
@@ -21,10 +22,14 @@ namespace Services.Test
         private readonly Mock<IStorageAdapterClient> mockClient;
         private readonly Storage storage;
         private readonly Random rand;
+        private readonly Mock<IServicesConfig> config;
 
         public StorageTest()
         {
             mockClient = new Mock<IStorageAdapterClient>();
+            config = new Mock<IServicesConfig>();
+            config.SetupGet(m => m.CacheTTL).Returns(3600);
+            config.SetupGet(m => m.CacheRebuildTimeout).Returns(20);
             storage = new Storage(mockClient.Object);
             rand = new Random();
         }

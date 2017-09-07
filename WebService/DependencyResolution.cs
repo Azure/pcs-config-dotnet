@@ -66,6 +66,9 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService
             // leaks, but not so good for the overall performance.
             builder.RegisterType<Storage>().As<IStorage>().SingleInstance();
             builder.RegisterType<StorageAdapterClient>().As<IStorageAdapterClient>().SingleInstance();
+            builder.RegisterType<IothubManagerServiceClient>().As<IIothubManagerServiceClient>().SingleInstance();
+            builder.RegisterType<SimulationServiceClient>().As<ISimulationServiceClient>().SingleInstance();
+            builder.RegisterType<Cache>().As<ICache>().SingleInstance();
 
             var httpClient = new HttpClient(logger);
             builder.RegisterInstance(httpClient).As<IHttpClient>().SingleInstance();

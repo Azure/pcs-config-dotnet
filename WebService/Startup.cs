@@ -12,6 +12,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using Microsoft.Azure.IoTSolutions.UIConfig.Services.External;
+using Microsoft.Azure.IoTSolutions.UIConfig.Services;
 
 namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService
 {
@@ -66,6 +68,10 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService
             // If you want to dispose of resources that have been resolved in the
             // application container, register for the "ApplicationStopped" event.
             appLifetime.ApplicationStopped.Register(() => this.ApplicationContainer.Dispose());
+
+            appLifetime.ApplicationStarted.Register(()=> {
+               app.ApplicationServices.GetService<ICache>().RebuildCacheAsync();
+            });
         }
 
         private void BuildCorsPolicy(CorsPolicyBuilder builder)

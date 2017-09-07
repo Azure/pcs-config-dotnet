@@ -24,9 +24,17 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService.Runtime
         private const string ApplicationKey = "UIConfig:";
         private const string PortKey = ApplicationKey + "webservice_port";
         private const string CorsWhitelistKey = ApplicationKey + "cors_whitelist";
+        private const string CacheTTLKey = ApplicationKey + "cache_TTL";
+        private const string CacheRebuildTimeoutKey = ApplicationKey + "rebuild_timeout";
 
         private const string StorageAdapterKey = "StorageAdapter:";
         private const string StorageAdapterUrlKey = StorageAdapterKey + "webservice_url";
+
+        private const string HubManagerKey = "IothubManagerService:";
+        private const string HubManagerUrlKey = HubManagerKey + "webservice_url";
+
+        private const string SimulationKey = "SimulationService:";
+        private const string SimulationUrlKey = SimulationKey + "webservice_url";
 
         /// <summary>Web service listening port</summary>
         public int Port { get; }
@@ -44,7 +52,11 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService.Runtime
 
             this.ServicesConfig = new ServicesConfig
             {
-                StorageAdapterApiUrl = configData.GetString(StorageAdapterUrlKey)
+                StorageAdapterApiUrl = configData.GetString(StorageAdapterUrlKey),
+                HubManagerApiUrl = configData.GetString(HubManagerUrlKey),
+                SimulationApiUrl = configData.GetString(SimulationUrlKey),
+                CacheTTL = configData.GetInt(CacheTTLKey),
+                CacheRebuildTimeout = configData.GetInt(CacheRebuildTimeoutKey)
             };
         }
 
