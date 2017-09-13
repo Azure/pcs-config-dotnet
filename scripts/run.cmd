@@ -61,6 +61,8 @@ IF "%1"=="--in-sandbox" GOTO :RunInSandbox
     docker run -it ^
         -p 9005:9005 ^
         -e "PCS_STORAGEADAPTER_WEBSERVICE_URL=%PCS_STORAGEADAPTER_WEBSERVICE_URL%" ^
+        -e "PCS_DEVICESIMULATION_WEBSERVICE_URL=%PCS_DEVICESIMULATION_WEBSERVICE_URL%" ^
+        -e "PCS_DEVICETELEMETRY_WEBSERVICE_URL=%PCS_DEVICETELEMETRY_WEBSERVICE_URL%" ^
         -v %PCS_CACHE%\sandbox\.config:/root/.config ^
         -v %PCS_CACHE%\sandbox\.dotnet:/root/.dotnet ^
         -v %PCS_CACHE%\sandbox\.nuget:/root/.nuget ^

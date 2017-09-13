@@ -36,15 +36,11 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService.v1.Models
 
         /// <summary>A property bag with details about the service</summary>
         [JsonProperty(PropertyName = "Properties", Order = 70)]
-        public Dictionary<string, string> Properties => new Dictionary<string, string>
-        {
-        };
+        public Dictionary<string, string> Properties => new Dictionary<string, string>();
 
         /// <summary>A property bag with details about the internal dependencies</summary>
         [JsonProperty(PropertyName = "Dependencies", Order = 80)]
-        public Dictionary<string, string> Dependencies => new Dictionary<string, string>
-        {
-        };
+        public Dictionary<string, string> Dependencies => new Dictionary<string, string>();
 
         [JsonProperty(PropertyName = "$metadata", Order = 1000)]
         public Dictionary<string, string> Metadata => new Dictionary<string, string>

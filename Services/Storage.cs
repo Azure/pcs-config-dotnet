@@ -13,11 +13,11 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services
     public class Storage : IStorage
     {
         private readonly IStorageAdapterClient client;
-        internal static string SolutionCollectionId = "solution-settings";
-        internal static string ThemeKey = "theme";
-        internal static string LogoKey = "logo";
-        internal static string UserCollectionId = "user-settings";
-        internal static string DeviceGroupCollectionId = "devicegroups";
+        internal const string SolutionCollectionId = "solution-settings";
+        internal const string ThemeKey = "theme";
+        internal const string LogoKey = "logo";
+        internal const string UserCollectionId = "user-settings";
+        internal const string DeviceGroupCollectionId = "devicegroups";
 
         public Storage(IStorageAdapterClient client)
         {

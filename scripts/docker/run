@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Note: use lowercase names for the Docker images
-DOCKER_IMAGE="azureiotpcs/pcs-uiconfig-dotnet"
+DOCKER_IMAGE="azureiotpcs/pcs-ui-config-dotnet"
 
 set -e
 APP_HOME="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && cd .. && cd .. && pwd )/"
@@ -20,6 +20,8 @@ run_container() {
     echo "Starting UIConfig ..."
     docker run -it -p 9005:9005 \
         -e "PCS_STORAGEADAPTER_WEBSERVICE_URL=$PCS_STORAGEADAPTER_WEBSERVICE_URL" \
+        -e "PCS_DEVICESIMULATION_WEBSERVICE_URL=$PCS_DEVICESIMULATION_WEBSERVICE_URL" \
+        -e "PCS_DEVICETELEMETRY_WEBSERVICE_URL=$PCS_DEVICETELEMETRY_WEBSERVICE_URL" \
         "$DOCKER_IMAGE:$APP_VERSION"
 }
 

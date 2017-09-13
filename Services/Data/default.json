@@ -1,0 +1,141 @@
+﻿{
+  "Groups": [
+    {
+      "Id": "default.Chillers",
+      "DisplayName": "Chillers",
+      "Conditions": [
+        {
+          "Key": "properties.reported.Type",
+          "Operator": "EQ",
+          "Value": "Chiller"
+        }
+      ]
+    },
+    {
+      "Id": "default.PrototypingDevices",
+      "DisplayName": "Prototyping devices",
+      "Conditions": [
+        {
+          "Key": "properties.reported.Type",
+          "Operator": "EQ",
+          "Value": "Prototyping"
+        }
+      ]
+    },
+    {
+      "Id": "default.Engines",
+      "DisplayName": "Engines",
+      "Conditions": [
+        {
+          "Key": "properties.reported.Type",
+          "Operator": "EQ",
+          "Value": "Engine"
+        }
+      ]
+    },
+    {
+      "Id": "default.Trucks",
+      "DisplayName": "Trucks",
+      "Conditions": [
+        {
+          "Key": "properties.reported.Type",
+          "Operator": "EQ",
+          "Value": "Truck"
+        }
+      ]
+    },
+    {
+      "Id": "default.Elevators",
+      "DisplayName": "Elevators",
+      "Conditions": [
+        {
+          "Key": "properties.reported.Type",
+          "Operator": "EQ",
+          "Value": "Elevator"
+        }
+      ]
+    },
+    {
+      "Id": "default.AllDevices",
+      "DisplayName": "All devices",
+      "Conditions": []
+    }
+  ],
+  "Rules": [
+    {
+      "Id": "default.Chiller.Pressure.High",
+      "Name": "Chiller pressure too high",
+      "Enabled": true,
+      "Description": "Pressure > 250",
+      "GroupId": "default.Chillers",
+      "Severity": "critical",
+      "Conditions": [
+        {
+          "Field": "pressure",
+          "Operator": "GreaterThan",
+          "Value": "250"
+        }
+      ]
+    },
+    {
+      "Id": "default.Prototyping.Temperature.High",
+      "Name": "Prototyping device temp too high",
+      "Enabled": true,
+      "Description": "Temperature > 80 degrees",
+      "GroupId": "default.PrototypingDevices",
+      "Severity": "critical",
+      "Conditions": [
+        {
+          "Field": "temperature",
+          "Operator": "GreaterThan",
+          "Value": "80"
+        }
+      ]
+    },
+    {
+      "Id": "default.Engine.Fuel.Empty",
+      "Name": "Engine tank empty",
+      "Enabled": true,
+      "Description": "Fuel level is less than 5",
+      "GroupId": "default.Engines",
+      "Severity": "info",
+      "Conditions": [
+        {
+          "Field": "fuel",
+          "Operator": "LessThan",
+          "Value": "5"
+        }
+      ]
+    },
+    {
+      "Id": "default.Truck.Temperature.High",
+      "Name": "Higher than normal cargo temperature",
+      "Enabled": true,
+      "Description": "Cargo temperature is > 45 degrees",
+      "GroupId": "default.Trucks",
+      "Severity": "warning",
+      "Conditions": [
+        {
+          "Field": "cargotemperature",
+          "Operator": "GreaterThan",
+          "Value": "45"
+        }
+      ]
+    },
+    {
+      "Id": "default.Elevator.Vibration.Stopped",
+      "Name": "Elevator vibration stopped",
+      "Enabled": true,
+      "Description": "Vibration < 0.1",
+      "GroupId": "default.Elevators",
+      "Severity": "warning",
+      "Conditions": [
+        {
+          "Field": "vibration",
+          "Operator": "LessThan",
+          "Value": "0.1"
+        }
+      ]
+    }
+  ]
+}

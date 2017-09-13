@@ -1,7 +1,5 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 
-using System;
-using System.IO;
 using Microsoft.Azure.IoTSolutions.UIConfig.Services.Runtime;
 
 namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService.Runtime
@@ -28,6 +26,12 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService.Runtime
         private const string StorageAdapterKey = "StorageAdapter:";
         private const string StorageAdapterUrlKey = StorageAdapterKey + "webservice_url";
 
+        private const string DeviceSimulationKey = "DeviceSimulation:";
+        private const string DeviceSimulationUrlKey = DeviceSimulationKey + "webservice_url";
+
+        private const string DeviceTelemetryKey = "DeviceTelemetry:";
+        private const string DeviceTelemetryUrlKey = DeviceTelemetryKey + "webservice_url";
+
         /// <summary>Web service listening port</summary>
         public int Port { get; }
 
@@ -44,14 +48,10 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService.Runtime
 
             this.ServicesConfig = new ServicesConfig
             {
-                StorageAdapterApiUrl = configData.GetString(StorageAdapterUrlKey)
+                StorageAdapterApiUrl = configData.GetString(StorageAdapterUrlKey),
+                DeviceSimulationApiUrl = configData.GetString(DeviceSimulationUrlKey),
+                DeviceTelemetryApiUrl = configData.GetString(DeviceTelemetryUrlKey)
             };
-        }
-
-        private static string MapRelativePath(string path)
-        {
-            if (path.StartsWith(".")) return AppContext.BaseDirectory + Path.DirectorySeparatorChar + path;
-            return path;
         }
     }
 }
