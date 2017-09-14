@@ -22,6 +22,7 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService.Runtime
         private const string ApplicationKey = "UIConfig:";
         private const string PortKey = ApplicationKey + "webservice_port";
         private const string CorsWhitelistKey = ApplicationKey + "cors_whitelist";
+        private const string SeedTemplateKey = ApplicationKey + "seedTemplate";
 
         private const string StorageAdapterKey = "StorageAdapter:";
         private const string StorageAdapterUrlKey = StorageAdapterKey + "webservice_url";
@@ -50,7 +51,8 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService.Runtime
             {
                 StorageAdapterApiUrl = configData.GetString(StorageAdapterUrlKey),
                 DeviceSimulationApiUrl = configData.GetString(DeviceSimulationUrlKey),
-                DeviceTelemetryApiUrl = configData.GetString(DeviceTelemetryUrlKey)
+                DeviceTelemetryApiUrl = configData.GetString(DeviceTelemetryUrlKey),
+                SeedTemplate = configData.GetString(SeedTemplateKey)
             };
         }
     }

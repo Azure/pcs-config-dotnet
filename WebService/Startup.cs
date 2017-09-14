@@ -7,6 +7,7 @@ using Autofac.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Azure.IoTSolutions.UIConfig.Services;
 using Microsoft.Azure.IoTSolutions.UIConfig.WebService.Runtime;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -66,6 +67,12 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService
             // If you want to dispose of resources that have been resolved in the
             // application container, register for the "ApplicationStopped" event.
             appLifetime.ApplicationStopped.Register(() => this.ApplicationContainer.Dispose());
+
+            appLifetime.ApplicationStarted.Register(() =>
+            {
+                var seed = this.ApplicationContainer.Resolve<ISeed>();
+                seed.TrySeedAsync();
+            });
         }
 
         private void BuildCorsPolicy(CorsPolicyBuilder builder)

@@ -40,6 +40,10 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services.Helpers
             request.Headers.Add("Accept", "application/json");
             request.Headers.Add("Cache-Control", "no-cache");
             request.Headers.Add("User-Agent", "Config");
+            if (uri.ToLowerInvariant().StartsWith("https:"))
+            {
+                request.Options.AllowInsecureSSLServer = true;
+            }
 
             IHttpResponse response;
 
@@ -85,6 +89,10 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services.Helpers
             request.Headers.Add("Accept", "application/json");
             request.Headers.Add("Cache-Control", "no-cache");
             request.Headers.Add("User-Agent", "Config");
+            if (uri.ToLowerInvariant().StartsWith("https:"))
+            {
+                request.Options.AllowInsecureSSLServer = true;
+            }
 
             if (content != null)
             {
@@ -120,6 +128,10 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services.Helpers
             request.Headers.Add("Accept", "application/json");
             request.Headers.Add("Cache-Control", "no-cache");
             request.Headers.Add("User-Agent", "Config");
+            if (uri.ToLowerInvariant().StartsWith("https:"))
+            {
+                request.Options.AllowInsecureSSLServer = true;
+            }
 
             if (content != null)
             {

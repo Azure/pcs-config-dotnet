@@ -7,29 +7,42 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Microsoft.Azure.IoTSolutions.UIConfig.Services.Diagnostics;
+using Microsoft.Azure.IoTSolutions.UIConfig.Services.Exceptions;
 using Microsoft.Azure.IoTSolutions.UIConfig.Services.External;
 using Microsoft.Azure.IoTSolutions.UIConfig.Services.Models;
+using Microsoft.Azure.IoTSolutions.UIConfig.Services.Runtime;
 using Newtonsoft.Json;
 
 namespace Microsoft.Azure.IoTSolutions.UIConfig.Services
 {
     public class Seed : ISeed
     {
-        private readonly ISeedStatusManager seedStatusManager;
+        private const string SeedCollectionId = "solution-settings";
+        private const string MutexKey = "seedMutex";
+        private const string CompletedFlagKey = "seedCompleted";
+        private readonly TimeSpan mutexTimeout = TimeSpan.FromMinutes(5);
+
+        private readonly IServicesConfig config;
+        private readonly IStorageMutex mutex;
         private readonly IStorage storage;
+        private readonly IStorageAdapterClient storageClient;
         private readonly IDeviceSimulationClient simulationClient;
         private readonly IDeviceTelemetryClient telemetryClient;
         private readonly ILogger logger;
 
         public Seed(
-            ISeedStatusManager seedStatusManager,
+            IServicesConfig config,
+            IStorageMutex mutex,
             IStorage storage,
+            IStorageAdapterClient storageClient,
             IDeviceSimulationClient simulationClient,
             IDeviceTelemetryClient telemetryClient,
             ILogger logger)
         {
-            this.seedStatusManager = seedStatusManager;
+            this.config = config;
+            this.mutex = mutex;
             this.storage = storage;
+            this.storageClient = storageClient;
             this.simulationClient = simulationClient;
             this.telemetryClient = telemetryClient;
             this.logger = logger;
@@ -37,50 +50,76 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services
 
         public async Task TrySeedAsync()
         {
-            if (!await seedStatusManager.TryBeginSeedAsync())
+            if (!await mutex.Enter(SeedCollectionId, MutexKey, mutexTimeout))
             {
-                logger.Info("Seeding skipped", () => { });
+                logger.Info("Seed skipped (conflict)", () => { });
                 return;
             }
 
-            logger.Info("Seeding begin", () => { });
-            await SeedAsync();
-            logger.Info("Seeding end", () => { });
-
-            await seedStatusManager.EndSeedAsync();
-        }
-
-        private async Task SeedAsync()
-        {
-            var root = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
-            var di = new DirectoryInfo(Path.Combine(root, "Data"));
-            foreach (var template in di.GetFiles("*.json"))
+            if (await CheckCompletedFlagAsync())
             {
-                await SeedSingleTemplateAsync(template.FullName);
+                logger.Info("Seed skipped (completed)", () => { });
+                return;
             }
 
+            logger.Info("Seed begin", () => { });
+            await SeedAsync(config.SeedTemplate);
+            logger.Info("Seed end", () => { });
+
+            await SetCompletedFlagAsync();
+
+            await mutex.Leave(SeedCollectionId, MutexKey);
+        }
+
+        private async Task<bool> CheckCompletedFlagAsync()
+        {
             try
             {
-                await simulationClient.CreateDefaultSimulationAsync();
+                await storageClient.GetAsync(SeedCollectionId, CompletedFlagKey);
+                return true;
             }
-            catch (Exception ex)
+            catch (ResourceNotFoundException)
             {
-                logger.Error($"Failed to seed default simulations", () => new { ex.Message });
+                return false;
             }
         }
 
-        private async Task SeedSingleTemplateAsync(string file)
+        private async Task SetCompletedFlagAsync()
+        {
+            await storageClient.UpdateAsync(SeedCollectionId, CompletedFlagKey, "true", "*");
+        }
+
+        private async Task SeedAsync(string template)
+        {
+            string content;
+
+            var root = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
+            var file = Path.Combine(root, "Data", $"{template}.json");
+            if (!File.Exists(file))
+            {
+                // ToDo: Check if `template` is a valid URL and try to load the content
+
+                throw new ResourceNotFoundException($"Template {template} does not exist");
+            }
+            else
+            {
+                content = File.ReadAllText(file);
+            }
+
+            await SeedSingleTemplateAsync(content);
+        }
+
+        private async Task SeedSingleTemplateAsync(string content)
         {
             TemplateModel template;
 
             try
             {
-                template = JsonConvert.DeserializeObject<TemplateModel>(File.ReadAllText(file));
+                template = JsonConvert.DeserializeObject<TemplateModel>(content);
             }
             catch (Exception ex)
             {
-                logger.Error($"Failed to load template {file}", () => new { ex });
-                return;
+                throw new InvalidInputException("Failed to parse template", ex);
             }
 
             if (template.Groups.Select(g => g.Id).Distinct().Count() != template.Groups.Count())
@@ -122,6 +161,31 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services
                 {
                     logger.Error($"Failed to seed default rule {rule.Description}", () => new { rule, ex.Message });
                 }
+            }
+
+            try
+            {
+                var simulationModel = await this.simulationClient.GetSimulationAsync();
+
+                if (simulationModel != null)
+                {
+                    logger.Info("Skip seed simulation since there is already one simuation", () => new { simulationModel });
+                }
+                else
+                {
+                    simulationModel = new SimulationApiModel
+                    {
+                        Id = "1",
+                        Etag = "*"
+                    };
+
+                    simulationModel.DeviceModels = template.DeviceModels.ToList();
+                    await simulationClient.UpdateSimulation(simulationModel);
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.Error("Failed to seed default simulation", () => new { ex.Message });
             }
         }
     }
