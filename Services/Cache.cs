@@ -21,8 +21,8 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services
         private readonly ILogger log;
         private readonly long cacheTTL;
         private readonly long rebuildTimeout;
-        internal static string CacheCollectionId = "cache";
-        internal static string CacheKey = "twin";
+        internal const string CacheCollectionId = "cache";
+        internal const string CacheKey = "twin";
 
         public Cache(IStorageAdapterClient storageClient, IIothubManagerServiceClient iotHubClient, ISimulationServiceClient simulationClient, IServicesConfig config, ILogger logger)
         {
@@ -80,6 +80,7 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services
                     Task.WaitAll(twinNamesTask, reportedNamesTask);
                     twinNames = twinNamesTask.Result;
                     reportedNames = reportedNamesTask.Result;
+                    reportedNames.UnionWith(twinNames.ReportedProperties);
                 }
                 catch (Exception)
                 {
@@ -105,7 +106,6 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services
                     etag = response.ETag;
                 }
 
-                reportedNames.UnionWith(twinNames.ReportedProperties);
                 var value = JsonConvert.SerializeObject(new CacheModel
                 {
                     Rebuilding = false,
@@ -128,26 +128,42 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services
 
         public async Task<CacheModel> SetCacheAsync(CacheModel cache)
         {
+            // To simplify code, use empty set to replace null set
+            cache.Tags = cache.Tags ?? new HashSet<string>();
+            cache.Reported = cache.Reported ?? new HashSet<string>();
+
             string etag = null;
             while (true)
             {
-                ValueApiModel cacheInSever = null;
+                ValueApiModel model = null;
                 try
                 {
-                    cacheInSever = await storageClient.GetAsync(CacheCollectionId, CacheKey);
+                    model = await storageClient.GetAsync(CacheCollectionId, CacheKey);
                 }
                 catch (ResourceNotFoundException)
                 {
                     log.Info($"{CacheCollectionId}:{CacheKey} not found.", () => $"{this.GetType().FullName}.SetCacheAsync");
                 }
 
-                if (cacheInSever != null)
+                if (model != null)
                 {
-                    CacheModel cacheSever = JsonConvert.DeserializeObject<CacheModel>(cacheInSever.Data);
-                    cache.Tags = Union(cache.Tags, cacheSever.Tags);
-                    cache.Tags = Union(cache.Tags, cacheSever.Reported);
-                    etag = cacheInSever.ETag;
-                    if (cache.Tags?.Count == cacheSever.Tags?.Count && cache.Reported?.Count == cacheSever.Reported?.Count)
+                    CacheModel cacheServer;
+
+                    try
+                    {
+                        cacheServer = JsonConvert.DeserializeObject<CacheModel>(model.Data);
+                    }
+                    catch
+                    {
+                        cacheServer = new CacheModel();
+                    }
+                    cacheServer.Tags = cacheServer.Tags ?? new HashSet<string>();
+                    cacheServer.Reported = cacheServer.Reported ?? new HashSet<string>();
+
+                    cache.Tags.UnionWith(cacheServer.Tags);
+                    cache.Reported.UnionWith(cacheServer.Reported);
+                    etag = model.ETag;
+                    if (cache.Tags.Count == cacheServer.Tags.Count && cache.Reported.Count == cacheServer.Reported.Count)
                     {
                         return cache;
                     }
@@ -183,19 +199,6 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services
                 needBuild = needBuild || rebuilding && timstamp.AddSeconds(rebuildTimeout) < DateTimeOffset.UtcNow;
             }
             return needBuild;
-        }
-
-        private HashSet<string> Union(HashSet<string> target, HashSet<string> source)
-        {
-            if (target?.Count < 1)
-            {
-                return source;
-            }
-            if (source?.Count > 0)
-            {
-                return new HashSet<string>(target.Union(source));
-            }
-            return new HashSet<string>();
         }
     }
 }
