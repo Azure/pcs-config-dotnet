@@ -1,13 +1,12 @@
-﻿using Microsoft.Azure.IoTSolutions.UIConfig.Services.Models;
+﻿// Copyright (c) Microsoft. All rights reserved.
+
+using Microsoft.Azure.IoTSolutions.UIConfig.Services.Models;
 using Newtonsoft.Json;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService.v1.Models
 {
-    public class CacheApiModel
+    public class DeviceGroupFiltersApiModel
     {
         [JsonProperty("Tags")]
         public HashSet<string> Tags { get; set; }
@@ -18,19 +17,19 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService.v1.Models
         [JsonProperty(PropertyName = "$metadata")]
         public Dictionary<string, string> Metadata { get; set; }
 
-        public CacheApiModel()
+        public DeviceGroupFiltersApiModel()
         {
            
         }
 
-        public CacheApiModel(CacheModel model)
+        public DeviceGroupFiltersApiModel(CacheModel model)
         {
             Tags = model.Tags;
             Reported = model.Reported;
             Metadata = new Dictionary<string, string>
             {
-                { "$type", $"Cache;{Version.Number}" },
-                { "$url", $"/{Version.Path}/caches" }
+                { "$type", $"DeviceGroupFilters;{Version.Number}" },
+                { "$url", $"/{Version.Path}/deviceGroupFilters" }
             };
         }
 

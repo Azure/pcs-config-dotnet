@@ -1,20 +1,14 @@
-﻿using Microsoft.Azure.IoTSolutions.UIConfig.Services.Diagnostics;
+﻿// Copyright (c) Microsoft. All rights reserved.
+
+using Microsoft.Azure.IoTSolutions.UIConfig.Services.Diagnostics;
 using Microsoft.Azure.IoTSolutions.UIConfig.Services.External;
 using Microsoft.Azure.IoTSolutions.UIConfig.Services.Http;
 using Microsoft.Azure.IoTSolutions.UIConfig.Services.Runtime;
 using Moq;
-using Newtonsoft.Json;
-using Services.Test.helpers;
-using System;
-using System.Collections.Generic;
-using System.Linq.Expressions;
 using System.Linq;
-using System.IO;
 using System.Net;
-using System.Text;
 using System.Threading.Tasks;
 using Xunit;
-using Newtonsoft.Json.Linq;
 
 namespace Services.Test
 {

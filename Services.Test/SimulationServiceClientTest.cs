@@ -1,9 +1,10 @@
-﻿using Microsoft.Azure.IoTSolutions.UIConfig.Services.Diagnostics;
+﻿// Copyright (c) Microsoft. All rights reserved.
+
+using Microsoft.Azure.IoTSolutions.UIConfig.Services.Diagnostics;
 using Microsoft.Azure.IoTSolutions.UIConfig.Services.External;
 using Microsoft.Azure.IoTSolutions.UIConfig.Services.Http;
 using Microsoft.Azure.IoTSolutions.UIConfig.Services.Runtime;
 using Moq;
-using System.IO;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;

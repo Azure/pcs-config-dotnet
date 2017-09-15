@@ -34,7 +34,7 @@ services:
     environment:
       - PCS_IOTHUB_CONNSTRING=${PCS_IOTHUB_CONNSTRING}
 
-  devicesimlation:
+  devicesimulation:
     image: azureiotpcs/pcs-device-simulation-dotnet:latest
     ports:
       - "9003:9003"
