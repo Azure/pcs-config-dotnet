@@ -13,13 +13,11 @@ namespace WebService.Test.IntegrationTests
 {
     public class ServiceStatusTest
     {
-        private readonly ITestOutputHelper log;
         private readonly IHttpClient httpClient;
 
         public ServiceStatusTest(ITestOutputHelper log)
         {
-            this.log = log;
-            this.httpClient = new HttpClient(this.log);
+            this.httpClient = new HttpClient(log);
         }
 
         /// <summary>

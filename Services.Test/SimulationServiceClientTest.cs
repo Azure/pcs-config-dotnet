@@ -26,7 +26,7 @@ namespace Services.Test
                 mockHttpClient.Object,
                 new ServicesConfig
                 {
-                    SimulationApiUrl = MockServiceUri
+                    DeviceSimulationApiUrl = MockServiceUri
                 },
                 new Logger("UnitTest", LogLevel.Debug));
         }

@@ -19,7 +19,7 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services.External
         {
             this.httpClient = httpClient;
             this.logger = logger;
-            this.serviceUri = config.SimulationApiUrl;
+            this.serviceUri = config.DeviceSimulationApiUrl;
         }
 
         public async Task<HashSet<string>> GetDevicePropertyNamesAsync()

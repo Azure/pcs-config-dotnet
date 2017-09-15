@@ -6,11 +6,16 @@ if [[ -z "$PCS_STORAGEADAPTER_WEBSERVICE_URL" ]]; then
 fi
 
 if [[ -z "$PCS_DEVICESIMULATION_WEBSERVICE_URL" ]]; then
-     echo "Error: the PCS_DEVICESIMULATION_WEBSERVICE_URL environment variable is not defined."
-     exit -1
+    echo "Error: the PCS_DEVICESIMULATION_WEBSERVICE_URL environment variable is not defined."
+    exit -1
 fi
 
-if [[ -z "$PCS_IOTHUB_MANAGER_WEBSERVICE_URL" ]]; then
-     echo "Error: the PCS_IOTHUB_MANAGER_WEBSERVICE_URL environment variable is not defined."
-     exit -1
+if [[ -z "$PCS_DEVICETELEMETRY_WEBSERVICE_URL" ]]; then
+    echo "Error: the PCS_DEVICETELEMETRY_WEBSERVICE_URL environment variable is not defined."
+    exit -1
+fi
+
+if [[ -z "$PCS_IOTHUBMANAGER_WEBSERVICE_URL" ]]; then
+    echo "Error: the PCS_IOTHUBMANAGER_WEBSERVICE_URL environment variable is not defined."
+    exit -1
 fi

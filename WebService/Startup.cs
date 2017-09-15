@@ -2,18 +2,18 @@
 
 using System;
 using System.Linq;
+using System.Threading.Tasks;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Azure.IoTSolutions.UIConfig.Services;
 using Microsoft.Azure.IoTSolutions.UIConfig.WebService.Runtime;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
-using Microsoft.Azure.IoTSolutions.UIConfig.Services.External;
-using Microsoft.Azure.IoTSolutions.UIConfig.Services;
 
 namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService
 {
@@ -69,8 +69,15 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService
             // application container, register for the "ApplicationStopped" event.
             appLifetime.ApplicationStopped.Register(() => this.ApplicationContainer.Dispose());
 
-            appLifetime.ApplicationStarted.Register(()=> {
-               app.ApplicationServices.GetService<ICache>().RebuildCacheAsync();
+            appLifetime.ApplicationStarted.Register(async () =>
+            {
+                var seed = ApplicationContainer.Resolve<ISeed>();
+                await seed.TrySeedAsync();
+				
+				await Task.Delay(TimeSpan.FromMinutes(5));
+				
+				var cache = ApplicationContainer.Resolve<ICache>();
+				await cache.RebuildCacheAsync();
             });
         }
 

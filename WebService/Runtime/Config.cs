@@ -1,7 +1,5 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 
-using System;
-using System.IO;
 using Microsoft.Azure.IoTSolutions.UIConfig.Services.Runtime;
 
 namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService.Runtime
@@ -24,17 +22,21 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService.Runtime
         private const string ApplicationKey = "UIConfig:";
         private const string PortKey = ApplicationKey + "webservice_port";
         private const string CorsWhitelistKey = ApplicationKey + "cors_whitelist";
+        private const string SeedTemplateKey = ApplicationKey + "seedTemplate";
         private const string CacheTTLKey = ApplicationKey + "cache_TTL";
         private const string CacheRebuildTimeoutKey = ApplicationKey + "rebuild_timeout";
 
         private const string StorageAdapterKey = "StorageAdapter:";
         private const string StorageAdapterUrlKey = StorageAdapterKey + "webservice_url";
 
-        private const string HubManagerKey = "IothubManagerService:";
-        private const string HubManagerUrlKey = HubManagerKey + "webservice_url";
+        private const string DeviceSimulationKey = "DeviceSimulation:";
+        private const string DeviceSimulationUrlKey = DeviceSimulationKey + "webservice_url";
 
-        private const string SimulationKey = "SimulationService:";
-        private const string SimulationUrlKey = SimulationKey + "webservice_url";
+        private const string DeviceTelemetryKey = "DeviceTelemetry:";
+        private const string DeviceTelemetryUrlKey = DeviceTelemetryKey + "webservice_url";
+		
+		private const string HubManagerKey = "IothubManager:";
+        private const string HubManagerUrlKey = HubManagerKey + "webservice_url";
 
         /// <summary>Web service listening port</summary>
         public int Port { get; }
@@ -53,17 +55,13 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService.Runtime
             this.ServicesConfig = new ServicesConfig
             {
                 StorageAdapterApiUrl = configData.GetString(StorageAdapterUrlKey),
-                HubManagerApiUrl = configData.GetString(HubManagerUrlKey),
-                SimulationApiUrl = configData.GetString(SimulationUrlKey),
-                CacheTTL = configData.GetInt(CacheTTLKey),
+                DeviceSimulationApiUrl = configData.GetString(DeviceSimulationUrlKey),
+                DeviceTelemetryApiUrl = configData.GetString(DeviceTelemetryUrlKey),
+				HubManagerApiUrl = configData.GetString(HubManagerUrlKey),
+                SeedTemplate = configData.GetString(SeedTemplateKey),
+				CacheTTL = configData.GetInt(CacheTTLKey),
                 CacheRebuildTimeout = configData.GetInt(CacheRebuildTimeoutKey)
             };
-        }
-
-        private static string MapRelativePath(string path)
-        {
-            if (path.StartsWith(".")) return AppContext.BaseDirectory + Path.DirectorySeparatorChar + path;
-            return path;
         }
     }
 }
