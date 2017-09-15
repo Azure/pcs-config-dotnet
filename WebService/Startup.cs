@@ -69,16 +69,21 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService
             // application container, register for the "ApplicationStopped" event.
             appLifetime.ApplicationStopped.Register(() => this.ApplicationContainer.Dispose());
 
-            appLifetime.ApplicationStarted.Register(async () =>
+            appLifetime.ApplicationStarted.Register(() =>
             {
-                var seed = ApplicationContainer.Resolve<ISeed>();
-                await seed.TrySeedAsync();
-				
-				await Task.Delay(TimeSpan.FromMinutes(5));
-				
-				var cache = ApplicationContainer.Resolve<ICache>();
-				await cache.RebuildCacheAsync();
+                var unused = OnStartAsync();
             });
+        }
+
+        private async Task OnStartAsync()
+        {
+            var seed = ApplicationContainer.Resolve<ISeed>();
+            await seed.TrySeedAsync();
+
+            await Task.Delay(TimeSpan.FromMinutes(5));
+
+            var cache = ApplicationContainer.Resolve<ICache>();
+            await cache.RebuildCacheAsync();
         }
 
         private void BuildCorsPolicy(CorsPolicyBuilder builder)
