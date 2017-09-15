@@ -2,6 +2,7 @@
 
 using System;
 using System.Linq;
+using System.Threading.Tasks;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Builder;
@@ -70,9 +71,19 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService
 
             appLifetime.ApplicationStarted.Register(() =>
             {
-                var seed = this.ApplicationContainer.Resolve<ISeed>();
-                seed.TrySeedAsync();
+                var unused = OnStartAsync();
             });
+        }
+
+        private async Task OnStartAsync()
+        {
+            var seed = ApplicationContainer.Resolve<ISeed>();
+            await seed.TrySeedAsync();
+
+            await Task.Delay(TimeSpan.FromMinutes(5));
+
+            var cache = ApplicationContainer.Resolve<ICache>();
+            await cache.RebuildCacheAsync();
         }
 
         private void BuildCorsPolicy(CorsPolicyBuilder builder)

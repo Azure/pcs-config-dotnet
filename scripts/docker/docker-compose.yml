@@ -13,12 +13,14 @@ services:
       - storageadapter
       - devicetelemetry
       - devicesimulation
+      - iothubmanager
     ports:
       - "9005:9005"
     environment:
       - PCS_STORAGEADAPTER_WEBSERVICE_URL=http://storageadapter:9022/v1
       - PCS_DEVICETELEMETRY_WEBSERVICE_URL=http://devicetelemetry:9004/v1
       - PCS_DEVICESIMULATION_WEBSERVICE_URL=http://devicesimlation:9003/v1
+      - PCS_IOTHUBMANAGER_WEBSERVICE_URL=http://iothubmanager:9002/v1
 
   storageadapter:
     image: azureiotpcs/pcs-storage-adapter-dotnet:latest
@@ -35,10 +37,17 @@ services:
       - PCS_DEVICETELEMETRY_DOCUMENTDB_CONNSTRING=${PCS_DEVICETELEMETRY_DOCUMENTDB_CONNSTRING}
       - PCS_STORAGEADAPTER_WEBSERVICE_URL=${PCS_STORAGEADAPTER_WEBSERVICE_URL}
       
-  devicesimlation:
+  devicesimulation:
     image: azureiotpcs/pcs-device-simulation-dotnet:latest
     ports:
       - "9003:9003"
     environment:
       - PCS_IOTHUB_CONNSTRING=${PCS_IOTHUB_CONNSTRING}
       - PCS_STORAGEADAPTER_WEBSERVICE_URL=${PCS_STORAGEADAPTER_WEBSERVICE_URL}
+      
+  iothubmanager:
+    image: azureiotpcs/iothub-manager-dotnet:latest
+    ports:
+      - "9002:9002"
+    environment:
+      - PCS_IOTHUB_CONNSTRING=${PCS_IOTHUB_CONNSTRING}
