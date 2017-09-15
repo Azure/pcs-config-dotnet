@@ -34,6 +34,7 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService.v1.Controllers
         }
 
         [HttpPost("rebuild")]
+        [DepressedFilter]
         public async Task<ActionResult> RebuildAsync()
         {
             await cache.RebuildCacheAsync(true);

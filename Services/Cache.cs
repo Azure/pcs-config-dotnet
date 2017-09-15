@@ -52,8 +52,22 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services
         {
             while (true)
             {
+                List<string> reportedNames = null;
+                DeviceTwinName twinNames = null;
                 ValueApiModel cache = null;
                 string etag = null;
+                try
+                {
+                    twinNames = await iotHubClient.GetDeviceTwinNamesAsync();
+                    reportedNames = (await simulationClient.GetDevicePropertyNamesAsync()).ToList();
+                }
+                catch (Exception)
+                {
+
+                    log.Info($"IothubManagerService and SimulationService  are not both ready,wait 10 seconds ", () => $"{this.GetType().FullName}.RebuildCacheAsync");
+                    await Task.Delay(10000);
+                    continue;
+                }
                 try
                 {
                     cache = await storageClient.GetAsync(CacheCollectionId, CacheKey);
@@ -80,8 +94,6 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services
                     var response = await storageClient.UpdateAsync(CacheCollectionId, CacheKey, JsonConvert.SerializeObject(new CacheModel { Rebuilding = true }), null);
                     etag = response.ETag;
                 }
-                var twinNames = await iotHubClient.GetDeviceTwinNamesAsync();
-                List<string> reportedNames = (await simulationClient.GetDevicePropertyNamesAsync()).ToList();
                 reportedNames.AddRange(twinNames.ReportedProperties);
                 var value = JsonConvert.SerializeObject(new CacheModel
                 {
@@ -121,12 +133,24 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services
                     CacheModel cacheSever = JsonConvert.DeserializeObject<CacheModel>(cacheInSever.Data);
                     List<string> alltags = cacheSever.Tags.ToList();
                     List<string> allReported = cacheSever.Reported.ToList();
-                    alltags.AddRange(cache.Tags);
-                    allReported.AddRange(cache.Reported);
+                    if (cache.Tags?.Count > 0)
+                    {
+                        alltags.AddRange(cache.Tags);
+                    }
+                    if (cache.Reported?.Count > 0)
+                    {
+                        allReported.AddRange(cache.Reported);
+                    }
                     cache.Tags = new HashSet<string>(alltags);
                     cache.Reported = new HashSet<string>(allReported);
                     cache.Rebuilding = cacheSever.Rebuilding;
                     etag = cacheInSever.ETag;
+                    if (String.Join(",", alltags.OrderBy(m => m)) == String.Join(",", cacheSever.Tags.OrderBy(m => m)) &&
+                        String.Join(",", allReported.OrderBy(m => m)) == String.Join(",", cacheSever.Reported.OrderBy(m => m))
+                        )
+                    {
+                        return cache;
+                    }
                 }
                 var value = JsonConvert.SerializeObject(cache);
                 try
