@@ -4,7 +4,7 @@ using System;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 
-namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService.v1.Models
+namespace Microsoft.Azure.IoTSolutions.UIConfig.Services.Models
 {
     public class DeviceGroupConditionModel
     {

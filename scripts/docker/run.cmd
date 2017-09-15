@@ -1,7 +1,7 @@
 @ECHO off & setlocal enableextensions enabledelayedexpansion
 
 :: Note: use lowercase names for the Docker images
-SET DOCKER_IMAGE="azureiotpcs/pcs-uiconfig-dotnet"
+SET DOCKER_IMAGE="azureiotpcs/pcs-ui-config-dotnet"
 
 :: strlen("\scripts\docker\") => 16
 SET APP_HOME=%~dp0
@@ -25,7 +25,9 @@ IF %ERRORLEVEL% NEQ 0 GOTO FAIL
 echo Starting UIConfig ...
 docker run -it -p 9005:9005 ^
     -e "PCS_STORAGEADAPTER_WEBSERVICE_URL=%PCS_STORAGEADAPTER_WEBSERVICE_URL%" ^
-    %DOCKER_IMAGE%
+    -e "PCS_DEVICESIMULATION_WEBSERVICE_URL=%PCS_DEVICESIMULATION_WEBSERVICE_URL%" ^
+    -e "PCS_DEVICETELEMETRY_WEBSERVICE_URL=%PCS_DEVICETELEMETRY_WEBSERVICE_URL%" ^
+    %DOCKER_IMAGE%:%APP_VERSION%
 
 :: - - - - - - - - - - - - - -
 goto :END

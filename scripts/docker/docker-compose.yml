@@ -11,14 +11,34 @@ services:
     image: azureiotpcs/pcs-ui-config-dotnet:latest
     depends_on:
       - storageadapter
+      - devicetelemetry
+      - devicesimulation
     ports:
       - "9005:9005"
     environment:
       - PCS_STORAGEADAPTER_WEBSERVICE_URL=http://storageadapter:9022/v1
+      - PCS_DEVICETELEMETRY_WEBSERVICE_URL=http://devicetelemetry:9004/v1
+      - PCS_DEVICESIMULATION_WEBSERVICE_URL=http://devicesimlation:9003/v1
 
   storageadapter:
     image: azureiotpcs/pcs-storage-adapter-dotnet:latest
     ports:
       - "9022:9022"
     environment:
-      - PCS_STORAGEADAPTER_DOCUMENTDB_CONNSTRING={Document DB Connection string}
+      - PCS_STORAGEADAPTER_DOCUMENTDB_CONNSTRING=${PCS_STORAGEADAPTER_DOCUMENTDB_CONNSTRING}
+      
+  devicetelemetry:
+    image: azureiotpcs/pcs-device-telemetry-dotnet:latest
+    ports:
+      - "9004:9004"
+    environment:
+      - PCS_DEVICETELEMETRY_DOCUMENTDB_CONNSTRING=${PCS_DEVICETELEMETRY_DOCUMENTDB_CONNSTRING}
+      - PCS_STORAGEADAPTER_WEBSERVICE_URL=${PCS_STORAGEADAPTER_WEBSERVICE_URL}
+      
+  devicesimlation:
+    image: azureiotpcs/pcs-device-simulation-dotnet:latest
+    ports:
+      - "9003:9003"
+    environment:
+      - PCS_IOTHUB_CONNSTRING=${PCS_IOTHUB_CONNSTRING}
+      - PCS_STORAGEADAPTER_WEBSERVICE_URL=${PCS_STORAGEADAPTER_WEBSERVICE_URL}

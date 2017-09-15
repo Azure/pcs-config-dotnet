@@ -14,8 +14,10 @@ Steps using Visual Studio 2017:
 1. Open the solution using the `pcs-ui-config.sln` file.
 1. When the solution is loaded, right click on the `WebService` project,
    select `Properties` and go to the `Debug` section.
-1. Add a new environment variable with name
+1. Add new environment variables with name
    `PCS_STORAGEADAPTER_WEBSERVICE_URL` and value `http://localhost:9022/v1`
+   `PCS_DEVICETELEMETRY_WEBSERVICE_URL` and value `http://localhost:9004/v1`
+   `PCS_DEVICESIMULATION_WEBSERVICE_URL` and value `http://localhost:9003/v1`
    which is where you should have the storage adapter running.
 1. In the same section set the `App URL` to
    `http://localhost:9005/v1/status`
