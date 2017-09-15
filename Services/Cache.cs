@@ -50,24 +50,14 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services
 
         public async Task RebuildCacheAsync(bool force = false)
         {
+            int retry = 5;
             while (true)
             {
-                List<string> reportedNames = null;
+                HashSet<string> reportedNames = null;
                 DeviceTwinName twinNames = null;
                 ValueApiModel cache = null;
                 string etag = null;
-                try
-                {
-                    twinNames = await iotHubClient.GetDeviceTwinNamesAsync();
-                    reportedNames = (await simulationClient.GetDevicePropertyNamesAsync()).ToList();
-                }
-                catch (Exception)
-                {
 
-                    log.Info($"IothubManagerService and SimulationService  are not both ready,wait 10 seconds ", () => $"{this.GetType().FullName}.RebuildCacheAsync");
-                    await Task.Delay(10000);
-                    continue;
-                }
                 try
                 {
                     cache = await storageClient.GetAsync(CacheCollectionId, CacheKey);
@@ -82,6 +72,26 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services
                 {
                     return;
                 }
+
+                try
+                {
+                    var twinNamesTask = iotHubClient.GetDeviceTwinNamesAsync();
+                    var reportedNamesTask = simulationClient.GetDevicePropertyNamesAsync();
+                    Task.WaitAll(twinNamesTask, reportedNamesTask);
+                    twinNames = twinNamesTask.Result;
+                    reportedNames = reportedNamesTask.Result;
+                }
+                catch (Exception)
+                {
+                    log.Info($"retry{retry}: IothubManagerService and SimulationService  are not both ready,wait 10 seconds ", () => $"{this.GetType().FullName}.RebuildCacheAsync");
+                    if (retry-- < 1)
+                    {
+                        return;
+                    }
+                    await Task.Delay(10000);
+                    continue;
+                }
+
                 if (cache != null)
                 {
                     CacheModel model = JsonConvert.DeserializeObject<CacheModel>(cache.Data);
@@ -94,13 +104,15 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services
                     var response = await storageClient.UpdateAsync(CacheCollectionId, CacheKey, JsonConvert.SerializeObject(new CacheModel { Rebuilding = true }), null);
                     etag = response.ETag;
                 }
-                reportedNames.AddRange(twinNames.ReportedProperties);
+
+                reportedNames.UnionWith(twinNames.ReportedProperties);
                 var value = JsonConvert.SerializeObject(new CacheModel
                 {
                     Rebuilding = false,
                     Tags = twinNames.Tags,
-                    Reported = new HashSet<string>(reportedNames)
+                    Reported = reportedNames
                 });
+
                 try
                 {
                     await storageClient.UpdateAsync(CacheCollectionId, CacheKey, value, etag);
@@ -128,30 +140,19 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services
                 {
                     log.Info($"{CacheCollectionId}:{CacheKey} not found.", () => $"{this.GetType().FullName}.SetCacheAsync");
                 }
+
                 if (cacheInSever != null)
                 {
                     CacheModel cacheSever = JsonConvert.DeserializeObject<CacheModel>(cacheInSever.Data);
-                    List<string> alltags = cacheSever.Tags.ToList();
-                    List<string> allReported = cacheSever.Reported.ToList();
-                    if (cache.Tags?.Count > 0)
-                    {
-                        alltags.AddRange(cache.Tags);
-                    }
-                    if (cache.Reported?.Count > 0)
-                    {
-                        allReported.AddRange(cache.Reported);
-                    }
-                    cache.Tags = new HashSet<string>(alltags);
-                    cache.Reported = new HashSet<string>(allReported);
-                    cache.Rebuilding = cacheSever.Rebuilding;
+                    cache.Tags = Union(cache.Tags, cacheSever.Tags);
+                    cache.Tags = Union(cache.Tags, cacheSever.Reported);
                     etag = cacheInSever.ETag;
-                    if (String.Join(",", alltags.OrderBy(m => m)) == String.Join(",", cacheSever.Tags.OrderBy(m => m)) &&
-                        String.Join(",", allReported.OrderBy(m => m)) == String.Join(",", cacheSever.Reported.OrderBy(m => m))
-                        )
+                    if (cache.Tags?.Count == cacheSever.Tags?.Count && cache.Reported?.Count == cacheSever.Reported?.Count)
                     {
                         return cache;
                     }
                 }
+
                 var value = JsonConvert.SerializeObject(cache);
                 try
                 {
@@ -182,6 +183,19 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services
                 needBuild = needBuild || rebuilding && timstamp.AddSeconds(rebuildTimeout) < DateTimeOffset.UtcNow;
             }
             return needBuild;
+        }
+
+        private HashSet<string> Union(HashSet<string> target, HashSet<string> source)
+        {
+            if (target?.Count < 1)
+            {
+                return source;
+            }
+            if (source?.Count > 0)
+            {
+                return new HashSet<string>(target.Union(source));
+            }
+            return new HashSet<string>();
         }
     }
 }

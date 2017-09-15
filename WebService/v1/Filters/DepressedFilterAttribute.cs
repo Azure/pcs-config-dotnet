@@ -11,12 +11,12 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService.v1.Filters
     {
         public override void OnActionExecuting(ActionExecutingContext context)
         {
-            context.Result = new JsonResult(new {msg = "not used for now,maybe used sometime later" }) { StatusCode=403}; 
+            context.Result = new JsonResult(new {msg = "Not used for now , maybe used some time later." }) { StatusCode=403}; 
         }
 
         public override async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
         {
-            context.Result = await Task.FromResult(new JsonResult(new {msg = "not used for now,maybe used sometime later" }) { StatusCode = 403 }) ;
+            context.Result = await Task.FromResult(new JsonResult(new {msg = "Not used for now,maybe used some time later." }) { StatusCode = 403 }) ;
         }
     }
 }
