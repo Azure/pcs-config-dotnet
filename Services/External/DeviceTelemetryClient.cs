@@ -21,15 +21,14 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services.External
             IServicesConfig config)
         {
             this.httpClient = httpClient;
-
-            serviceUri = config.DeviceTelemetryApiUrl;
+            this.serviceUri = config.DeviceTelemetryApiUrl;
         }
 
         public async Task UpdateRuleAsync(RuleApiModel rule, string etag)
         {
             rule.ETag = etag;
 
-            await httpClient.PutAsync($"{serviceUri}/rules/{rule.Id}", $"Rule {rule.Id}", rule);
+            await this.httpClient.PutAsync($"{this.serviceUri}/rules/{rule.Id}", $"Rule {rule.Id}", rule);
         }
     }
 }

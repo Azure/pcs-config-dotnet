@@ -22,9 +22,9 @@ namespace WebService.Test.Controllers
 
         public DeviceGroupControllerTest()
         {
-            mockStorage = new Mock<IStorage>();
-            controller = new DeviceGroupController(mockStorage.Object);
-            rand = new Random();
+            this.mockStorage = new Mock<IStorage>();
+            this.controller = new DeviceGroupController(this.mockStorage.Object);
+            this.rand = new Random();
         }
 
         [Fact]
@@ -32,60 +32,60 @@ namespace WebService.Test.Controllers
         {
             var models = new[]
             {
-                new DeviceGroupServiceModel
+                new DeviceGroup
                 {
-                    Id = rand.NextString(),
-                    DisplayName = rand.NextString(),
-                    Conditions = new List<DeviceGroupConditionModel>()
+                    Id = this.rand.NextString(),
+                    DisplayName = this.rand.NextString(),
+                    Conditions = new List<DeviceGroupCondition>()
                     {
-                        new DeviceGroupConditionModel()
+                        new DeviceGroupCondition()
                         {
-                            Key = rand.NextString(),
+                            Key = this.rand.NextString(),
                             Operator = OperatorType.EQ,
-                            Value = rand.NextString()
+                            Value = this.rand.NextString()
                         }
                     },
-                    ETag = rand.NextString()
+                    ETag = this.rand.NextString()
                 },
-                new DeviceGroupServiceModel
+                new DeviceGroup
                 {
-                    Id = rand.NextString(),
-                    DisplayName = rand.NextString(),
-                    Conditions = new List<DeviceGroupConditionModel>()
+                    Id = this.rand.NextString(),
+                    DisplayName = this.rand.NextString(),
+                    Conditions = new List<DeviceGroupCondition>()
                     {
-                        new DeviceGroupConditionModel()
+                        new DeviceGroupCondition()
                         {
-                            Key = rand.NextString(),
+                            Key = this.rand.NextString(),
                             Operator = OperatorType.EQ,
-                            Value = rand.NextString()
+                            Value = this.rand.NextString()
                         }
                     },
-                    ETag = rand.NextString()
+                    ETag = this.rand.NextString()
                 },
-                new DeviceGroupServiceModel
+                new DeviceGroup
                 {
-                    Id = rand.NextString(),
-                    DisplayName = rand.NextString(),
-                    Conditions = new List<DeviceGroupConditionModel>()
+                    Id = this.rand.NextString(),
+                    DisplayName = this.rand.NextString(),
+                    Conditions = new List<DeviceGroupCondition>()
                     {
-                        new DeviceGroupConditionModel()
+                        new DeviceGroupCondition()
                         {
-                            Key = rand.NextString(),
+                            Key = this.rand.NextString(),
                             Operator = OperatorType.EQ,
-                            Value = rand.NextString()
+                            Value = this.rand.NextString()
                         }
                     },
-                    ETag = rand.NextString()
+                    ETag = this.rand.NextString()
                 }
             };
 
-            mockStorage
+            this.mockStorage
                 .Setup(x => x.GetAllDeviceGroupsAsync())
                 .ReturnsAsync(models);
 
-            var result = await controller.GetAllAsync();
+            var result = await this.controller.GetAllAsync();
 
-            mockStorage
+            this.mockStorage
                 .Verify(x => x.GetAllDeviceGroupsAsync(), Times.Once);
 
             Assert.Equal(result.Items.Count(), models.Length);
@@ -101,22 +101,22 @@ namespace WebService.Test.Controllers
         [Fact]
         public async Task GetAsyncTest()
         {
-            var groupId = rand.NextString();
-            var displayName = rand.NextString();
-            var conditions = new List<DeviceGroupConditionModel>()
+            var groupId = this.rand.NextString();
+            var displayName = this.rand.NextString();
+            var conditions = new List<DeviceGroupCondition>()
             {
-                new DeviceGroupConditionModel()
+                new DeviceGroupCondition()
                 {
-                    Key = rand.NextString(),
+                    Key = this.rand.NextString(),
                     Operator = OperatorType.EQ,
-                    Value = rand.NextString()
+                    Value = this.rand.NextString()
                 }
             };
-            var etag = rand.NextString();
+            var etag = this.rand.NextString();
 
-            mockStorage
+            this.mockStorage
                 .Setup(x => x.GetDeviceGroupAsync(It.IsAny<string>()))
-                .ReturnsAsync(new DeviceGroupServiceModel
+                .ReturnsAsync(new DeviceGroup
                 {
                     Id = groupId,
                     DisplayName = displayName,
@@ -124,9 +124,9 @@ namespace WebService.Test.Controllers
                     ETag = etag
                 });
 
-            var result = await controller.GetAsync(groupId);
+            var result = await this.controller.GetAsync(groupId);
 
-            mockStorage
+            this.mockStorage
                 .Verify(x => x.GetDeviceGroupAsync(
                     It.Is<string>(s => s == groupId)),
                     Times.Once);
@@ -139,22 +139,22 @@ namespace WebService.Test.Controllers
         [Fact]
         public async Task CreatAsyncTest()
         {
-            var groupId = rand.NextString();
-            var displayName = rand.NextString();
-            var conditions = new List<DeviceGroupConditionModel>()
+            var groupId = this.rand.NextString();
+            var displayName = this.rand.NextString();
+            var conditions = new List<DeviceGroupCondition>()
             {
-                new DeviceGroupConditionModel()
+                new DeviceGroupCondition()
                 {
-                    Key = rand.NextString(),
+                    Key = this.rand.NextString(),
                     Operator = OperatorType.EQ,
-                    Value = rand.NextString()
+                    Value = this.rand.NextString()
                 }
             };
-            var etag = rand.NextString();
+            var etag = this.rand.NextString();
 
-            mockStorage
-                .Setup(x => x.CreateDeviceGroupAsync(It.IsAny<DeviceGroupServiceModel>()))
-                .ReturnsAsync(new DeviceGroupServiceModel
+            this.mockStorage
+                .Setup(x => x.CreateDeviceGroupAsync(It.IsAny<DeviceGroup>()))
+                .ReturnsAsync(new DeviceGroup
                 {
                     Id = groupId,
                     DisplayName = displayName,
@@ -162,15 +162,15 @@ namespace WebService.Test.Controllers
                     ETag = etag
                 });
 
-            var result = await controller.CreateAsync(new DeviceGroupApiModel
+            var result = await this.controller.CreateAsync(new DeviceGroupApiModel
             {
                 DisplayName = displayName,
                 Conditions = conditions
             });
 
-            mockStorage
+            this.mockStorage
                 .Verify(x => x.CreateDeviceGroupAsync(
-                    It.Is<DeviceGroupServiceModel>(m => m.DisplayName == displayName && m.Conditions.First() == conditions.First())),
+                    It.Is<DeviceGroup>(m => m.DisplayName == displayName && m.Conditions.First() == conditions.First())),
                     Times.Once);
 
             Assert.Equal(result.Id, groupId);
@@ -182,23 +182,23 @@ namespace WebService.Test.Controllers
         [Fact]
         public async Task UpdateAsyncTest()
         {
-            var groupId = rand.NextString();
-            var displayName = rand.NextString();
-            var conditions = new List<DeviceGroupConditionModel>()
+            var groupId = this.rand.NextString();
+            var displayName = this.rand.NextString();
+            var conditions = new List<DeviceGroupCondition>()
             {
-                new DeviceGroupConditionModel()
+                new DeviceGroupCondition()
                 {
-                    Key = rand.NextString(),
+                    Key = this.rand.NextString(),
                     Operator = OperatorType.EQ,
-                    Value = rand.NextString()
+                    Value = this.rand.NextString()
                 }
             };
-            var etagOld = rand.NextString();
-            var etagNew = rand.NextString();
+            var etagOld = this.rand.NextString();
+            var etagNew = this.rand.NextString();
 
-            mockStorage
-                .Setup(x => x.UpdateDeviceGroupAsync(It.IsAny<string>(), It.IsAny<DeviceGroupServiceModel>(), It.IsAny<string>()))
-                .ReturnsAsync(new DeviceGroupServiceModel
+            this.mockStorage
+                .Setup(x => x.UpdateDeviceGroupAsync(It.IsAny<string>(), It.IsAny<DeviceGroup>(), It.IsAny<string>()))
+                .ReturnsAsync(new DeviceGroup
                 {
                     Id = groupId,
                     DisplayName = displayName,
@@ -206,7 +206,7 @@ namespace WebService.Test.Controllers
                     ETag = etagNew
                 });
 
-            var result = await controller.UpdateAsync(groupId,
+            var result = await this.controller.UpdateAsync(groupId,
                 new DeviceGroupApiModel
                 {
                     DisplayName = displayName,
@@ -214,10 +214,10 @@ namespace WebService.Test.Controllers
                     ETag = etagOld
                 });
 
-            mockStorage
+            this.mockStorage
                 .Verify(x => x.UpdateDeviceGroupAsync(
                     It.Is<string>(s => s == groupId),
-                    It.Is<DeviceGroupServiceModel>(m => m.DisplayName == displayName && m.Conditions.First() == conditions.First()),
+                    It.Is<DeviceGroup>(m => m.DisplayName == displayName && m.Conditions.First() == conditions.First()),
                     It.Is<string>(s => s == etagOld)),
                     Times.Once);
 
@@ -230,15 +230,15 @@ namespace WebService.Test.Controllers
         [Fact]
         public async Task DeleteAsyncTest()
         {
-            var groupId = rand.NextString();
+            var groupId = this.rand.NextString();
 
-            mockStorage
+            this.mockStorage
                 .Setup(x => x.DeleteDeviceGroupAsync(It.IsAny<string>()))
                 .Returns(Task.FromResult(0));
 
-            await controller.DeleteAsync(groupId);
+            await this.controller.DeleteAsync(groupId);
 
-            mockStorage
+            this.mockStorage
                 .Verify(x => x.DeleteDeviceGroupAsync(
                     It.Is<string>(s => s == groupId)),
                     Times.Once);

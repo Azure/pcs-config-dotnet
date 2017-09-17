@@ -1,13 +1,15 @@
-﻿using System.Collections.Generic;
+﻿// Copyright (c) Microsoft. All rights reserved.
+
+using System.Collections.Generic;
 using Microsoft.Azure.IoTSolutions.UIConfig.Services.External;
 using Newtonsoft.Json;
 
 namespace Microsoft.Azure.IoTSolutions.UIConfig.Services.Models
 {
-    public class TemplateModel
+    public class Template
     {
         [JsonProperty("Groups")]
-        public IEnumerable<DeviceGroupServiceModel> Groups;
+        public IEnumerable<DeviceGroup> Groups;
 
         [JsonProperty("Rules")]
         public IEnumerable<RuleApiModel> Rules;

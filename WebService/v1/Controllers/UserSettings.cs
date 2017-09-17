@@ -20,13 +20,13 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService.v1.Controllers
         [HttpGet("user-settings/{id}")]
         public async Task<object> GetUserSettingAsync(string id)
         {
-            return await storage.GetUserSetting(id);
+            return await this.storage.GetUserSetting(id);
         }
 
         [HttpPut("user-settings/{id}")]
-        public async Task<object> SetUserSettingAsync(string id, [FromBody]object setting)
+        public async Task<object> SetUserSettingAsync(string id, [FromBody] object setting)
         {
-            return await storage.SetUserSetting(id, setting);
+            return await this.storage.SetUserSetting(id, setting);
         }
     }
 }

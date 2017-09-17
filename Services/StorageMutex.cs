@@ -7,6 +7,12 @@ using Microsoft.Azure.IoTSolutions.UIConfig.Services.External;
 
 namespace Microsoft.Azure.IoTSolutions.UIConfig.Services
 {
+    public interface IStorageMutex
+    {
+        Task<bool> EnterAsync(string collectionId, string key, TimeSpan timeout);
+        Task LeaveAsync(string collectionId, string key);
+    }
+
     public class StorageMutex : IStorageMutex
     {
         private const string LastModifiedKey = "$modified";
@@ -17,7 +23,7 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services
             this.storageClient = storageClient;
         }
 
-        public async Task<bool> Enter(string collectionId, string key, TimeSpan timeout)
+        public async Task<bool> EnterAsync(string collectionId, string key, TimeSpan timeout)
         {
             string etag = null;
 
@@ -25,7 +31,7 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services
             {
                 try
                 {
-                    var model = await storageClient.GetAsync(collectionId, key);
+                    var model = await this.storageClient.GetAsync(collectionId, key);
                     etag = model.ETag;
 
                     // Mutex was captured by some other instance, return `false` except the state was not updated for a long time
@@ -52,7 +58,7 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services
                 {
                     // In case there is no such a mutex, the `etag` will be null. It will cause
                     // a new mutex created, and the operation will be synchronized
-                    await storageClient.UpdateAsync(collectionId, key, "true", etag);
+                    await this.storageClient.UpdateAsync(collectionId, key, "true", etag);
 
                     // Successfully enter the mutex, return `true`
                     return true;
@@ -64,9 +70,9 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services
             }
         }
 
-        public async Task Leave(string collectionId, string key)
+        public async Task LeaveAsync(string collectionId, string key)
         {
-            await storageClient.UpdateAsync(collectionId, key, "false", "*");
+            await this.storageClient.UpdateAsync(collectionId, key, "false", "*");
         }
     }
 }

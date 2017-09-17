@@ -23,18 +23,18 @@ namespace Services.Test
 
         public StorageTest()
         {
-            mockClient = new Mock<IStorageAdapterClient>();
-            storage = new Storage(mockClient.Object);
-            rand = new Random();
+            this.mockClient = new Mock<IStorageAdapterClient>();
+            this.storage = new Storage(this.mockClient.Object);
+            this.rand = new Random();
         }
 
         [Fact]
         public async Task GetThemeAsyncTest()
         {
-            var name = rand.NextString();
-            var description = rand.NextString();
+            var name = this.rand.NextString();
+            var description = this.rand.NextString();
 
-            mockClient
+            this.mockClient
                 .Setup(x => x.GetAsync(It.IsAny<string>(), It.IsAny<string>()))
                 .ReturnsAsync(new ValueApiModel
                 {
@@ -45,12 +45,12 @@ namespace Services.Test
                     })
                 });
 
-            var result = await storage.GetThemeAsync() as dynamic;
+            var result = await this.storage.GetThemeAsync() as dynamic;
 
-            mockClient
+            this.mockClient
                 .Verify(x => x.GetAsync(
-                    It.Is<string>(s => s == Storage.SolutionCollectionId),
-                    It.Is<string>(s => s == Storage.ThemeKey)),
+                        It.Is<string>(s => s == Storage.SolutionCollectionId),
+                        It.Is<string>(s => s == Storage.ThemeKey)),
                     Times.Once);
 
             Assert.Equal(result.Name.ToString(), name);
@@ -60,27 +60,27 @@ namespace Services.Test
         [Fact]
         public async Task GetThemeAsyncDefaultTest()
         {
-            mockClient
+            this.mockClient
                 .Setup(x => x.GetAsync(It.IsAny<string>(), It.IsAny<string>()))
                 .ThrowsAsync(new ResourceNotFoundException());
 
-            var result = await storage.GetThemeAsync() as dynamic;
+            var result = await this.storage.GetThemeAsync() as dynamic;
 
-            mockClient
+            this.mockClient
                 .Verify(x => x.GetAsync(
-                    It.Is<string>(s => s == Storage.SolutionCollectionId),
-                    It.Is<string>(s => s == Storage.ThemeKey)),
+                        It.Is<string>(s => s == Storage.SolutionCollectionId),
+                        It.Is<string>(s => s == Storage.ThemeKey)),
                     Times.Once);
 
-            Assert.Equal(result.Name.ToString(), ThemeServiceModel.Default.Name);
-            Assert.Equal(result.Description.ToString(), ThemeServiceModel.Default.Description);
+            Assert.Equal(result.Name.ToString(), Theme.Default.Name);
+            Assert.Equal(result.Description.ToString(), Theme.Default.Description);
         }
 
         [Fact]
         public async Task SetThemeAsyncTest()
         {
-            var name = rand.NextString();
-            var description = rand.NextString();
+            var name = this.rand.NextString();
+            var description = this.rand.NextString();
 
             var theme = new
             {
@@ -88,21 +88,21 @@ namespace Services.Test
                 Description = description
             };
 
-            mockClient
+            this.mockClient
                 .Setup(x => x.UpdateAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
                 .ReturnsAsync(new ValueApiModel
                 {
                     Data = JsonConvert.SerializeObject(theme)
                 });
 
-            var result = await storage.SetThemeAsync(theme) as dynamic;
+            var result = await this.storage.SetThemeAsync(theme) as dynamic;
 
-            mockClient
+            this.mockClient
                 .Verify(x => x.UpdateAsync(
-                    It.Is<string>(s => s == Storage.SolutionCollectionId),
-                    It.Is<string>(s => s == Storage.ThemeKey),
-                    It.Is<string>(s => s == JsonConvert.SerializeObject(theme)),
-                    It.Is<string>(s => s == "*")),
+                        It.Is<string>(s => s == Storage.SolutionCollectionId),
+                        It.Is<string>(s => s == Storage.ThemeKey),
+                        It.Is<string>(s => s == JsonConvert.SerializeObject(theme)),
+                        It.Is<string>(s => s == "*")),
                     Times.Once);
 
             Assert.Equal(result.Name.ToString(), name);
@@ -113,10 +113,10 @@ namespace Services.Test
         public async Task GetUserSettingAsyncTest()
         {
             var id = this.rand.NextString();
-            var name = rand.NextString();
-            var description = rand.NextString();
+            var name = this.rand.NextString();
+            var description = this.rand.NextString();
 
-            mockClient
+            this.mockClient
                 .Setup(x => x.GetAsync(It.IsAny<string>(), It.IsAny<string>()))
                 .ReturnsAsync(new ValueApiModel
                 {
@@ -127,12 +127,12 @@ namespace Services.Test
                     })
                 });
 
-            var result = await storage.GetUserSetting(id) as dynamic;
+            var result = await this.storage.GetUserSetting(id) as dynamic;
 
-            mockClient
+            this.mockClient
                 .Verify(x => x.GetAsync(
-                    It.Is<string>(s => s == Storage.UserCollectionId),
-                    It.Is<string>(s => s == id)),
+                        It.Is<string>(s => s == Storage.UserCollectionId),
+                        It.Is<string>(s => s == id)),
                     Times.Once);
 
             Assert.Equal(result.Name.ToString(), name);
@@ -143,8 +143,8 @@ namespace Services.Test
         public async Task SetUserSettingAsyncTest()
         {
             var id = this.rand.NextString();
-            var name = rand.NextString();
-            var description = rand.NextString();
+            var name = this.rand.NextString();
+            var description = this.rand.NextString();
 
             var setting = new
             {
@@ -152,16 +152,16 @@ namespace Services.Test
                 Description = description
             };
 
-            mockClient
+            this.mockClient
                 .Setup(x => x.UpdateAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
                 .ReturnsAsync(new ValueApiModel
                 {
                     Data = JsonConvert.SerializeObject(setting)
                 });
 
-            var result = await storage.SetUserSetting(id, setting) as dynamic;
+            var result = await this.storage.SetUserSetting(id, setting) as dynamic;
 
-            mockClient
+            this.mockClient
                 .Verify(x => x.UpdateAsync(
                         It.Is<string>(s => s == Storage.UserCollectionId),
                         It.Is<string>(s => s == id),
@@ -176,26 +176,26 @@ namespace Services.Test
         [Fact]
         public async Task GetLogoAsyncTest()
         {
-            var image = rand.NextString();
-            var type = rand.NextString();
+            var image = this.rand.NextString();
+            var type = this.rand.NextString();
 
-            mockClient
+            this.mockClient
                 .Setup(x => x.GetAsync(It.IsAny<string>(), It.IsAny<string>()))
                 .ReturnsAsync(new ValueApiModel
                 {
-                    Data = JsonConvert.SerializeObject(new LogoServiceModel
+                    Data = JsonConvert.SerializeObject(new Logo
                     {
                         Image = image,
                         Type = type
                     })
                 });
 
-            var result = await storage.GetLogoAsync() as dynamic;
+            var result = await this.storage.GetLogoAsync() as dynamic;
 
-            mockClient
+            this.mockClient
                 .Verify(x => x.GetAsync(
-                    It.Is<string>(s => s == Storage.SolutionCollectionId),
-                    It.Is<string>(s => s == Storage.LogoKey)),
+                        It.Is<string>(s => s == Storage.SolutionCollectionId),
+                        It.Is<string>(s => s == Storage.LogoKey)),
                     Times.Once);
 
             Assert.Equal(result.Image.ToString(), image);
@@ -205,49 +205,49 @@ namespace Services.Test
         [Fact]
         public async Task GetLogoAsyncDefaultTest()
         {
-            mockClient
+            this.mockClient
                 .Setup(x => x.GetAsync(It.IsAny<string>(), It.IsAny<string>()))
                 .ThrowsAsync(new ResourceNotFoundException());
 
-            var result = await storage.GetLogoAsync() as dynamic;
+            var result = await this.storage.GetLogoAsync() as dynamic;
 
-            mockClient
+            this.mockClient
                 .Verify(x => x.GetAsync(
-                    It.Is<string>(s => s == Storage.SolutionCollectionId),
-                    It.Is<string>(s => s == Storage.LogoKey)),
+                        It.Is<string>(s => s == Storage.SolutionCollectionId),
+                        It.Is<string>(s => s == Storage.LogoKey)),
                     Times.Once);
 
-            Assert.Equal(result.Image.ToString(), LogoServiceModel.Default.Image);
-            Assert.Equal(result.Type.ToString(), LogoServiceModel.Default.Type);
+            Assert.Equal(result.Image.ToString(), Logo.Default.Image);
+            Assert.Equal(result.Type.ToString(), Logo.Default.Type);
         }
 
         [Fact]
         public async Task SetLogoAsyncTest()
         {
-            var image = rand.NextString();
-            var type = rand.NextString();
+            var image = this.rand.NextString();
+            var type = this.rand.NextString();
 
-            var logo = new LogoServiceModel
+            var logo = new Logo
             {
                 Image = image,
                 Type = type
             };
 
-            mockClient
+            this.mockClient
                 .Setup(x => x.UpdateAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
                 .ReturnsAsync(new ValueApiModel
                 {
                     Data = JsonConvert.SerializeObject(logo)
                 });
 
-            var result = await storage.SetLogoAsync(logo) as dynamic;
+            var result = await this.storage.SetLogoAsync(logo) as dynamic;
 
-            mockClient
+            this.mockClient
                 .Verify(x => x.UpdateAsync(
-                    It.Is<string>(s => s == Storage.SolutionCollectionId),
-                    It.Is<string>(s => s == Storage.LogoKey),
-                    It.Is<string>(s => s == JsonConvert.SerializeObject(logo)),
-                    It.Is<string>(s => s == "*")),
+                        It.Is<string>(s => s == Storage.SolutionCollectionId),
+                        It.Is<string>(s => s == Storage.LogoKey),
+                        It.Is<string>(s => s == JsonConvert.SerializeObject(logo)),
+                        It.Is<string>(s => s == "*")),
                     Times.Once);
 
             Assert.Equal(result.Image.ToString(), image);
@@ -259,42 +259,42 @@ namespace Services.Test
         {
             var groups = new[]
             {
-                new DeviceGroupServiceModel
+                new DeviceGroup
                 {
-                    DisplayName = rand.NextString(),
-                    Conditions = new List<DeviceGroupConditionModel>()
+                    DisplayName = this.rand.NextString(),
+                    Conditions = new List<DeviceGroupCondition>()
                     {
-                        new DeviceGroupConditionModel()
+                        new DeviceGroupCondition()
                         {
-                            Key = rand.NextString(),
+                            Key = this.rand.NextString(),
                             Operator = OperatorType.EQ,
-                            Value = rand.NextString()
+                            Value = this.rand.NextString()
                         }
                     }
                 },
-                new DeviceGroupServiceModel
+                new DeviceGroup
                 {
-                    DisplayName = rand.NextString(),
-                    Conditions = new List<DeviceGroupConditionModel>()
+                    DisplayName = this.rand.NextString(),
+                    Conditions = new List<DeviceGroupCondition>()
                     {
-                        new DeviceGroupConditionModel()
+                        new DeviceGroupCondition()
                         {
-                            Key = rand.NextString(),
+                            Key = this.rand.NextString(),
                             Operator = OperatorType.EQ,
-                            Value = rand.NextString()
+                            Value = this.rand.NextString()
                         }
                     }
                 },
-                new DeviceGroupServiceModel
+                new DeviceGroup
                 {
-                    DisplayName = rand.NextString(),
-                    Conditions = new List<DeviceGroupConditionModel>()
+                    DisplayName = this.rand.NextString(),
+                    Conditions = new List<DeviceGroupCondition>()
                     {
-                        new DeviceGroupConditionModel()
+                        new DeviceGroupCondition()
                         {
-                            Key = rand.NextString(),
+                            Key = this.rand.NextString(),
                             Operator = OperatorType.EQ,
-                            Value = rand.NextString()
+                            Value = this.rand.NextString()
                         }
                     }
                 }
@@ -302,27 +302,27 @@ namespace Services.Test
 
             var items = groups.Select(g => new ValueApiModel
             {
-                Key = rand.NextString(),
+                Key = this.rand.NextString(),
                 Data = JsonConvert.SerializeObject(g),
-                ETag = rand.NextString()
+                ETag = this.rand.NextString()
             }).ToList();
 
-            mockClient
+            this.mockClient
                 .Setup(x => x.GetAllAsync(It.IsAny<string>()))
                 .ReturnsAsync(new ValueListApiModel { Items = items });
 
-            var result = (await storage.GetAllDeviceGroupsAsync()).ToList();
+            var result = (await this.storage.GetAllDeviceGroupsAsync()).ToList();
 
-            mockClient
+            this.mockClient
                 .Verify(x => x.GetAllAsync(
-                    It.Is<string>(s => s == Storage.DeviceGroupCollectionId)),
+                        It.Is<string>(s => s == Storage.DeviceGroupCollectionId)),
                     Times.Once);
 
             Assert.Equal(result.Count, groups.Length);
             foreach (var g in result)
             {
                 var item = items.Single(i => i.Key == g.Id);
-                var group = JsonConvert.DeserializeObject<DeviceGroupServiceModel>(item.Data);
+                var group = JsonConvert.DeserializeObject<DeviceGroup>(item.Data);
                 Assert.Equal(g.DisplayName, group.DisplayName);
                 Assert.Equal(g.Conditions.First().Key, group.Conditions.First().Key);
                 Assert.Equal(g.Conditions.First().Operator, group.Conditions.First().Operator);
@@ -333,25 +333,25 @@ namespace Services.Test
         [Fact]
         public async Task GetDeviceGroupsAsyncTest()
         {
-            var groupId = rand.NextString();
-            var displayName = rand.NextString();
-            var conditions = new List<DeviceGroupConditionModel>()
+            var groupId = this.rand.NextString();
+            var displayName = this.rand.NextString();
+            var conditions = new List<DeviceGroupCondition>()
             {
-                new DeviceGroupConditionModel()
+                new DeviceGroupCondition()
                 {
-                    Key = rand.NextString(),
+                    Key = this.rand.NextString(),
                     Operator = OperatorType.EQ,
-                    Value = rand.NextString()
+                    Value = this.rand.NextString()
                 }
             };
-            var etag = rand.NextString();
+            var etag = this.rand.NextString();
 
-            mockClient
+            this.mockClient
                 .Setup(x => x.GetAsync(It.IsAny<string>(), It.IsAny<string>()))
                 .ReturnsAsync(new ValueApiModel
                 {
                     Key = groupId,
-                    Data = JsonConvert.SerializeObject(new DeviceGroupServiceModel
+                    Data = JsonConvert.SerializeObject(new DeviceGroup
                     {
                         DisplayName = displayName,
                         Conditions = conditions
@@ -359,12 +359,12 @@ namespace Services.Test
                     ETag = etag
                 });
 
-            var result = await storage.GetDeviceGroupAsync(groupId);
+            var result = await this.storage.GetDeviceGroupAsync(groupId);
 
-            mockClient
+            this.mockClient
                 .Verify(x => x.GetAsync(
-                    It.Is<string>(s => s == Storage.DeviceGroupCollectionId),
-                    It.Is<string>(s => s == groupId)),
+                        It.Is<string>(s => s == Storage.DeviceGroupCollectionId),
+                        It.Is<string>(s => s == groupId)),
                     Times.Once);
 
             Assert.Equal(result.DisplayName, displayName);
@@ -376,26 +376,26 @@ namespace Services.Test
         [Fact]
         public async Task CreateDeviceGroupAsyncTest()
         {
-            var groupId = rand.NextString();
-            var displayName = rand.NextString();
-            var conditions = new List<DeviceGroupConditionModel>()
+            var groupId = this.rand.NextString();
+            var displayName = this.rand.NextString();
+            var conditions = new List<DeviceGroupCondition>()
             {
-                new DeviceGroupConditionModel()
+                new DeviceGroupCondition()
                 {
-                    Key = rand.NextString(),
+                    Key = this.rand.NextString(),
                     Operator = OperatorType.EQ,
-                    Value = rand.NextString()
+                    Value = this.rand.NextString()
                 }
             };
-            var etag = rand.NextString();
+            var etag = this.rand.NextString();
 
-            var group = new DeviceGroupServiceModel
+            var group = new DeviceGroup
             {
                 DisplayName = displayName,
                 Conditions = conditions
             };
 
-            mockClient
+            this.mockClient
                 .Setup(x => x.CreateAsync(It.IsAny<string>(), It.IsAny<string>()))
                 .ReturnsAsync(new ValueApiModel
                 {
@@ -404,12 +404,12 @@ namespace Services.Test
                     ETag = etag
                 });
 
-            var result = await storage.CreateDeviceGroupAsync(group);
+            var result = await this.storage.CreateDeviceGroupAsync(group);
 
-            mockClient
+            this.mockClient
                 .Verify(x => x.CreateAsync(
-                    It.Is<string>(s => s == Storage.DeviceGroupCollectionId),
-                    It.Is<string>(s => s == JsonConvert.SerializeObject(group, Formatting.Indented, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }))),
+                        It.Is<string>(s => s == Storage.DeviceGroupCollectionId),
+                        It.Is<string>(s => s == JsonConvert.SerializeObject(group, Formatting.Indented, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }))),
                     Times.Once);
 
             Assert.Equal(result.Id, groupId);
@@ -423,27 +423,27 @@ namespace Services.Test
         [Fact]
         public async Task UpdateDeviceGroupAsyncTest()
         {
-            var groupId = rand.NextString();
-            var displayName = rand.NextString();
-            var conditions = new List<DeviceGroupConditionModel>()
+            var groupId = this.rand.NextString();
+            var displayName = this.rand.NextString();
+            var conditions = new List<DeviceGroupCondition>()
             {
-                new DeviceGroupConditionModel()
+                new DeviceGroupCondition()
                 {
-                    Key = rand.NextString(),
+                    Key = this.rand.NextString(),
                     Operator = OperatorType.EQ,
-                    Value = rand.NextString()
+                    Value = this.rand.NextString()
                 }
             };
-            var etagOld = rand.NextString();
-            var etagNew = rand.NextString();
+            var etagOld = this.rand.NextString();
+            var etagNew = this.rand.NextString();
 
-            var group = new DeviceGroupServiceModel
+            var group = new DeviceGroup
             {
                 DisplayName = displayName,
                 Conditions = conditions
             };
 
-            mockClient
+            this.mockClient
                 .Setup(x => x.UpdateAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
                 .ReturnsAsync(new ValueApiModel
                 {
@@ -452,14 +452,14 @@ namespace Services.Test
                     ETag = etagNew
                 });
 
-            var result = await storage.UpdateDeviceGroupAsync(groupId, group, etagOld);
+            var result = await this.storage.UpdateDeviceGroupAsync(groupId, group, etagOld);
 
-            mockClient
+            this.mockClient
                 .Verify(x => x.UpdateAsync(
-                    It.Is<string>(s => s == Storage.DeviceGroupCollectionId),
-                    It.Is<string>(s => s == groupId),
-                    It.Is<string>(s => s == JsonConvert.SerializeObject(group, Formatting.Indented, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore })),
-                    It.Is<string>(s => s == etagOld)),
+                        It.Is<string>(s => s == Storage.DeviceGroupCollectionId),
+                        It.Is<string>(s => s == groupId),
+                        It.Is<string>(s => s == JsonConvert.SerializeObject(group, Formatting.Indented, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore })),
+                        It.Is<string>(s => s == etagOld)),
                     Times.Once);
 
             Assert.Equal(result.Id, groupId);
@@ -473,18 +473,18 @@ namespace Services.Test
         [Fact]
         public async Task DeleteDeviceGroupAsyncTest()
         {
-            var groupId = rand.NextString();
+            var groupId = this.rand.NextString();
 
-            mockClient
+            this.mockClient
                 .Setup(x => x.DeleteAsync(It.IsAny<string>(), It.IsAny<string>()))
                 .Returns(Task.FromResult(0));
 
-            await storage.DeleteDeviceGroupAsync(groupId);
+            await this.storage.DeleteDeviceGroupAsync(groupId);
 
-            mockClient
+            this.mockClient
                 .Verify(x => x.DeleteAsync(
-                    It.Is<string>(s => s == Storage.DeviceGroupCollectionId),
-                    It.Is<string>(s => s == groupId)),
+                        It.Is<string>(s => s == Storage.DeviceGroupCollectionId),
+                        It.Is<string>(s => s == groupId)),
                     Times.Once);
         }
     }

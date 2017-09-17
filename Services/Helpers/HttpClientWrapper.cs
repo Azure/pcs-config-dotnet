@@ -19,14 +19,14 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services.Helpers
 
     public class HttpClientWrapper : IHttpClientWrapper
     {
-        private readonly ILogger logger;
+        private readonly ILogger log;
         private readonly IHttpClient client;
 
         public HttpClientWrapper(
             ILogger logger,
             IHttpClient client)
         {
-            this.logger = logger;
+            this.log = logger;
             this.client = client;
         }
 
@@ -49,11 +49,11 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services.Helpers
 
             try
             {
-                response = await client.GetAsync(request);
+                response = await this.client.GetAsync(request);
             }
             catch (Exception e)
             {
-                logger.Error("Request failed", () => new { uri, e });
+                this.log.Error("Request failed", () => new { uri, e });
                 throw new ExternalDependencyException($"Failed to load {description}");
             }
 
@@ -64,7 +64,7 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services.Helpers
 
             if (response.StatusCode != HttpStatusCode.OK)
             {
-                logger.Error("Request failed", () => new { uri, response.StatusCode, response.Content });
+                this.log.Error("Request failed", () => new { uri, response.StatusCode, response.Content });
                 throw new ExternalDependencyException($"Unable to load {description}");
             }
 
@@ -74,7 +74,7 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services.Helpers
             }
             catch (Exception e)
             {
-                logger.Error($"Could not parse result from {uri}: {e.Message}", () => { });
+                this.log.Error($"Could not parse result from {uri}: {e.Message}", () => { });
                 throw new ExternalDependencyException($"Could not parse result from {uri}");
             }
         }
@@ -103,17 +103,17 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services.Helpers
 
             try
             {
-                response = await client.PostAsync(request);
+                response = await this.client.PostAsync(request);
             }
             catch (Exception e)
             {
-                logger.Error("Request failed", () => new { uri, e });
+                this.log.Error("Request failed", () => new { uri, e });
                 throw new ExternalDependencyException($"Failed to post {description}");
             }
 
             if (response.StatusCode != HttpStatusCode.OK)
             {
-                logger.Error("Request failed", () => new { uri, response.StatusCode, response.Content });
+                this.log.Error("Request failed", () => new { uri, response.StatusCode, response.Content });
                 throw new ExternalDependencyException($"Unable to post {description}");
             }
         }
@@ -142,17 +142,17 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services.Helpers
 
             try
             {
-                response = await client.PutAsync(request);
+                response = await this.client.PutAsync(request);
             }
             catch (Exception e)
             {
-                logger.Error("Request failed", () => new { uri, e });
+                this.log.Error("Request failed", () => new { uri, e });
                 throw new ExternalDependencyException($"Failed to put {description}");
             }
 
             if (response.StatusCode != HttpStatusCode.OK)
             {
-                logger.Error("Request failed", () => new { uri, response.StatusCode, response.Content });
+                this.log.Error("Request failed", () => new { uri, response.StatusCode, response.Content });
                 throw new ExternalDependencyException($"Unable to put {description}");
             }
         }

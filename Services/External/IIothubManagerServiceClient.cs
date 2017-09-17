@@ -1,7 +1,7 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 
-using Microsoft.Azure.IoTSolutions.UIConfig.Services.Models;
 using System.Threading.Tasks;
+using Microsoft.Azure.IoTSolutions.UIConfig.Services.Models;
 
 namespace Microsoft.Azure.IoTSolutions.UIConfig.Services.External
 {

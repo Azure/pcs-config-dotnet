@@ -1,8 +1,8 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 
+using System.Collections.Generic;
 using Microsoft.Azure.IoTSolutions.UIConfig.Services.Models;
 using Newtonsoft.Json;
-using System.Collections.Generic;
 
 namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService.v1.Models
 {
@@ -19,26 +19,25 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService.v1.Models
 
         public DeviceGroupFiltersApiModel()
         {
-           
         }
 
-        public DeviceGroupFiltersApiModel(CacheModel model)
+        public DeviceGroupFiltersApiModel(CacheValue model)
         {
-            Tags = model.Tags;
-            Reported = model.Reported;
-            Metadata = new Dictionary<string, string>
+            this.Tags = model.Tags;
+            this.Reported = model.Reported;
+            this.Metadata = new Dictionary<string, string>
             {
                 { "$type", $"DeviceGroupFilters;{Version.Number}" },
                 { "$url", $"/{Version.Path}/deviceGroupFilters" }
             };
         }
 
-        public CacheModel ToServiceModel()
+        public CacheValue ToServiceModel()
         {
-            return new CacheModel
+            return new CacheValue
             {
-                Tags = Tags,
-                Reported = Reported
+                Tags = this.Tags,
+                Reported = this.Reported
             };
         }
     }

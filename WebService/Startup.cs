@@ -71,18 +71,18 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService
 
             appLifetime.ApplicationStarted.Register(() =>
             {
-                var unused = OnStartAsync();
+                var unused = this.OnStartAsync();
             });
         }
 
         private async Task OnStartAsync()
         {
-            var seed = ApplicationContainer.Resolve<ISeed>();
+            var seed = this.ApplicationContainer.Resolve<ISeed>();
             await seed.TrySeedAsync();
 
             await Task.Delay(TimeSpan.FromMinutes(5));
 
-            var cache = ApplicationContainer.Resolve<ICache>();
+            var cache = this.ApplicationContainer.Resolve<ICache>();
             await cache.RebuildCacheAsync();
         }
 

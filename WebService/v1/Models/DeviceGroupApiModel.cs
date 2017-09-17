@@ -15,7 +15,7 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService.v1.Models
         public string DisplayName { get; set; }
 
         [JsonProperty("Conditions")]
-        public IEnumerable<DeviceGroupConditionModel> Conditions { get; set; }
+        public IEnumerable<DeviceGroupCondition> Conditions { get; set; }
 
         [JsonProperty("ETag")]
         public string ETag { get; set; }
@@ -27,23 +27,23 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService.v1.Models
         {
         }
 
-        public DeviceGroupApiModel(DeviceGroupServiceModel model)
+        public DeviceGroupApiModel(DeviceGroup model)
         {
-            Id = model.Id;
-            DisplayName = model.DisplayName;
-            Conditions = model.Conditions;
-            ETag = model.ETag;
+            this.Id = model.Id;
+            this.DisplayName = model.DisplayName;
+            this.Conditions = model.Conditions;
+            this.ETag = model.ETag;
 
-            Metadata = new Dictionary<string, string>
+            this.Metadata = new Dictionary<string, string>
             {
                 { "$type", $"DeviceGroup;{Version.Number}" },
                 { "$url", $"/{Version.Path}/devicegroups/{model.Id}" }
             };
         }
 
-        public DeviceGroupServiceModel ToServiceModel()
+        public DeviceGroup ToServiceModel()
         {
-            return new DeviceGroupServiceModel
+            return new DeviceGroup
             {
                 DisplayName = this.DisplayName,
                 Conditions = this.Conditions

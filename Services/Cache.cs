@@ -3,16 +3,24 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Microsoft.Azure.IoTSolutions.UIConfig.Services.Models;
-using Microsoft.Azure.IoTSolutions.UIConfig.Services.External;
-using Newtonsoft.Json;
-using System.Linq;
-using Microsoft.Azure.IoTSolutions.UIConfig.Services.Exceptions;
-using Microsoft.Azure.IoTSolutions.UIConfig.Services.Runtime;
 using Microsoft.Azure.IoTSolutions.UIConfig.Services.Diagnostics;
+using Microsoft.Azure.IoTSolutions.UIConfig.Services.Exceptions;
+using Microsoft.Azure.IoTSolutions.UIConfig.Services.External;
+using Microsoft.Azure.IoTSolutions.UIConfig.Services.Models;
+using Microsoft.Azure.IoTSolutions.UIConfig.Services.Runtime;
+using Newtonsoft.Json;
 
 namespace Microsoft.Azure.IoTSolutions.UIConfig.Services
 {
+    public interface ICache
+    {
+        Task<CacheValue> GetCacheAsync();
+
+        Task<CacheValue> SetCacheAsync(CacheValue cache);
+
+        Task RebuildCacheAsync(bool force = false);
+    }
+
     public class Cache : ICache
     {
         private readonly IStorageAdapterClient storageClient;
@@ -24,27 +32,31 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services
         internal const string CacheCollectionId = "cache";
         internal const string CacheKey = "twin";
 
-        public Cache(IStorageAdapterClient storageClient, IIothubManagerServiceClient iotHubClient, ISimulationServiceClient simulationClient, IServicesConfig config, ILogger logger)
+        public Cache(IStorageAdapterClient storageClient,
+            IIothubManagerServiceClient iotHubClient,
+            ISimulationServiceClient simulationClient,
+            IServicesConfig config,
+            ILogger logger)
         {
             this.storageClient = storageClient;
             this.iotHubClient = iotHubClient;
             this.simulationClient = simulationClient;
-            log = logger;
-            cacheTTL = config.CacheTTL;
-            rebuildTimeout = config.CacheRebuildTimeout;
+            this.log = logger;
+            this.cacheTTL = config.CacheTTL;
+            this.rebuildTimeout = config.CacheRebuildTimeout;
         }
 
-        public async Task<CacheModel> GetCacheAsync()
+        public async Task<CacheValue> GetCacheAsync()
         {
             try
             {
-                var response = await storageClient.GetAsync(CacheCollectionId, CacheKey);
-                return JsonConvert.DeserializeObject<CacheModel>(response.Data);
+                var response = await this.storageClient.GetAsync(CacheCollectionId, CacheKey);
+                return JsonConvert.DeserializeObject<CacheValue>(response.Data);
             }
             catch (ResourceNotFoundException)
             {
-                log.Info($"{CacheCollectionId}:{CacheKey} not found.", () => $"{this.GetType().FullName}.GetCacheAsync");
-                return new CacheModel { Tags = new HashSet<string>(), Reported = new HashSet<string>() };
+                this.log.Info($"{CacheCollectionId}:{CacheKey} not found.", () => $"{this.GetType().FullName}.GetCacheAsync");
+                return new CacheValue { Tags = new HashSet<string>(), Reported = new HashSet<string>() };
             }
         }
 
@@ -60,14 +72,14 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services
 
                 try
                 {
-                    cache = await storageClient.GetAsync(CacheCollectionId, CacheKey);
+                    cache = await this.storageClient.GetAsync(CacheCollectionId, CacheKey);
                 }
                 catch (ResourceNotFoundException)
                 {
-                    log.Info($"{CacheCollectionId}:{CacheKey} not found.", () => $"{this.GetType().FullName}.RebuildCacheAsync");
+                    this.log.Info($"{CacheCollectionId}:{CacheKey} not found.", () => $"{this.GetType().FullName}.RebuildCacheAsync");
                 }
 
-                bool needBuild = NeedBuild(force, cache);
+                bool needBuild = this.NeedBuild(force, cache);
                 if (!needBuild)
                 {
                     return;
@@ -75,8 +87,8 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services
 
                 try
                 {
-                    var twinNamesTask = iotHubClient.GetDeviceTwinNamesAsync();
-                    var reportedNamesTask = simulationClient.GetDevicePropertyNamesAsync();
+                    var twinNamesTask = this.iotHubClient.GetDeviceTwinNamesAsync();
+                    var reportedNamesTask = this.simulationClient.GetDevicePropertyNamesAsync();
                     Task.WaitAll(twinNamesTask, reportedNamesTask);
                     twinNames = twinNamesTask.Result;
                     reportedNames = reportedNamesTask.Result;
@@ -84,7 +96,7 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services
                 }
                 catch (Exception)
                 {
-                    log.Info($"retry{retry}: IothubManagerService and SimulationService  are not both ready,wait 10 seconds ", () => $"{this.GetType().FullName}.RebuildCacheAsync");
+                    this.log.Info($"retry{retry}: IothubManagerService and SimulationService  are not both ready,wait 10 seconds ", () => $"{this.GetType().FullName}.RebuildCacheAsync");
                     if (retry-- < 1)
                     {
                         return;
@@ -95,18 +107,18 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services
 
                 if (cache != null)
                 {
-                    CacheModel model = JsonConvert.DeserializeObject<CacheModel>(cache.Data);
+                    CacheValue model = JsonConvert.DeserializeObject<CacheValue>(cache.Data);
                     model.Rebuilding = true;
-                    var response = await storageClient.UpdateAsync(CacheCollectionId, CacheKey, JsonConvert.SerializeObject(model), cache.ETag);
+                    var response = await this.storageClient.UpdateAsync(CacheCollectionId, CacheKey, JsonConvert.SerializeObject(model), cache.ETag);
                     etag = response.ETag;
                 }
                 else
                 {
-                    var response = await storageClient.UpdateAsync(CacheCollectionId, CacheKey, JsonConvert.SerializeObject(new CacheModel { Rebuilding = true }), null);
+                    var response = await this.storageClient.UpdateAsync(CacheCollectionId, CacheKey, JsonConvert.SerializeObject(new CacheValue { Rebuilding = true }), null);
                     etag = response.ETag;
                 }
 
-                var value = JsonConvert.SerializeObject(new CacheModel
+                var value = JsonConvert.SerializeObject(new CacheValue
                 {
                     Rebuilding = false,
                     Tags = twinNames.Tags,
@@ -115,18 +127,18 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services
 
                 try
                 {
-                    await storageClient.UpdateAsync(CacheCollectionId, CacheKey, value, etag);
+                    await this.storageClient.UpdateAsync(CacheCollectionId, CacheKey, value, etag);
                     return;
                 }
                 catch (ConflictingResourceException)
                 {
-                    log.Info("rebuild Conflicted ", () => $"{this.GetType().FullName}.RebuildCacheAsync");
+                    this.log.Info("rebuild Conflicted ", () => $"{this.GetType().FullName}.RebuildCacheAsync");
                     continue;
                 }
             }
         }
 
-        public async Task<CacheModel> SetCacheAsync(CacheModel cache)
+        public async Task<CacheValue> SetCacheAsync(CacheValue cache)
         {
             // To simplify code, use empty set to replace null set
             cache.Tags = cache.Tags ?? new HashSet<string>();
@@ -138,24 +150,24 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services
                 ValueApiModel model = null;
                 try
                 {
-                    model = await storageClient.GetAsync(CacheCollectionId, CacheKey);
+                    model = await this.storageClient.GetAsync(CacheCollectionId, CacheKey);
                 }
                 catch (ResourceNotFoundException)
                 {
-                    log.Info($"{CacheCollectionId}:{CacheKey} not found.", () => $"{this.GetType().FullName}.SetCacheAsync");
+                    this.log.Info($"{CacheCollectionId}:{CacheKey} not found.", () => $"{this.GetType().FullName}.SetCacheAsync");
                 }
 
                 if (model != null)
                 {
-                    CacheModel cacheServer;
+                    CacheValue cacheServer;
 
                     try
                     {
-                        cacheServer = JsonConvert.DeserializeObject<CacheModel>(model.Data);
+                        cacheServer = JsonConvert.DeserializeObject<CacheValue>(model.Data);
                     }
                     catch
                     {
-                        cacheServer = new CacheModel();
+                        cacheServer = new CacheValue();
                     }
                     cacheServer.Tags = cacheServer.Tags ?? new HashSet<string>();
                     cacheServer.Reported = cacheServer.Reported ?? new HashSet<string>();
@@ -172,12 +184,12 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services
                 var value = JsonConvert.SerializeObject(cache);
                 try
                 {
-                    var response = await storageClient.UpdateAsync(CacheCollectionId, CacheKey, value, etag);
-                    return JsonConvert.DeserializeObject<CacheModel>(response.Data);
+                    var response = await this.storageClient.UpdateAsync(CacheCollectionId, CacheKey, value, etag);
+                    return JsonConvert.DeserializeObject<CacheValue>(response.Data);
                 }
                 catch (ConflictingResourceException)
                 {
-                    log.Info("SetCache Conflicted ", () => $"{this.GetType().FullName}.RebuildCacheAsync");
+                    this.log.Info("SetCache Conflicted ", () => $"{this.GetType().FullName}.RebuildCacheAsync");
                     continue;
                 }
             }
@@ -193,10 +205,10 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services
             }
             else
             {
-                bool rebuilding = JsonConvert.DeserializeObject<CacheModel>(twin.Data).Rebuilding;
+                bool rebuilding = JsonConvert.DeserializeObject<CacheValue>(twin.Data).Rebuilding;
                 DateTimeOffset timstamp = DateTimeOffset.Parse(twin.Metadata["$modified"]);
-                needBuild = needBuild || !rebuilding && timstamp.AddSeconds(cacheTTL) < DateTimeOffset.UtcNow;
-                needBuild = needBuild || rebuilding && timstamp.AddSeconds(rebuildTimeout) < DateTimeOffset.UtcNow;
+                needBuild = needBuild || !rebuilding && timstamp.AddSeconds(this.cacheTTL) < DateTimeOffset.UtcNow;
+                needBuild = needBuild || rebuilding && timstamp.AddSeconds(this.rebuildTimeout) < DateTimeOffset.UtcNow;
             }
             return needBuild;
         }

@@ -18,19 +18,19 @@ namespace WebService.Test.Controllers
 
         public UserSettingsControllerTest()
         {
-            mockStorage = new Mock<IStorage>();
-            controller = new UserSettingsController(mockStorage.Object);
-            rand = new Random();
+            this.mockStorage = new Mock<IStorage>();
+            this.controller = new UserSettingsController(this.mockStorage.Object);
+            this.rand = new Random();
         }
 
         [Fact]
         public async Task GetUserSettingAsyncTest()
         {
             var id = this.rand.NextString();
-            var name = rand.NextString();
-            var description = rand.NextString();
+            var name = this.rand.NextString();
+            var description = this.rand.NextString();
 
-            mockStorage
+            this.mockStorage
                 .Setup(x => x.GetUserSetting(It.IsAny<string>()))
                 .ReturnsAsync(new
                 {
@@ -38,9 +38,9 @@ namespace WebService.Test.Controllers
                     Description = description
                 });
 
-            var result = await controller.GetUserSettingAsync(id) as dynamic;
+            var result = await this.controller.GetUserSettingAsync(id) as dynamic;
 
-            mockStorage
+            this.mockStorage
                 .Verify(x => x.GetUserSetting(
                     It.Is<string>(s => s == id)), Times.Once);
 
@@ -52,10 +52,10 @@ namespace WebService.Test.Controllers
         public async Task SetUserSettingAsyncTest()
         {
             var id = this.rand.NextString();
-            var name = rand.NextString();
-            var description = rand.NextString();
+            var name = this.rand.NextString();
+            var description = this.rand.NextString();
 
-            mockStorage
+            this.mockStorage
                 .Setup(x => x.SetUserSetting(It.IsAny<string>(), It.IsAny<object>()))
                 .ReturnsAsync(new
                 {
@@ -63,16 +63,16 @@ namespace WebService.Test.Controllers
                     Description = description
                 });
 
-            var result = await controller.SetUserSettingAsync(id, new
+            var result = await this.controller.SetUserSettingAsync(id, new
             {
                 Name = name,
                 Description = description
             }) as dynamic;
 
-            mockStorage
+            this.mockStorage
                 .Verify(x => x.SetUserSetting(
                         It.Is<string>(s => s == id),
-                        It.Is<object>(o => CheckTheme(o, name, description))),
+                        It.Is<object>(o => this.CheckTheme(o, name, description))),
                     Times.Once);
 
             Assert.Equal(result.Name.ToString(), name);

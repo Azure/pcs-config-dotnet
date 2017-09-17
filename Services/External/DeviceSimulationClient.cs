@@ -23,17 +23,17 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services.External
             IServicesConfig config)
         {
             this.httpClient = httpClient;
-            serviceUri = config.DeviceSimulationApiUrl;
+            this.serviceUri = config.DeviceSimulationApiUrl;
         }
 
         public async Task<SimulationApiModel> GetSimulationAsync()
         {
-            return await httpClient.GetAsync<SimulationApiModel>($"{serviceUri}/simulations/{SimulationId}", $"Simulation {SimulationId}", true);
+            return await this.httpClient.GetAsync<SimulationApiModel>($"{this.serviceUri}/simulations/{SimulationId}", $"Simulation {SimulationId}", true);
         }
 
         public async Task UpdateSimulation(SimulationApiModel model)
         {
-            await httpClient.PutAsync($"{serviceUri}/simulations/{SimulationId}", $"Simulation {SimulationId}", model);
+            await this.httpClient.PutAsync($"{this.serviceUri}/simulations/{SimulationId}", $"Simulation {SimulationId}", model);
         }
     }
 }

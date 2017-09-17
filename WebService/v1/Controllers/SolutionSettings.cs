@@ -22,43 +22,43 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService.v1.Controllers
         [HttpGet("solution-settings/theme")]
         public async Task<object> GetThemeAsync()
         {
-            return await storage.GetThemeAsync();
+            return await this.storage.GetThemeAsync();
         }
 
         [HttpPut("solution-settings/theme")]
-        public async Task<object> SetThemeAsync([FromBody]object theme)
+        public async Task<object> SetThemeAsync([FromBody] object theme)
         {
-            return await storage.SetThemeAsync(theme);
+            return await this.storage.SetThemeAsync(theme);
         }
 
         [HttpGet("solution-settings/logo")]
         public async Task GetLogoAsync()
         {
-            var model = await storage.GetLogoAsync();
-            SetImageResponse(model);
+            var model = await this.storage.GetLogoAsync();
+            this.SetImageResponse(model);
         }
 
         [HttpPut("solution-settings/logo")]
         public async Task SetLogoAsync()
         {
-            var bytes = new byte[Request.Body.Length];
-            Request.Body.Read(bytes, 0, (int)Request.Body.Length);
+            var bytes = new byte[this.Request.Body.Length];
+            this.Request.Body.Read(bytes, 0, (int) this.Request.Body.Length);
 
-            var model = new LogoServiceModel
+            var model = new Logo
             {
                 Image = Convert.ToBase64String(bytes),
-                Type = Request.Headers["content-type"]
+                Type = this.Request.Headers["content-type"]
             };
 
-            var response = await storage.SetLogoAsync(model);
-            SetImageResponse(response);
+            var response = await this.storage.SetLogoAsync(model);
+            this.SetImageResponse(response);
         }
 
-        private void SetImageResponse(LogoServiceModel model)
+        private void SetImageResponse(Logo model)
         {
             var bytes = Convert.FromBase64String(model.Image);
-            Response.Headers.Add("content-type", model.Type);
-            Response.Body.Write(bytes, 0, bytes.Length);
+            this.Response.Headers.Add("content-type", model.Type);
+            this.Response.Body.Write(bytes, 0, bytes.Length);
         }
     }
 }

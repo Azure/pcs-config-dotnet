@@ -6,7 +6,7 @@ using Newtonsoft.Json.Converters;
 
 namespace Microsoft.Azure.IoTSolutions.UIConfig.Services.Models
 {
-    public class DeviceGroupConditionModel
+    public class DeviceGroupCondition
     {
         [JsonProperty("Key")]
         public string Key { get; set; }
@@ -27,6 +27,6 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services.Models
         GT, // >
         LE, // <=
         GE, // >=
-        IN  // IN
+        IN // IN
     }
 }

@@ -17,66 +17,66 @@ namespace WebService.Test.helpers
 
         public MockHttpContext()
         {
-            disposedValue = false;
+            this.disposedValue = false;
 
             var request = new Mock<HttpRequest>();
-            request.SetupGet(x => x.Headers).Returns(requestHeaders);
-            request.SetupGet(x => x.Body).Returns(requestBody);
+            request.SetupGet(x => x.Headers).Returns(this.requestHeaders);
+            request.SetupGet(x => x.Body).Returns(this.requestBody);
 
             var response = new Mock<HttpResponse>();
-            response.SetupGet(x => x.Headers).Returns(responseHeaders);
-            response.SetupGet(x => x.Body).Returns(responseBody);
+            response.SetupGet(x => x.Headers).Returns(this.responseHeaders);
+            response.SetupGet(x => x.Body).Returns(this.responseBody);
 
-            mockContext.SetupGet(x => x.Request).Returns(request.Object);
-            mockContext.SetupGet(x => x.Response).Returns(response.Object);
+            this.mockContext.SetupGet(x => x.Request).Returns(request.Object);
+            this.mockContext.SetupGet(x => x.Response).Returns(response.Object);
         }
 
         public void SetHeader(string key, string value)
         {
-            requestHeaders.Add(key, value);
+            this.requestHeaders.Add(key, value);
         }
 
         public string GetHeader(string key)
         {
-            return responseHeaders[key];
+            return this.responseHeaders[key];
         }
 
         public void SetBody(string content)
         {
             var bytes = Convert.FromBase64String(content);
-            requestBody.Write(bytes, 0, bytes.Length);
-            requestBody.Seek(0, SeekOrigin.Begin);
+            this.requestBody.Write(bytes, 0, bytes.Length);
+            this.requestBody.Seek(0, SeekOrigin.Begin);
         }
 
         public string GetBody()
         {
-            responseBody.Seek(0, SeekOrigin.Begin);
-            var bytes = responseBody.ToArray();
+            this.responseBody.Seek(0, SeekOrigin.Begin);
+            var bytes = this.responseBody.ToArray();
             return Convert.ToBase64String(bytes);
         }
 
-        public HttpContext Object => mockContext.Object;
+        public HttpContext Object => this.mockContext.Object;
 
         #region IDisposable Support
         private bool disposedValue;
 
         private void Dispose(bool disposing)
         {
-            if (!disposedValue)
+            if (!this.disposedValue)
             {
                 if (disposing)
                 {
-                    requestBody.Dispose();
-                    responseBody.Dispose();
+                    this.requestBody.Dispose();
+                    this.responseBody.Dispose();
                 }
 
-                disposedValue = true;
+                this.disposedValue = true;
             }
         }
 
         public void Dispose()
         {
-            Dispose(true);
+            this.Dispose(true);
         }
         #endregion
     }

@@ -26,24 +26,24 @@ namespace Services.Test
 
         public StorageAdapterClientTest()
         {
-            mockHttpClient = new Mock<IHttpClient>();
-            client = new StorageAdapterClient(
-                mockHttpClient.Object,
+            this.mockHttpClient = new Mock<IHttpClient>();
+            this.client = new StorageAdapterClient(
+                this.mockHttpClient.Object,
                 new ServicesConfig
                 {
                     StorageAdapterApiUrl = MockServiceUri
                 },
                 new Logger("UnitTest", LogLevel.Debug));
-            rand = new Random();
+            this.rand = new Random();
         }
 
         [Fact]
         public async Task GetAsyncTest()
         {
-            var collectionId = rand.NextString();
-            var key = rand.NextString();
-            var data = rand.NextString();
-            var etag = rand.NextString();
+            var collectionId = this.rand.NextString();
+            var key = this.rand.NextString();
+            var data = this.rand.NextString();
+            var etag = this.rand.NextString();
 
             var response = new HttpResponse
             {
@@ -57,15 +57,15 @@ namespace Services.Test
                 })
             };
 
-            mockHttpClient
+            this.mockHttpClient
                 .Setup(x => x.GetAsync(It.IsAny<IHttpRequest>()))
                 .ReturnsAsync(response);
 
-            var result = await client.GetAsync(collectionId, key);
+            var result = await this.client.GetAsync(collectionId, key);
 
-            mockHttpClient
+            this.mockHttpClient
                 .Verify(x => x.GetAsync(
-                    It.Is<IHttpRequest>(r => r.Check($"{MockServiceUri}/collections/{collectionId}/values/{key}"))),
+                        It.Is<IHttpRequest>(r => r.Check($"{MockServiceUri}/collections/{collectionId}/values/{key}"))),
                     Times.Once);
 
             Assert.Equal(result.Key, key);
@@ -76,8 +76,8 @@ namespace Services.Test
         [Fact]
         public async Task GetAsyncNotFoundTest()
         {
-            var collectionId = rand.NextString();
-            var key = rand.NextString();
+            var collectionId = this.rand.NextString();
+            var key = this.rand.NextString();
 
             var response = new HttpResponse
             {
@@ -85,37 +85,37 @@ namespace Services.Test
                 IsSuccessStatusCode = false
             };
 
-            mockHttpClient
+            this.mockHttpClient
                 .Setup(x => x.GetAsync(It.IsAny<IHttpRequest>()))
                 .ReturnsAsync(response);
 
             await Assert.ThrowsAsync<ResourceNotFoundException>(async () =>
-                await client.GetAsync(collectionId, key));
+                await this.client.GetAsync(collectionId, key));
         }
 
         [Fact]
         public async Task GetAllAsyncTest()
         {
-            var collectionId = rand.NextString();
+            var collectionId = this.rand.NextString();
             var models = new[]
             {
                 new ValueApiModel
                 {
-                    Key = rand.NextString(),
-                    Data = rand.NextString(),
-                    ETag = rand.NextString()
+                    Key = this.rand.NextString(),
+                    Data = this.rand.NextString(),
+                    ETag = this.rand.NextString()
                 },
                 new ValueApiModel
                 {
-                    Key = rand.NextString(),
-                    Data = rand.NextString(),
-                    ETag = rand.NextString()
+                    Key = this.rand.NextString(),
+                    Data = this.rand.NextString(),
+                    ETag = this.rand.NextString()
                 },
                 new ValueApiModel
                 {
-                    Key = rand.NextString(),
-                    Data = rand.NextString(),
-                    ETag = rand.NextString()
+                    Key = this.rand.NextString(),
+                    Data = this.rand.NextString(),
+                    ETag = this.rand.NextString()
                 }
             };
 
@@ -126,15 +126,15 @@ namespace Services.Test
                 Content = JsonConvert.SerializeObject(new ValueListApiModel { Items = models })
             };
 
-            mockHttpClient
+            this.mockHttpClient
                 .Setup(x => x.GetAsync(It.IsAny<IHttpRequest>()))
                 .ReturnsAsync(response);
 
-            var result = await client.GetAllAsync(collectionId);
+            var result = await this.client.GetAllAsync(collectionId);
 
-            mockHttpClient
+            this.mockHttpClient
                 .Verify(x => x.GetAsync(
-                    It.Is<IHttpRequest>(r => r.Check($"{MockServiceUri}/collections/{collectionId}/values"))),
+                        It.Is<IHttpRequest>(r => r.Check($"{MockServiceUri}/collections/{collectionId}/values"))),
                     Times.Once);
 
             Assert.Equal(result.Items.Count(), models.Length);
@@ -149,10 +149,10 @@ namespace Services.Test
         [Fact]
         public async Task CreateAsyncTest()
         {
-            var collectionId = rand.NextString();
-            var key = rand.NextString();
-            var data = rand.NextString();
-            var etag = rand.NextString();
+            var collectionId = this.rand.NextString();
+            var key = this.rand.NextString();
+            var data = this.rand.NextString();
+            var etag = this.rand.NextString();
 
             var response = new HttpResponse
             {
@@ -166,15 +166,15 @@ namespace Services.Test
                 })
             };
 
-            mockHttpClient
+            this.mockHttpClient
                 .Setup(x => x.PostAsync(It.IsAny<IHttpRequest>()))
                 .ReturnsAsync(response);
 
-            var result = await client.CreateAsync(collectionId, data);
+            var result = await this.client.CreateAsync(collectionId, data);
 
-            mockHttpClient
+            this.mockHttpClient
                 .Verify(x => x.PostAsync(
-                    It.Is<IHttpRequest>(r => r.Check<ValueApiModel>($"{MockServiceUri}/collections/{collectionId}/values", m => m.Data == data))),
+                        It.Is<IHttpRequest>(r => r.Check<ValueApiModel>($"{MockServiceUri}/collections/{collectionId}/values", m => m.Data == data))),
                     Times.Once);
 
             Assert.Equal(result.Key, key);
@@ -185,11 +185,11 @@ namespace Services.Test
         [Fact]
         public async Task UpdateAsyncTest()
         {
-            var collectionId = rand.NextString();
-            var key = rand.NextString();
-            var data = rand.NextString();
-            var etagOld = rand.NextString();
-            var etagNew = rand.NextString();
+            var collectionId = this.rand.NextString();
+            var key = this.rand.NextString();
+            var data = this.rand.NextString();
+            var etagOld = this.rand.NextString();
+            var etagNew = this.rand.NextString();
 
             var response = new HttpResponse
             {
@@ -203,15 +203,15 @@ namespace Services.Test
                 })
             };
 
-            mockHttpClient
+            this.mockHttpClient
                 .Setup(x => x.PutAsync(It.IsAny<IHttpRequest>()))
                 .ReturnsAsync(response);
 
-            var result = await client.UpdateAsync(collectionId, key, data, etagOld);
+            var result = await this.client.UpdateAsync(collectionId, key, data, etagOld);
 
-            mockHttpClient
+            this.mockHttpClient
                 .Verify(x => x.PutAsync(
-                    It.Is<IHttpRequest>(r => r.Check<ValueApiModel>($"{MockServiceUri}/collections/{collectionId}/values/{key}", m => m.Data == data && m.ETag == etagOld))),
+                        It.Is<IHttpRequest>(r => r.Check<ValueApiModel>($"{MockServiceUri}/collections/{collectionId}/values/{key}", m => m.Data == data && m.ETag == etagOld))),
                     Times.Once);
 
             Assert.Equal(result.Key, key);
@@ -222,10 +222,10 @@ namespace Services.Test
         [Fact]
         public async Task UpdateAsyncConflictTest()
         {
-            var collectionId = rand.NextString();
-            var key = rand.NextString();
-            var data = rand.NextString();
-            var etag = rand.NextString();
+            var collectionId = this.rand.NextString();
+            var key = this.rand.NextString();
+            var data = this.rand.NextString();
+            var etag = this.rand.NextString();
 
             var response = new HttpResponse
             {
@@ -233,19 +233,19 @@ namespace Services.Test
                 IsSuccessStatusCode = false
             };
 
-            mockHttpClient
+            this.mockHttpClient
                 .Setup(x => x.PutAsync(It.IsAny<IHttpRequest>()))
                 .ReturnsAsync(response);
 
             await Assert.ThrowsAsync<ConflictingResourceException>(async () =>
-                await client.UpdateAsync(collectionId, key, data, etag));
+                await this.client.UpdateAsync(collectionId, key, data, etag));
         }
 
         [Fact]
         public async Task DeleteAsyncTest()
         {
-            var collectionId = rand.NextString();
-            var key = rand.NextString();
+            var collectionId = this.rand.NextString();
+            var key = this.rand.NextString();
 
             var response = new HttpResponse
             {
@@ -253,15 +253,15 @@ namespace Services.Test
                 IsSuccessStatusCode = true
             };
 
-            mockHttpClient
+            this.mockHttpClient
                 .Setup(x => x.DeleteAsync(It.IsAny<IHttpRequest>()))
                 .ReturnsAsync(response);
 
-            await client.DeleteAsync(collectionId, key);
+            await this.client.DeleteAsync(collectionId, key);
 
-            mockHttpClient
+            this.mockHttpClient
                 .Verify(x => x.DeleteAsync(
-                    It.Is<IHttpRequest>(r => r.Check($"{MockServiceUri}/collections/{collectionId}/values/{key}"))),
+                        It.Is<IHttpRequest>(r => r.Check($"{MockServiceUri}/collections/{collectionId}/values/{key}"))),
                     Times.Once);
         }
     }

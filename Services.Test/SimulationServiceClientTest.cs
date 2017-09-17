@@ -1,13 +1,13 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 
+using System.Linq;
+using System.Net;
+using System.Threading.Tasks;
 using Microsoft.Azure.IoTSolutions.UIConfig.Services.Diagnostics;
 using Microsoft.Azure.IoTSolutions.UIConfig.Services.External;
 using Microsoft.Azure.IoTSolutions.UIConfig.Services.Http;
 using Microsoft.Azure.IoTSolutions.UIConfig.Services.Runtime;
 using Moq;
-using System.Linq;
-using System.Net;
-using System.Threading.Tasks;
 using Xunit;
 
 namespace Services.Test
@@ -21,9 +21,8 @@ namespace Services.Test
 
         public SimulationServiceClientTest()
         {
-            mockHttpClient = new Mock<IHttpClient>();
-            client = new SimulationServiceClient(
-                mockHttpClient.Object,
+            this.mockHttpClient = new Mock<IHttpClient>();
+            this.client = new SimulationServiceClient(this.mockHttpClient.Object,
                 new ServicesConfig
                 {
                     DeviceSimulationApiUrl = MockServiceUri
@@ -34,7 +33,6 @@ namespace Services.Test
         [Fact]
         public async Task GetDevicePropertyNamesAsyncTest()
         {
-
             var response = new HttpResponse
             {
                 StatusCode = HttpStatusCode.OK,
@@ -71,11 +69,11 @@ namespace Services.Test
                             }"
             };
 
-            mockHttpClient
+            this.mockHttpClient
                 .Setup(x => x.GetAsync(It.IsAny<IHttpRequest>()))
                 .ReturnsAsync(response);
 
-            var result = string.Join(",", (await client.GetDevicePropertyNamesAsync()).OrderBy(m => m));
+            var result = string.Join(",", (await this.client.GetDevicePropertyNamesAsync()).OrderBy(m => m));
 
             Assert.Equal(result, string.Join(",", (new string[] { "address.NO", "address.street", "address1.NO", "address1.street", "Type", "Location", "Latitude", "Longitude", "Type1", "Latitude1" }).OrderBy(m => m)));
         }

@@ -1,13 +1,13 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 
+using System.Linq;
+using System.Net;
+using System.Threading.Tasks;
 using Microsoft.Azure.IoTSolutions.UIConfig.Services.Diagnostics;
 using Microsoft.Azure.IoTSolutions.UIConfig.Services.External;
 using Microsoft.Azure.IoTSolutions.UIConfig.Services.Http;
 using Microsoft.Azure.IoTSolutions.UIConfig.Services.Runtime;
 using Moq;
-using System.Linq;
-using System.Net;
-using System.Threading.Tasks;
 using Xunit;
 
 namespace Services.Test
@@ -20,9 +20,8 @@ namespace Services.Test
 
         public IothubManagerServiceClientTest()
         {
-            mockHttpClient = new Mock<IHttpClient>();
-            client = new IothubManagerServiceClient(
-                mockHttpClient.Object,
+            this.mockHttpClient = new Mock<IHttpClient>();
+            this.client = new IothubManagerServiceClient(this.mockHttpClient.Object,
                 new ServicesConfig
                 {
                     HubManagerApiUrl = MockServiceUri
@@ -73,7 +72,7 @@ namespace Services.Test
                   }
                  }
                 ";
-            
+
             var response = new HttpResponse
             {
                 StatusCode = HttpStatusCode.OK,
@@ -81,11 +80,11 @@ namespace Services.Test
                 Content = content
             };
 
-            mockHttpClient
+            this.mockHttpClient
                 .Setup(x => x.GetAsync(It.IsAny<IHttpRequest>()))
                 .ReturnsAsync(response);
 
-            var result = await client.GetDeviceTwinNamesAsync();
+            var result = await this.client.GetDeviceTwinNamesAsync();
             var tagNames = string.Join(",", result.Tags.OrderBy(m => m));
             var reportNames = string.Join(",", result.ReportedProperties.OrderBy(m => m));
 

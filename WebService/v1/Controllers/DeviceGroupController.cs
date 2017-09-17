@@ -21,31 +21,31 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService.v1.Controllers
         [HttpGet]
         public async Task<DeviceGroupListApiModel> GetAllAsync()
         {
-            return new DeviceGroupListApiModel(await storage.GetAllDeviceGroupsAsync());
+            return new DeviceGroupListApiModel(await this.storage.GetAllDeviceGroupsAsync());
         }
 
         [HttpGet("{id}")]
         public async Task<DeviceGroupApiModel> GetAsync(string id)
         {
-            return new DeviceGroupApiModel(await storage.GetDeviceGroupAsync(id));
+            return new DeviceGroupApiModel(await this.storage.GetDeviceGroupAsync(id));
         }
 
         [HttpPost]
-        public async Task<DeviceGroupApiModel> CreateAsync([FromBody]DeviceGroupApiModel input)
+        public async Task<DeviceGroupApiModel> CreateAsync([FromBody] DeviceGroupApiModel input)
         {
-            return new DeviceGroupApiModel(await storage.CreateDeviceGroupAsync(input.ToServiceModel()));
+            return new DeviceGroupApiModel(await this.storage.CreateDeviceGroupAsync(input.ToServiceModel()));
         }
 
         [HttpPut("{id}")]
-        public async Task<DeviceGroupApiModel> UpdateAsync(string id, [FromBody]DeviceGroupApiModel input)
+        public async Task<DeviceGroupApiModel> UpdateAsync(string id, [FromBody] DeviceGroupApiModel input)
         {
-            return new DeviceGroupApiModel(await storage.UpdateDeviceGroupAsync(id, input.ToServiceModel(), input.ETag));
+            return new DeviceGroupApiModel(await this.storage.UpdateDeviceGroupAsync(id, input.ToServiceModel(), input.ETag));
         }
 
         [HttpDelete("{id}")]
         public async Task DeleteAsync(string id)
         {
-            await storage.DeleteDeviceGroupAsync(id);
+            await this.storage.DeleteDeviceGroupAsync(id);
         }
     }
 }

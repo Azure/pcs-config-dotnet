@@ -32,6 +32,6 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services.Http
 
         public bool IsRetriableError => this.StatusCode == HttpStatusCode.NotFound ||
                                         this.StatusCode == HttpStatusCode.RequestTimeout ||
-                                        (int)this.StatusCode == TooManyRequests;
+                                        (int) this.StatusCode == TooManyRequests;
     }
 }

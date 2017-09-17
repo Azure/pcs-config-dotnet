@@ -1,9 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Filters;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿// Copyright (c) Microsoft. All rights reserved.
+
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService.v1.Filters
 {
@@ -11,12 +10,12 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService.v1.Filters
     {
         public override void OnActionExecuting(ActionExecutingContext context)
         {
-            context.Result = new JsonResult(new {msg = "Not used for now , maybe used some time later." }) { StatusCode=403}; 
+            context.Result = new JsonResult(new { msg = "Not used for now , maybe used some time later." }) { StatusCode = 403 };
         }
 
         public override async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
         {
-            context.Result = await Task.FromResult(new JsonResult(new {msg = "Not used for now,maybe used some time later." }) { StatusCode = 403 }) ;
+            context.Result = await Task.FromResult(new JsonResult(new { msg = "Not used for now,maybe used some time later." }) { StatusCode = 403 });
         }
     }
 }
