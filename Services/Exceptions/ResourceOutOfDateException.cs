@@ -2,7 +2,7 @@
 
 using System;
 
-namespace Microsoft.Azure.IoTSolutions.UIConfig.Services.Exceptions
+namespace Microsoft.Azure.IoTSolutions.Config.Services.Exceptions
 {
     /// <summary>
     /// This exception is thrown when a client attempts to update a resource

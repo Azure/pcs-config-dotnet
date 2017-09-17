@@ -4,7 +4,7 @@ using System;
 using System.IO;
 using System.Reflection;
 
-namespace Microsoft.Azure.IoTSolutions.UIConfig.Services.Models
+namespace Microsoft.Azure.IoTSolutions.Config.Services.Models
 {
     public class Logo
     {

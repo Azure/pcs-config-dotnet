@@ -6,14 +6,14 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using Microsoft.Azure.IoTSolutions.UIConfig.Services.Diagnostics;
-using Microsoft.Azure.IoTSolutions.UIConfig.Services.Exceptions;
-using Microsoft.Azure.IoTSolutions.UIConfig.Services.External;
-using Microsoft.Azure.IoTSolutions.UIConfig.Services.Models;
-using Microsoft.Azure.IoTSolutions.UIConfig.Services.Runtime;
+using Microsoft.Azure.IoTSolutions.Config.Services.Diagnostics;
+using Microsoft.Azure.IoTSolutions.Config.Services.Exceptions;
+using Microsoft.Azure.IoTSolutions.Config.Services.External;
+using Microsoft.Azure.IoTSolutions.Config.Services.Models;
+using Microsoft.Azure.IoTSolutions.Config.Services.Runtime;
 using Newtonsoft.Json;
 
-namespace Microsoft.Azure.IoTSolutions.UIConfig.Services
+namespace Microsoft.Azure.IoTSolutions.Config.Services
 {
     public interface ISeed
     {

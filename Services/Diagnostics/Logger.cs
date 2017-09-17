@@ -5,7 +5,7 @@ using System.Linq;
 using System.Reflection;
 using Newtonsoft.Json;
 
-namespace Microsoft.Azure.IoTSolutions.UIConfig.Services.Diagnostics
+namespace Microsoft.Azure.IoTSolutions.Config.Services.Diagnostics
 {
     public enum LogLevel
     {

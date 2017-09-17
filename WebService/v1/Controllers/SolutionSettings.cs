@@ -3,11 +3,11 @@
 using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Azure.IoTSolutions.UIConfig.Services;
-using Microsoft.Azure.IoTSolutions.UIConfig.Services.Models;
-using Microsoft.Azure.IoTSolutions.UIConfig.WebService.v1.Filters;
+using Microsoft.Azure.IoTSolutions.Config.Services;
+using Microsoft.Azure.IoTSolutions.Config.Services.Models;
+using Microsoft.Azure.IoTSolutions.Config.WebService.v1.Filters;
 
-namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService.v1.Controllers
+namespace Microsoft.Azure.IoTSolutions.Config.WebService.v1.Controllers
 {
     [Route(Version.Path), TypeFilter(typeof(ExceptionsFilterAttribute))]
     public class SolutionSettingsController : Controller

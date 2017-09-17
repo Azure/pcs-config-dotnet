@@ -2,12 +2,12 @@
 
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Microsoft.Azure.IoTSolutions.UIConfig.Services.Diagnostics;
-using Microsoft.Azure.IoTSolutions.UIConfig.Services.Http;
-using Microsoft.Azure.IoTSolutions.UIConfig.Services.Runtime;
+using Microsoft.Azure.IoTSolutions.Config.Services.Runtime;
+using Microsoft.Azure.IoTSolutions.Config.Services.Diagnostics;
+using Microsoft.Azure.IoTSolutions.Config.Services.Http;
 using Newtonsoft.Json;
 
-namespace Microsoft.Azure.IoTSolutions.UIConfig.Services.External
+namespace Microsoft.Azure.IoTSolutions.Config.Services.External
 {
     public class SimulationServiceClient : ISimulationServiceClient
     {

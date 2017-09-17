@@ -70,7 +70,7 @@ run() {
     cd $APP_HOME
     dotnet restore --verbosity=quiet
 
-    echo "Starting UIConfig ..."
+    echo "Starting Config ..."
     dotnet run --configuration $CONFIGURATION --project WebService/*.csproj
 }
 

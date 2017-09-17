@@ -2,7 +2,7 @@
 
 using System.Collections.Generic;
 
-namespace Microsoft.Azure.IoTSolutions.UIConfig.Services.Models
+namespace Microsoft.Azure.IoTSolutions.Config.Services.Models
 {
     public class DeviceGroup
     {

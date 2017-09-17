@@ -2,8 +2,8 @@
   <PropertyGroup>
     <TargetFramework>netstandard1.6</TargetFramework>
     <LangVersion>6</LangVersion>
-    <AssemblyName>Microsoft.Azure.IoTSolutions.UIConfig.Services</AssemblyName>
-    <RootNamespace>Microsoft.Azure.IoTSolutions.UIConfig.Services</RootNamespace>
+    <AssemblyName>Microsoft.Azure.IoTSolutions.Config.Services</AssemblyName>
+    <RootNamespace>Microsoft.Azure.IoTSolutions.Config.Services</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
     <None Remove="Content\DefaultLogo.svg" />

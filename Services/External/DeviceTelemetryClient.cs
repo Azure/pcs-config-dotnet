@@ -1,10 +1,10 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 
 using System.Threading.Tasks;
-using Microsoft.Azure.IoTSolutions.UIConfig.Services.Helpers;
-using Microsoft.Azure.IoTSolutions.UIConfig.Services.Runtime;
+using Microsoft.Azure.IoTSolutions.Config.Services.Helpers;
+using Microsoft.Azure.IoTSolutions.Config.Services.Runtime;
 
-namespace Microsoft.Azure.IoTSolutions.UIConfig.Services.External
+namespace Microsoft.Azure.IoTSolutions.Config.Services.External
 {
     public interface IDeviceTelemetryClient
     {

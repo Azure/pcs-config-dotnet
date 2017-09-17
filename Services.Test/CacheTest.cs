@@ -4,11 +4,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.Azure.IoTSolutions.UIConfig.Services;
-using Microsoft.Azure.IoTSolutions.UIConfig.Services.Diagnostics;
-using Microsoft.Azure.IoTSolutions.UIConfig.Services.External;
-using Microsoft.Azure.IoTSolutions.UIConfig.Services.Models;
-using Microsoft.Azure.IoTSolutions.UIConfig.Services.Runtime;
+using Microsoft.Azure.IoTSolutions.Config.Services;
+using Microsoft.Azure.IoTSolutions.Config.Services.Diagnostics;
+using Microsoft.Azure.IoTSolutions.Config.Services.External;
+using Microsoft.Azure.IoTSolutions.Config.Services.Models;
+using Microsoft.Azure.IoTSolutions.Config.Services.Runtime;
 using Moq;
 using Newtonsoft.Json;
 using Xunit;
@@ -22,7 +22,7 @@ namespace Services.Test
         private readonly Mock<ISimulationServiceClient> mockSimulationClient;
         private readonly Mock<IServicesConfig> config;
         private readonly Mock<ILogger> log;
-        private readonly Microsoft.Azure.IoTSolutions.UIConfig.Services.Cache cache;
+        private readonly Cache cache;
         private readonly string cacheModel = null;
 
         public CacheTest()
@@ -46,7 +46,7 @@ namespace Services.Test
             this.config = new Mock<IServicesConfig>();
             this.config.SetupGet(m => m.CacheTTL).Returns(3600);
             this.config.SetupGet(m => m.CacheRebuildTimeout).Returns(20);
-            this.cache = new Microsoft.Azure.IoTSolutions.UIConfig.Services.Cache(this.mockStorageAdapterClient.Object, this.mockIothubManagerClient.Object, this.mockSimulationClient.Object, this.config.Object, this.log.Object);
+            this.cache = new Cache(this.mockStorageAdapterClient.Object, this.mockIothubManagerClient.Object, this.mockSimulationClient.Object, this.config.Object, this.log.Object);
         }
 
         [Fact]

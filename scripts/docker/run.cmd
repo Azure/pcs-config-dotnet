@@ -22,7 +22,7 @@ IF %ERRORLEVEL% NEQ 0 GOTO FAIL
 :: Start the application
 :: Some settings are used to connect to an external dependency, e.g. Azure IoT Hub and IoT Hub Manager API
 :: Depending on which settings and which dependencies are needed, edit the list of variables
-echo Starting UIConfig ...
+echo Starting Config ...
 docker run -it -p 9005:9005 ^
     -e "PCS_STORAGEADAPTER_WEBSERVICE_URL=%PCS_STORAGEADAPTER_WEBSERVICE_URL%" ^
     -e "PCS_DEVICESIMULATION_WEBSERVICE_URL=%PCS_DEVICESIMULATION_WEBSERVICE_URL%" ^
