@@ -3,14 +3,14 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Microsoft.Azure.IoTSolutions.UIConfig.Services.Diagnostics;
-using Microsoft.Azure.IoTSolutions.UIConfig.Services.Exceptions;
-using Microsoft.Azure.IoTSolutions.UIConfig.Services.External;
-using Microsoft.Azure.IoTSolutions.UIConfig.Services.Models;
-using Microsoft.Azure.IoTSolutions.UIConfig.Services.Runtime;
+using Microsoft.Azure.IoTSolutions.Config.Services.Diagnostics;
+using Microsoft.Azure.IoTSolutions.Config.Services.Exceptions;
+using Microsoft.Azure.IoTSolutions.Config.Services.External;
+using Microsoft.Azure.IoTSolutions.Config.Services.Models;
+using Microsoft.Azure.IoTSolutions.Config.Services.Runtime;
 using Newtonsoft.Json;
 
-namespace Microsoft.Azure.IoTSolutions.UIConfig.Services
+namespace Microsoft.Azure.IoTSolutions.Config.Services
 {
     public interface ICache
     {
@@ -206,9 +206,9 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services
             else
             {
                 bool rebuilding = JsonConvert.DeserializeObject<CacheValue>(twin.Data).Rebuilding;
-                DateTimeOffset timstamp = DateTimeOffset.Parse(twin.Metadata["$modified"]);
-                needBuild = needBuild || !rebuilding && timstamp.AddSeconds(this.cacheTTL) < DateTimeOffset.UtcNow;
-                needBuild = needBuild || rebuilding && timstamp.AddSeconds(this.rebuildTimeout) < DateTimeOffset.UtcNow;
+                DateTimeOffset timestamp = DateTimeOffset.Parse(twin.Metadata["$modified"]);
+                needBuild = needBuild || !rebuilding && timestamp.AddSeconds(this.cacheTTL) < DateTimeOffset.UtcNow;
+                needBuild = needBuild || rebuilding && timestamp.AddSeconds(this.rebuildTimeout) < DateTimeOffset.UtcNow;
             }
             return needBuild;
         }

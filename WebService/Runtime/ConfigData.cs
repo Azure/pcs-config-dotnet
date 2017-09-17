@@ -4,10 +4,10 @@ using System;
 using System.Collections;
 using System.Linq;
 using System.Text.RegularExpressions;
-using Microsoft.Azure.IoTSolutions.UIConfig.Services.Exceptions;
+using Microsoft.Azure.IoTSolutions.Config.Services.Exceptions;
 using Microsoft.Extensions.Configuration;
 
-namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService.Runtime
+namespace Microsoft.Azure.IoTSolutions.Config.WebService.Runtime
 {
     public interface IConfigData
     {

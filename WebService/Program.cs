@@ -2,16 +2,16 @@
 
 using System;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.Azure.IoTSolutions.UIConfig.WebService.Runtime;
+using Microsoft.Azure.IoTSolutions.Config.WebService.Runtime;
 
-namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService
+namespace Microsoft.Azure.IoTSolutions.Config.WebService
 {
     /// <summary>Application entry point</summary>
     public class Program
     {
         public static void Main(string[] args)
         {
-            var config = new Config(new ConfigData());
+            var config = new Runtime.Config(new ConfigData());
 
             /*
             Print some information to help development and debugging, like

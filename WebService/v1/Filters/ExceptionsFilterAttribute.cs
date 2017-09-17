@@ -8,12 +8,12 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc.Formatters;
-using Microsoft.Azure.IoTSolutions.UIConfig.Services.Diagnostics;
-using Microsoft.Azure.IoTSolutions.UIConfig.Services.Exceptions;
-using Microsoft.Azure.IoTSolutions.UIConfig.WebService.v1.Exceptions;
+using Microsoft.Azure.IoTSolutions.Config.Services.Diagnostics;
+using Microsoft.Azure.IoTSolutions.Config.Services.Exceptions;
+using Microsoft.Azure.IoTSolutions.Config.WebService.v1.Exceptions;
 using Newtonsoft.Json;
 
-namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService.v1.Filters
+namespace Microsoft.Azure.IoTSolutions.Config.WebService.v1.Filters
 {
     /// <summary>
     /// Detect all the unhandled exceptions returned by the API controllers

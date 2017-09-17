@@ -2,10 +2,10 @@
 
 using System;
 using System.Threading.Tasks;
-using Microsoft.Azure.IoTSolutions.UIConfig.Services.Exceptions;
-using Microsoft.Azure.IoTSolutions.UIConfig.Services.External;
+using Microsoft.Azure.IoTSolutions.Config.Services.Exceptions;
+using Microsoft.Azure.IoTSolutions.Config.Services.External;
 
-namespace Microsoft.Azure.IoTSolutions.UIConfig.Services
+namespace Microsoft.Azure.IoTSolutions.Config.Services
 {
     public interface IStorageMutex
     {

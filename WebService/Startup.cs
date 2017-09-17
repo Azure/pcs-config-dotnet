@@ -8,14 +8,15 @@ using Autofac.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.Azure.IoTSolutions.UIConfig.Services;
-using Microsoft.Azure.IoTSolutions.UIConfig.WebService.Runtime;
+using Microsoft.Azure.IoTSolutions.Config.Services;
+using Microsoft.Azure.IoTSolutions.Config.WebService.Runtime;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using ILogger = Microsoft.Azure.IoTSolutions.Config.Services.Diagnostics.ILogger;
 
-namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService
+namespace Microsoft.Azure.IoTSolutions.Config.WebService
 {
     public class Startup
     {
@@ -89,7 +90,7 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService
         private void BuildCorsPolicy(CorsPolicyBuilder builder)
         {
             var config = this.ApplicationContainer.Resolve<IConfig>();
-            var logger = this.ApplicationContainer.Resolve<Services.Diagnostics.ILogger>();
+            var logger = this.ApplicationContainer.Resolve<ILogger>();
 
             CorsWhitelistModel model;
             try

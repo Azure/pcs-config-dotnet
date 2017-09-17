@@ -1,6 +1,6 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 
-namespace Microsoft.Azure.IoTSolutions.UIConfig.Services.Http
+namespace Microsoft.Azure.IoTSolutions.Config.Services.Http
 {
     public class HttpRequestOptions
     {

@@ -2,8 +2,8 @@
 [![Issues][issues-badge]][issues-url]
 [![Gitter][gitter-badge]][gitter-url]
 
-UIConfig
-=================
+Configuration service
+=====================
 
 ... project description ...
 

@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 
-namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService.v1.Filters
+namespace Microsoft.Azure.IoTSolutions.Config.WebService.v1.Filters
 {
     public class DepressedFilterAttribute : ActionFilterAttribute
     {

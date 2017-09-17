@@ -1,7 +1,7 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 
 using System;
-using Microsoft.Azure.IoTSolutions.UIConfig.Services.Http;
+using Microsoft.Azure.IoTSolutions.Config.Services.Http;
 using Newtonsoft.Json;
 
 namespace Services.Test.helpers

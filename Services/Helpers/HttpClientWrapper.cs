@@ -3,12 +3,12 @@
 using System;
 using System.Net;
 using System.Threading.Tasks;
-using Microsoft.Azure.IoTSolutions.UIConfig.Services.Diagnostics;
-using Microsoft.Azure.IoTSolutions.UIConfig.Services.Exceptions;
-using Microsoft.Azure.IoTSolutions.UIConfig.Services.Http;
+using Microsoft.Azure.IoTSolutions.Config.Services.Diagnostics;
+using Microsoft.Azure.IoTSolutions.Config.Services.Exceptions;
+using Microsoft.Azure.IoTSolutions.Config.Services.Http;
 using Newtonsoft.Json;
 
-namespace Microsoft.Azure.IoTSolutions.UIConfig.Services.Helpers
+namespace Microsoft.Azure.IoTSolutions.Config.Services.Helpers
 {
     public interface IHttpClientWrapper
     {

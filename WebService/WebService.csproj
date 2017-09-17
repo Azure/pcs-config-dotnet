@@ -2,8 +2,8 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp1.1</TargetFramework>
     <LangVersion>6</LangVersion>
-    <AssemblyName>Microsoft.Azure.IoTSolutions.UIConfig.WebService</AssemblyName>
-    <RootNamespace>Microsoft.Azure.IoTSolutions.UIConfig.WebService</RootNamespace>
+    <AssemblyName>Microsoft.Azure.IoTSolutions.Config.WebService</AssemblyName>
+    <RootNamespace>Microsoft.Azure.IoTSolutions.Config.WebService</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
     <Content Include="appsettings.ini">

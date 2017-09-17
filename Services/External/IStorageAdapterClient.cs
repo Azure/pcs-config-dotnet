@@ -2,7 +2,7 @@
 
 using System.Threading.Tasks;
 
-namespace Microsoft.Azure.IoTSolutions.UIConfig.Services.External
+namespace Microsoft.Azure.IoTSolutions.Config.Services.External
 {
     public interface IStorageAdapterClient
     {

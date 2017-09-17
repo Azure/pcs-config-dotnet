@@ -1,8 +1,8 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 
-using Microsoft.Azure.IoTSolutions.UIConfig.Services.Runtime;
+using Microsoft.Azure.IoTSolutions.Config.Services.Runtime;
 
-namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService.Runtime
+namespace Microsoft.Azure.IoTSolutions.Config.WebService.Runtime
 {
     public interface IConfig
     {
@@ -19,7 +19,7 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService.Runtime
     /// <summary>Web service configuration</summary>
     public class Config : IConfig
     {
-        private const string ApplicationKey = "UIConfig:";
+        private const string ApplicationKey = "Config:";
         private const string PortKey = ApplicationKey + "webservice_port";
         private const string CorsWhitelistKey = ApplicationKey + "cors_whitelist";
         private const string SeedTemplateKey = ApplicationKey + "seedTemplate";

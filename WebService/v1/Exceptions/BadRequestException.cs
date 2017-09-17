@@ -2,7 +2,7 @@
 
 using System;
 
-namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService.v1.Exceptions
+namespace Microsoft.Azure.IoTSolutions.Config.WebService.v1.Exceptions
 {
     public class BadRequestException : Exception
     {

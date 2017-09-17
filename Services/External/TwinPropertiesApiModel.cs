@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-namespace Microsoft.Azure.IoTSolutions.UIConfig.Services.External
+namespace Microsoft.Azure.IoTSolutions.Config.Services.External
 {
     public class TwinPropertiesApiModel
     {

@@ -6,7 +6,7 @@ using System.Runtime.CompilerServices;
 
 [assembly: InternalsVisibleTo("Services.Test")]
 
-namespace Microsoft.Azure.IoTSolutions.UIConfig.Services.Http
+namespace Microsoft.Azure.IoTSolutions.Config.Services.Http
 {
     public interface IHttpResponse
     {
