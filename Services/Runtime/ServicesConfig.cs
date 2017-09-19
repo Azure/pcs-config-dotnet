@@ -11,6 +11,7 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services.Runtime
         string SeedTemplate { get; }
         long CacheTTL { get; }
         long CacheRebuildTimeout { get; }
+        string BingMapKey { get; }
     }
 
     public class ServicesConfig : IServicesConfig
@@ -22,5 +23,6 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services.Runtime
         public string SeedTemplate { get; set; }
         public long CacheTTL { get; set; }
         public long CacheRebuildTimeout { get; set; }
+        public string BingMapKey { get; set; }
     }
 }
