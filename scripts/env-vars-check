@@ -10,8 +10,8 @@ if [[ -z "$PCS_DEVICESIMULATION_WEBSERVICE_URL" ]]; then
     exit -1
 fi
 
-if [[ -z "$PCS_DEVICETELEMETRY_WEBSERVICE_URL" ]]; then
-    echo "Error: the PCS_DEVICETELEMETRY_WEBSERVICE_URL environment variable is not defined."
+if [[ -z "$PCS_TELEMETRY_WEBSERVICE_URL" ]]; then
+    echo "Error: the PCS_TELEMETRY_WEBSERVICE_URL environment variable is not defined."
     exit -1
 fi
 

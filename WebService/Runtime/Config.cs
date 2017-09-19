@@ -19,7 +19,7 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService.Runtime
     /// <summary>Web service configuration</summary>
     public class Config : IConfig
     {
-        private const string ApplicationKey = "UIConfig:";
+        private const string ApplicationKey = "Config:";
         private const string PortKey = ApplicationKey + "webservice_port";
         private const string CorsWhitelistKey = ApplicationKey + "cors_whitelist";
         private const string SeedTemplateKey = ApplicationKey + "seedTemplate";
@@ -32,8 +32,8 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService.Runtime
         private const string DeviceSimulationKey = "DeviceSimulation:";
         private const string DeviceSimulationUrlKey = DeviceSimulationKey + "webservice_url";
 
-        private const string DeviceTelemetryKey = "DeviceTelemetry:";
-        private const string DeviceTelemetryUrlKey = DeviceTelemetryKey + "webservice_url";
+        private const string TelemetryKey = "Telemetry:";
+        private const string TelemetryUrlKey = TelemetryKey + "webservice_url";
 		
 		private const string HubManagerKey = "IothubManager:";
         private const string HubManagerUrlKey = HubManagerKey + "webservice_url";
@@ -56,7 +56,7 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService.Runtime
             {
                 StorageAdapterApiUrl = configData.GetString(StorageAdapterUrlKey),
                 DeviceSimulationApiUrl = configData.GetString(DeviceSimulationUrlKey),
-                DeviceTelemetryApiUrl = configData.GetString(DeviceTelemetryUrlKey),
+                TelemetryApiUrl = configData.GetString(TelemetryUrlKey),
 				HubManagerApiUrl = configData.GetString(HubManagerUrlKey),
                 SeedTemplate = configData.GetString(SeedTemplateKey),
 				CacheTTL = configData.GetInt(CacheTTLKey),

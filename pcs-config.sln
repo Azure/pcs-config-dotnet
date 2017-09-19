@@ -14,7 +14,7 @@ ProjectSection(SolutionItems) = preProject
 	LICENSE = LICENSE
 	README.md = README.md
 	DEVELOPMENT.md = DEVELOPMENT.md
-	pcs-ui-config.sln.DotSettings = pcs-ui-config.sln.DotSettings
+	pcs-config.sln.DotSettings = pcs-config.sln.DotSettings
 	version = version
 EndProjectSection
 EndProject
