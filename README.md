@@ -7,7 +7,7 @@ Config service Overview
 =======================
 This service handles communication with the [Storage Adapter] microservice to complete tasks.
 
-The microservice provides a RESTful endpoint to make CRUD operation for "devicegroups","solution-settings" and "user-settings". The data will be stored in [Azure DocumentDB] by [Storage Adapter] microservice.
+The microservice provides a RESTful endpoint to make CRUD operations for "devicegroups", "solution-settings", and "user-settings". The data will be stored by the [Storage Adapter] microservice.
 
 Dependencies
 ============
@@ -19,7 +19,7 @@ How to use the microservice
 
 ### 1. Environment Variables
 
-Run `scripts\env-vars-setup.cmd` on Windows or `source scripts\env-vars-setup`
+Run `scripts\env-vars-setup.cmd` on Windows or `source scripts/env-vars-setup`
 on Mac/Linux to set up the environment variables needed to run the service locally.
 If using environment variables, this service requires the following environment
 variables to be set:
