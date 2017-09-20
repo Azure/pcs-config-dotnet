@@ -5,7 +5,7 @@
 
 Config service Overview
 =======================
-This service handles communication with the [Storage Adapter] microservice to complete the its tasks.
+This service handles communication with the [Storage Adapter] microservice to complete tasks.
 
 The microservice provides a RESTful endpoint to make CRUD operation for "devicegroups","solution-settings" and "user-settings". The data will be stored in [Azure DocumentDB] by [Storage Adapter] microservice.
 
