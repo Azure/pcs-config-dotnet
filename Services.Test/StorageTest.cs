@@ -8,6 +8,7 @@ using Microsoft.Azure.IoTSolutions.UIConfig.Services;
 using Microsoft.Azure.IoTSolutions.UIConfig.Services.Exceptions;
 using Microsoft.Azure.IoTSolutions.UIConfig.Services.External;
 using Microsoft.Azure.IoTSolutions.UIConfig.Services.Models;
+using Microsoft.Azure.IoTSolutions.UIConfig.Services.Runtime;
 using Moq;
 using Newtonsoft.Json;
 using Services.Test.helpers;
@@ -17,15 +18,20 @@ namespace Services.Test
 {
     public class StorageTest
     {
+        private readonly string bingMapKey;
         private readonly Mock<IStorageAdapterClient> mockClient;
+        private readonly ServicesConfig config;
         private readonly Storage storage;
         private readonly Random rand;
 
         public StorageTest()
         {
-            this.mockClient = new Mock<IStorageAdapterClient>();
-            this.storage = new Storage(this.mockClient.Object);
             this.rand = new Random();
+
+            this.bingMapKey = this.rand.NextString();
+            this.mockClient = new Mock<IStorageAdapterClient>();
+            this.config = new ServicesConfig { BingMapKey = this.bingMapKey };
+            this.storage = new Storage(this.mockClient.Object, this.config);
         }
 
         [Fact]
@@ -55,6 +61,7 @@ namespace Services.Test
 
             Assert.Equal(result.Name.ToString(), name);
             Assert.Equal(result.Description.ToString(), description);
+            Assert.Equal(result.BingMapKey.ToString(), this.bingMapKey);
         }
 
         [Fact]
@@ -74,6 +81,7 @@ namespace Services.Test
 
             Assert.Equal(result.Name.ToString(), Theme.Default.Name);
             Assert.Equal(result.Description.ToString(), Theme.Default.Description);
+            Assert.Equal(result.BingMapKey.ToString(), this.bingMapKey);
         }
 
         [Fact]
@@ -107,6 +115,7 @@ namespace Services.Test
 
             Assert.Equal(result.Name.ToString(), name);
             Assert.Equal(result.Description.ToString(), description);
+            Assert.Equal(result.BingMapKey.ToString(), this.bingMapKey);
         }
 
         [Fact]

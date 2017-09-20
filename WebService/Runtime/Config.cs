@@ -25,6 +25,7 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService.Runtime
         private const string SeedTemplateKey = ApplicationKey + "seedTemplate";
         private const string CacheTTLKey = ApplicationKey + "cache_TTL";
         private const string CacheRebuildTimeoutKey = ApplicationKey + "rebuild_timeout";
+        private const string BingMapKeyKey = ApplicationKey + "bingmap_key";
 
         private const string StorageAdapterKey = "StorageAdapter:";
         private const string StorageAdapterUrlKey = StorageAdapterKey + "webservice_url";
@@ -34,8 +35,8 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService.Runtime
 
         private const string TelemetryKey = "Telemetry:";
         private const string TelemetryUrlKey = TelemetryKey + "webservice_url";
-		
-		private const string HubManagerKey = "IothubManager:";
+
+        private const string HubManagerKey = "IothubManager:";
         private const string HubManagerUrlKey = HubManagerKey + "webservice_url";
 
         /// <summary>Web service listening port</summary>
@@ -57,10 +58,11 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService.Runtime
                 StorageAdapterApiUrl = configData.GetString(StorageAdapterUrlKey),
                 DeviceSimulationApiUrl = configData.GetString(DeviceSimulationUrlKey),
                 TelemetryApiUrl = configData.GetString(TelemetryUrlKey),
-				HubManagerApiUrl = configData.GetString(HubManagerUrlKey),
+                HubManagerApiUrl = configData.GetString(HubManagerUrlKey),
                 SeedTemplate = configData.GetString(SeedTemplateKey),
-				CacheTTL = configData.GetInt(CacheTTLKey),
-                CacheRebuildTimeout = configData.GetInt(CacheRebuildTimeoutKey)
+                CacheTTL = configData.GetInt(CacheTTLKey),
+                CacheRebuildTimeout = configData.GetInt(CacheRebuildTimeoutKey),
+                BingMapKey = configData.GetString(BingMapKeyKey)
             };
         }
     }
