@@ -12,7 +12,7 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService.v1.Models
         private const string DateFormat = "yyyy-MM-dd'T'HH:mm:sszzz";
 
         [JsonProperty(PropertyName = "Name", Order = 10)]
-        public string Name => "UIConfig";
+        public string Name => "Config";
 
         [JsonProperty(PropertyName = "Status", Order = 20)]
         public string Status { get; set; }

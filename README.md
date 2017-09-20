@@ -2,8 +2,8 @@
 [![Issues][issues-badge]][issues-url]
 [![Gitter][gitter-badge]][gitter-url]
 
-UIConfig
-=================
+Configuration microservice
+==========================
 
 ... project description ...
 
@@ -37,9 +37,9 @@ Other documents
 * [Contributing and Development setup](CONTRIBUTING.md)
 * [Development setup, scripts and tools](DEVELOPMENT.md)
 
-[build-badge]: https://img.shields.io/travis/Azure/pcs-ui-config-dotnet.svg
-[build-url]: https://travis-ci.org/Azure/pcs-ui-config-dotnet
-[issues-badge]: https://img.shields.io/github/issues/azure/pcs-ui-config-dotnet.svg
-[issues-url]: https://github.com/azure/pcs-ui-config-dotnet/issues
+[build-badge]: https://img.shields.io/travis/Azure/pcs-config-dotnet.svg
+[build-url]: https://travis-ci.org/Azure/pcs-config-dotnet
+[issues-badge]: https://img.shields.io/github/issues/azure/pcs-config-dotnet.svg
+[issues-url]: https://github.com/azure/pcs-config-dotnet/issues
 [gitter-badge]: https://img.shields.io/gitter/room/azure/iot-pcs.js.svg
 [gitter-url]: https://gitter.im/azure/iot-pcs

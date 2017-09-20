@@ -1,7 +1,7 @@
 @ECHO off & setlocal enableextensions enabledelayedexpansion
 
 :: Note: use lowercase names for the Docker images
-SET DOCKER_IMAGE="azureiotpcs/pcs-ui-config-dotnet"
+SET DOCKER_IMAGE="azureiotpcs/pcs-config-dotnet"
 
 :: strlen("\scripts\docker\") => 16
 SET APP_HOME=%~dp0
@@ -22,11 +22,11 @@ IF %ERRORLEVEL% NEQ 0 GOTO FAIL
 :: Start the application
 :: Some settings are used to connect to an external dependency, e.g. Azure IoT Hub and IoT Hub Manager API
 :: Depending on which settings and which dependencies are needed, edit the list of variables
-echo Starting UIConfig ...
+echo Starting Config web service ...
 docker run -it -p 9005:9005 ^
     -e "PCS_STORAGEADAPTER_WEBSERVICE_URL=%PCS_STORAGEADAPTER_WEBSERVICE_URL%" ^
     -e "PCS_DEVICESIMULATION_WEBSERVICE_URL=%PCS_DEVICESIMULATION_WEBSERVICE_URL%" ^
-    -e "PCS_DEVICETELEMETRY_WEBSERVICE_URL=%PCS_DEVICETELEMETRY_WEBSERVICE_URL%" ^
+    -e "PCS_TELEMETRY_WEBSERVICE_URL=%PCS_TELEMETRY_WEBSERVICE_URL%" ^
     -e "PCS_IOTHUBMANAGER_WEBSERVICE_URL=%PCS_IOTHUBMANAGER_WEBSERVICE_URL% ^
     %DOCKER_IMAGE%:%APP_VERSION%
 
