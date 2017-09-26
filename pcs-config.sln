@@ -71,6 +71,13 @@ ProjectSection(SolutionItems) = preProject
 	scripts\docker\content\README.md = scripts\docker\content\README.md
 EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".github", ".github", "{9FBD3528-31A7-4289-9BA5-341C253958CB}"
+ProjectSection(SolutionItems) = preProject
+	.github\CODEOWNERS = .github\CODEOWNERS
+	.github\ISSUE_TEMPLATE.md = .github\ISSUE_TEMPLATE.md
+	.github\PULL_REQUEST_TEMPLATE.md = .github\PULL_REQUEST_TEMPLATE.md
+EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -112,5 +119,6 @@ Global
 		{FE64576E-E29D-4463-ABDA-93DB429A5F2F} = {7357A079-B54D-490F-AA91-1B7BDAFE5E3F}
 		{DB8AF4E5-71A1-4650-A881-9F08FCB53DAA} = {7357A079-B54D-490F-AA91-1B7BDAFE5E3F}
 		{8BAA54A8-9C80-4446-83DD-CEBBC7B7BCD2} = {DB8AF4E5-71A1-4650-A881-9F08FCB53DAA}
+		{9FBD3528-31A7-4289-9BA5-341C253958CB} = {8289AFAE-0933-40EF-9D19-6FFA2DB04837}
 	EndGlobalSection
 EndGlobal

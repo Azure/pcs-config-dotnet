@@ -15,7 +15,7 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services
 
     public class StorageMutex : IStorageMutex
     {
-        private const string LastModifiedKey = "$modified";
+        private const string LAST_MODIFIED_KEY = "$modified";
         private readonly IStorageAdapterClient storageClient;
 
         public StorageMutex(IStorageAdapterClient storageClient)
@@ -39,7 +39,7 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services
                     if (Convert.ToBoolean(model.Data))
                     {
                         DateTimeOffset lastModified;
-                        if (model.Metadata.ContainsKey(LastModifiedKey) && DateTimeOffset.TryParse(model.Metadata[LastModifiedKey], out lastModified))
+                        if (model.Metadata.ContainsKey(LAST_MODIFIED_KEY) && DateTimeOffset.TryParse(model.Metadata[LAST_MODIFIED_KEY], out lastModified))
                         {
                             lastModified = DateTimeOffset.MinValue;
                         }

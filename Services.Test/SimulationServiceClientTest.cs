@@ -14,7 +14,7 @@ namespace Services.Test
 {
     public class SimulationServiceClientTest
     {
-        private const string MockServiceUri = @"http://SimulationManager";
+        private const string MOCK_SERVICE_URI = @"http://SimulationManager";
 
         private readonly Mock<IHttpClient> mockHttpClient;
         private readonly SimulationServiceClient client;
@@ -25,7 +25,7 @@ namespace Services.Test
             this.client = new SimulationServiceClient(this.mockHttpClient.Object,
                 new ServicesConfig
                 {
-                    DeviceSimulationApiUrl = MockServiceUri
+                    DeviceSimulationApiUrl = MOCK_SERVICE_URI
                 },
                 new Logger("UnitTest", LogLevel.Debug));
         }

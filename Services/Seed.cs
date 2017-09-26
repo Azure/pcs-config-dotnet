@@ -22,9 +22,9 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services
 
     public class Seed : ISeed
     {
-        private const string SeedCollectionId = "solution-settings";
-        private const string MutexKey = "seedMutex";
-        private const string CompletedFlagKey = "seedCompleted";
+        private const string SEED_COLLECTION_ID = "solution-settings";
+        private const string MUTEX_KEY = "seedMutex";
+        private const string COMPLETED_FLAG_KEY = "seedCompleted";
         private readonly TimeSpan mutexTimeout = TimeSpan.FromMinutes(5);
 
         private readonly IServicesConfig config;
@@ -55,7 +55,7 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services
 
         public async Task TrySeedAsync()
         {
-            if (!await this.mutex.EnterAsync(SeedCollectionId, MutexKey, this.mutexTimeout))
+            if (!await this.mutex.EnterAsync(SEED_COLLECTION_ID, MUTEX_KEY, this.mutexTimeout))
             {
                 this.log.Info("Seed skipped (conflict)", () => { });
                 return;
@@ -73,14 +73,14 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services
 
             await this.SetCompletedFlagAsync();
 
-            await this.mutex.LeaveAsync(SeedCollectionId, MutexKey);
+            await this.mutex.LeaveAsync(SEED_COLLECTION_ID, MUTEX_KEY);
         }
 
         private async Task<bool> CheckCompletedFlagAsync()
         {
             try
             {
-                await this.storageClient.GetAsync(SeedCollectionId, CompletedFlagKey);
+                await this.storageClient.GetAsync(SEED_COLLECTION_ID, COMPLETED_FLAG_KEY);
                 return true;
             }
             catch (ResourceNotFoundException)
@@ -91,7 +91,7 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services
 
         private async Task SetCompletedFlagAsync()
         {
-            await this.storageClient.UpdateAsync(SeedCollectionId, CompletedFlagKey, "true", "*");
+            await this.storageClient.UpdateAsync(SEED_COLLECTION_ID, COMPLETED_FLAG_KEY, "true", "*");
         }
 
         private async Task SeedAsync(string template)

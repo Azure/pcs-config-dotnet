@@ -22,7 +22,7 @@ namespace Services.Test
         private readonly Mock<ISimulationServiceClient> mockSimulationClient;
         private readonly Mock<IServicesConfig> config;
         private readonly Mock<ILogger> log;
-        private readonly Microsoft.Azure.IoTSolutions.UIConfig.Services.Cache cache;
+        private readonly Cache cache;
         private readonly string cacheModel = null;
 
         public CacheTest()
@@ -46,7 +46,7 @@ namespace Services.Test
             this.config = new Mock<IServicesConfig>();
             this.config.SetupGet(m => m.CacheTTL).Returns(3600);
             this.config.SetupGet(m => m.CacheRebuildTimeout).Returns(20);
-            this.cache = new Microsoft.Azure.IoTSolutions.UIConfig.Services.Cache(this.mockStorageAdapterClient.Object, this.mockIothubManagerClient.Object, this.mockSimulationClient.Object, this.config.Object, this.log.Object);
+            this.cache = new Cache(this.mockStorageAdapterClient.Object, this.mockIothubManagerClient.Object, this.mockSimulationClient.Object, this.config.Object, this.log.Object);
         }
 
         [Fact]

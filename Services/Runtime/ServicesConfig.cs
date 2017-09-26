@@ -9,6 +9,7 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services.Runtime
         string TelemetryApiUrl { get; }
         string HubManagerApiUrl { get; }
         string SeedTemplate { get; }
+        // ReSharper disable once InconsistentNaming
         long CacheTTL { get; }
         long CacheRebuildTimeout { get; }
         string BingMapKey { get; }

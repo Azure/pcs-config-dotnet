@@ -32,12 +32,12 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services
         private readonly IStorageAdapterClient client;
         private readonly IServicesConfig config;
 
-        internal const string SolutionCollectionId = "solution-settings";
-        internal const string ThemeKey = "theme";
-        internal const string LogoKey = "logo";
-        internal const string UserCollectionId = "user-settings";
-        internal const string DeviceGroupCollectionId = "devicegroups";
-        private const string BingMapKeyKey = "BingMapKey";
+        internal const string SOLUTION_COLLECTION_ID = "solution-settings";
+        internal const string THEME_KEY = "theme";
+        internal const string LOGO_KEY = "logo";
+        internal const string USER_COLLECTION_ID = "user-settings";
+        internal const string DEVICE_GROUP_COLLECTION_ID = "devicegroups";
+        private const string BING_MAP_KEY_KEY = "BingMapKey";
 
         public Storage(
             IStorageAdapterClient client,
@@ -53,7 +53,7 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services
 
             try
             {
-                var response = await this.client.GetAsync(SolutionCollectionId, ThemeKey);
+                var response = await this.client.GetAsync(SOLUTION_COLLECTION_ID, THEME_KEY);
                 data = response.Data;
             }
             catch (ResourceNotFoundException)
@@ -62,24 +62,24 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services
             }
 
             var themeOut = JsonConvert.DeserializeObject(data) as JToken ?? new JObject();
-            AppendBingMapKey(themeOut);
+            this.AppendBingMapKey(themeOut);
             return themeOut;
         }
 
         public async Task<object> SetThemeAsync(object themeIn)
         {
             var value = JsonConvert.SerializeObject(themeIn);
-            var response = await this.client.UpdateAsync(SolutionCollectionId, ThemeKey, value, "*");
+            var response = await this.client.UpdateAsync(SOLUTION_COLLECTION_ID, THEME_KEY, value, "*");
             var themeOut = JsonConvert.DeserializeObject(response.Data) as JToken ?? new JObject();
-            AppendBingMapKey(themeOut);
+            this.AppendBingMapKey(themeOut);
             return themeOut;
         }
 
         private void AppendBingMapKey(JToken theme)
         {
-            if (theme[BingMapKeyKey] == null)
+            if (theme[BING_MAP_KEY_KEY] == null)
             {
-                theme[BingMapKeyKey] = config.BingMapKey;
+                theme[BING_MAP_KEY_KEY] = this.config.BingMapKey;
             }
         }
 
@@ -87,7 +87,7 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services
         {
             try
             {
-                var response = await this.client.GetAsync(UserCollectionId, id);
+                var response = await this.client.GetAsync(USER_COLLECTION_ID, id);
                 return JsonConvert.DeserializeObject(response.Data);
             }
             catch (ResourceNotFoundException)
@@ -99,7 +99,7 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services
         public async Task<object> SetUserSetting(string id, object setting)
         {
             var value = JsonConvert.SerializeObject(setting);
-            var response = await this.client.UpdateAsync(UserCollectionId, id, value, "*");
+            var response = await this.client.UpdateAsync(USER_COLLECTION_ID, id, value, "*");
             return JsonConvert.DeserializeObject(response.Data);
         }
 
@@ -107,7 +107,7 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services
         {
             try
             {
-                var response = await this.client.GetAsync(SolutionCollectionId, LogoKey);
+                var response = await this.client.GetAsync(SOLUTION_COLLECTION_ID, LOGO_KEY);
                 return JsonConvert.DeserializeObject<Logo>(response.Data);
             }
             catch (ResourceNotFoundException)
@@ -119,39 +119,39 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services
         public async Task<Logo> SetLogoAsync(Logo model)
         {
             var value = JsonConvert.SerializeObject(model);
-            var response = await this.client.UpdateAsync(SolutionCollectionId, LogoKey, value, "*");
+            var response = await this.client.UpdateAsync(SOLUTION_COLLECTION_ID, LOGO_KEY, value, "*");
             return JsonConvert.DeserializeObject<Logo>(response.Data);
         }
 
         public async Task<IEnumerable<DeviceGroup>> GetAllDeviceGroupsAsync()
         {
-            var response = await this.client.GetAllAsync(DeviceGroupCollectionId);
+            var response = await this.client.GetAllAsync(DEVICE_GROUP_COLLECTION_ID);
             return response.Items.Select(this.CreateGroupServiceModel);
         }
 
         public async Task<DeviceGroup> GetDeviceGroupAsync(string id)
         {
-            var response = await this.client.GetAsync(DeviceGroupCollectionId, id);
+            var response = await this.client.GetAsync(DEVICE_GROUP_COLLECTION_ID, id);
             return this.CreateGroupServiceModel(response);
         }
 
         public async Task<DeviceGroup> CreateDeviceGroupAsync(DeviceGroup input)
         {
             var value = JsonConvert.SerializeObject(input, Formatting.Indented, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
-            var response = await this.client.CreateAsync(DeviceGroupCollectionId, value);
+            var response = await this.client.CreateAsync(DEVICE_GROUP_COLLECTION_ID, value);
             return this.CreateGroupServiceModel(response);
         }
 
         public async Task<DeviceGroup> UpdateDeviceGroupAsync(string id, DeviceGroup input, string etag)
         {
             var value = JsonConvert.SerializeObject(input, Formatting.Indented, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
-            var response = await this.client.UpdateAsync(DeviceGroupCollectionId, id, value, etag);
+            var response = await this.client.UpdateAsync(DEVICE_GROUP_COLLECTION_ID, id, value, etag);
             return this.CreateGroupServiceModel(response);
         }
 
         public async Task DeleteDeviceGroupAsync(string id)
         {
-            await this.client.DeleteAsync(DeviceGroupCollectionId, id);
+            await this.client.DeleteAsync(DEVICE_GROUP_COLLECTION_ID, id);
         }
 
         private DeviceGroup CreateGroupServiceModel(ValueApiModel input)

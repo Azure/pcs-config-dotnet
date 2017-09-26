@@ -27,10 +27,10 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services
         private readonly IIothubManagerServiceClient iotHubClient;
         private readonly ISimulationServiceClient simulationClient;
         private readonly ILogger log;
-        private readonly long cacheTTL;
+        private readonly long cacheTtl;
         private readonly long rebuildTimeout;
-        internal const string CacheCollectionId = "cache";
-        internal const string CacheKey = "twin";
+        internal const string CACHE_COLLECTION_ID = "cache";
+        internal const string CACHE_KEY = "twin";
 
         public Cache(IStorageAdapterClient storageClient,
             IIothubManagerServiceClient iotHubClient,
@@ -42,7 +42,7 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services
             this.iotHubClient = iotHubClient;
             this.simulationClient = simulationClient;
             this.log = logger;
-            this.cacheTTL = config.CacheTTL;
+            this.cacheTtl = config.CacheTTL;
             this.rebuildTimeout = config.CacheRebuildTimeout;
         }
 
@@ -50,12 +50,12 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services
         {
             try
             {
-                var response = await this.storageClient.GetAsync(CacheCollectionId, CacheKey);
+                var response = await this.storageClient.GetAsync(CACHE_COLLECTION_ID, CACHE_KEY);
                 return JsonConvert.DeserializeObject<CacheValue>(response.Data);
             }
             catch (ResourceNotFoundException)
             {
-                this.log.Info($"{CacheCollectionId}:{CacheKey} not found.", () => $"{this.GetType().FullName}.GetCacheAsync");
+                this.log.Info($"{CACHE_COLLECTION_ID}:{CACHE_KEY} not found.", () => $"{this.GetType().FullName}.GetCacheAsync");
                 return new CacheValue { Tags = new HashSet<string>(), Reported = new HashSet<string>() };
             }
         }
@@ -72,11 +72,11 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services
 
                 try
                 {
-                    cache = await this.storageClient.GetAsync(CacheCollectionId, CacheKey);
+                    cache = await this.storageClient.GetAsync(CACHE_COLLECTION_ID, CACHE_KEY);
                 }
                 catch (ResourceNotFoundException)
                 {
-                    this.log.Info($"{CacheCollectionId}:{CacheKey} not found.", () => $"{this.GetType().FullName}.RebuildCacheAsync");
+                    this.log.Info($"{CACHE_COLLECTION_ID}:{CACHE_KEY} not found.", () => $"{this.GetType().FullName}.RebuildCacheAsync");
                 }
 
                 bool needBuild = this.NeedBuild(force, cache);
@@ -109,12 +109,12 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services
                 {
                     CacheValue model = JsonConvert.DeserializeObject<CacheValue>(cache.Data);
                     model.Rebuilding = true;
-                    var response = await this.storageClient.UpdateAsync(CacheCollectionId, CacheKey, JsonConvert.SerializeObject(model), cache.ETag);
+                    var response = await this.storageClient.UpdateAsync(CACHE_COLLECTION_ID, CACHE_KEY, JsonConvert.SerializeObject(model), cache.ETag);
                     etag = response.ETag;
                 }
                 else
                 {
-                    var response = await this.storageClient.UpdateAsync(CacheCollectionId, CacheKey, JsonConvert.SerializeObject(new CacheValue { Rebuilding = true }), null);
+                    var response = await this.storageClient.UpdateAsync(CACHE_COLLECTION_ID, CACHE_KEY, JsonConvert.SerializeObject(new CacheValue { Rebuilding = true }), null);
                     etag = response.ETag;
                 }
 
@@ -127,7 +127,7 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services
 
                 try
                 {
-                    await this.storageClient.UpdateAsync(CacheCollectionId, CacheKey, value, etag);
+                    await this.storageClient.UpdateAsync(CACHE_COLLECTION_ID, CACHE_KEY, value, etag);
                     return;
                 }
                 catch (ConflictingResourceException)
@@ -150,11 +150,11 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services
                 ValueApiModel model = null;
                 try
                 {
-                    model = await this.storageClient.GetAsync(CacheCollectionId, CacheKey);
+                    model = await this.storageClient.GetAsync(CACHE_COLLECTION_ID, CACHE_KEY);
                 }
                 catch (ResourceNotFoundException)
                 {
-                    this.log.Info($"{CacheCollectionId}:{CacheKey} not found.", () => $"{this.GetType().FullName}.SetCacheAsync");
+                    this.log.Info($"{CACHE_COLLECTION_ID}:{CACHE_KEY} not found.", () => $"{this.GetType().FullName}.SetCacheAsync");
                 }
 
                 if (model != null)
@@ -184,7 +184,7 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services
                 var value = JsonConvert.SerializeObject(cache);
                 try
                 {
-                    var response = await this.storageClient.UpdateAsync(CacheCollectionId, CacheKey, value, etag);
+                    var response = await this.storageClient.UpdateAsync(CACHE_COLLECTION_ID, CACHE_KEY, value, etag);
                     return JsonConvert.DeserializeObject<CacheValue>(response.Data);
                 }
                 catch (ConflictingResourceException)
@@ -207,7 +207,7 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services
             {
                 bool rebuilding = JsonConvert.DeserializeObject<CacheValue>(twin.Data).Rebuilding;
                 DateTimeOffset timstamp = DateTimeOffset.Parse(twin.Metadata["$modified"]);
-                needBuild = needBuild || !rebuilding && timstamp.AddSeconds(this.cacheTTL) < DateTimeOffset.UtcNow;
+                needBuild = needBuild || !rebuilding && timstamp.AddSeconds(this.cacheTtl) < DateTimeOffset.UtcNow;
                 needBuild = needBuild || rebuilding && timstamp.AddSeconds(this.rebuildTimeout) < DateTimeOffset.UtcNow;
             }
             return needBuild;

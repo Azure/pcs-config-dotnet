@@ -1,6 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>netcoreapp1.1</TargetFramework>
+    <LangVersion>7</LangVersion>
   </PropertyGroup>
   <ItemGroup>
     <Content Include="appsettings.ini">
