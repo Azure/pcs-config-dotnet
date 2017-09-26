@@ -14,7 +14,7 @@ namespace Services.Test
 {
     public class IothubManagerServiceClientTest
     {
-        private const string MockServiceUri = @"http://hubManager";
+        private const string MOCK_SERVICE_URI = @"http://hubManager";
         private readonly Mock<IHttpClient> mockHttpClient;
         private readonly IothubManagerServiceClient client;
 
@@ -24,7 +24,7 @@ namespace Services.Test
             this.client = new IothubManagerServiceClient(this.mockHttpClient.Object,
                 new ServicesConfig
                 {
-                    HubManagerApiUrl = MockServiceUri
+                    HubManagerApiUrl = MOCK_SERVICE_URI
                 },
                 new Logger("UnitTest", LogLevel.Debug));
         }

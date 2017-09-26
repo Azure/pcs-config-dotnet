@@ -9,7 +9,7 @@ using Microsoft.Azure.IoTSolutions.UIConfig.WebService.v1.Filters;
 
 namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService.v1.Controllers
 {
-    [Route(Version.Path), TypeFilter(typeof(ExceptionsFilterAttribute))]
+    [Route(Version.PATH), TypeFilter(typeof(ExceptionsFilterAttribute))]
     public class SolutionSettingsController : Controller
     {
         private readonly IStorage storage;

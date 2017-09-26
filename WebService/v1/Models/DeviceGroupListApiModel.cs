@@ -20,8 +20,8 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService.v1.Models
 
             this.Metadata = new Dictionary<string, string>
             {
-                { "$type", $"DeviceGroupList;{Version.Number}" },
-                { "$url", $"/{Version.Path}/devicegroups" }
+                { "$type", $"DeviceGroupList;{Version.NUMBER}" },
+                { "$url", $"/{Version.PATH}/devicegroups" }
             };
         }
     }

@@ -55,8 +55,8 @@ namespace Services.Test
 
             this.mockClient
                 .Verify(x => x.GetAsync(
-                        It.Is<string>(s => s == Storage.SolutionCollectionId),
-                        It.Is<string>(s => s == Storage.ThemeKey)),
+                        It.Is<string>(s => s == Storage.SOLUTION_COLLECTION_ID),
+                        It.Is<string>(s => s == Storage.THEME_KEY)),
                     Times.Once);
 
             Assert.Equal(result.Name.ToString(), name);
@@ -75,8 +75,8 @@ namespace Services.Test
 
             this.mockClient
                 .Verify(x => x.GetAsync(
-                        It.Is<string>(s => s == Storage.SolutionCollectionId),
-                        It.Is<string>(s => s == Storage.ThemeKey)),
+                        It.Is<string>(s => s == Storage.SOLUTION_COLLECTION_ID),
+                        It.Is<string>(s => s == Storage.THEME_KEY)),
                     Times.Once);
 
             Assert.Equal(result.Name.ToString(), Theme.Default.Name);
@@ -107,8 +107,8 @@ namespace Services.Test
 
             this.mockClient
                 .Verify(x => x.UpdateAsync(
-                        It.Is<string>(s => s == Storage.SolutionCollectionId),
-                        It.Is<string>(s => s == Storage.ThemeKey),
+                        It.Is<string>(s => s == Storage.SOLUTION_COLLECTION_ID),
+                        It.Is<string>(s => s == Storage.THEME_KEY),
                         It.Is<string>(s => s == JsonConvert.SerializeObject(theme)),
                         It.Is<string>(s => s == "*")),
                     Times.Once);
@@ -140,7 +140,7 @@ namespace Services.Test
 
             this.mockClient
                 .Verify(x => x.GetAsync(
-                        It.Is<string>(s => s == Storage.UserCollectionId),
+                        It.Is<string>(s => s == Storage.USER_COLLECTION_ID),
                         It.Is<string>(s => s == id)),
                     Times.Once);
 
@@ -172,7 +172,7 @@ namespace Services.Test
 
             this.mockClient
                 .Verify(x => x.UpdateAsync(
-                        It.Is<string>(s => s == Storage.UserCollectionId),
+                        It.Is<string>(s => s == Storage.USER_COLLECTION_ID),
                         It.Is<string>(s => s == id),
                         It.Is<string>(s => s == JsonConvert.SerializeObject(setting)),
                         It.Is<string>(s => s == "*")),
@@ -203,8 +203,8 @@ namespace Services.Test
 
             this.mockClient
                 .Verify(x => x.GetAsync(
-                        It.Is<string>(s => s == Storage.SolutionCollectionId),
-                        It.Is<string>(s => s == Storage.LogoKey)),
+                        It.Is<string>(s => s == Storage.SOLUTION_COLLECTION_ID),
+                        It.Is<string>(s => s == Storage.LOGO_KEY)),
                     Times.Once);
 
             Assert.Equal(result.Image.ToString(), image);
@@ -222,8 +222,8 @@ namespace Services.Test
 
             this.mockClient
                 .Verify(x => x.GetAsync(
-                        It.Is<string>(s => s == Storage.SolutionCollectionId),
-                        It.Is<string>(s => s == Storage.LogoKey)),
+                        It.Is<string>(s => s == Storage.SOLUTION_COLLECTION_ID),
+                        It.Is<string>(s => s == Storage.LOGO_KEY)),
                     Times.Once);
 
             Assert.Equal(result.Image.ToString(), Logo.Default.Image);
@@ -253,8 +253,8 @@ namespace Services.Test
 
             this.mockClient
                 .Verify(x => x.UpdateAsync(
-                        It.Is<string>(s => s == Storage.SolutionCollectionId),
-                        It.Is<string>(s => s == Storage.LogoKey),
+                        It.Is<string>(s => s == Storage.SOLUTION_COLLECTION_ID),
+                        It.Is<string>(s => s == Storage.LOGO_KEY),
                         It.Is<string>(s => s == JsonConvert.SerializeObject(logo)),
                         It.Is<string>(s => s == "*")),
                     Times.Once);
@@ -324,7 +324,7 @@ namespace Services.Test
 
             this.mockClient
                 .Verify(x => x.GetAllAsync(
-                        It.Is<string>(s => s == Storage.DeviceGroupCollectionId)),
+                        It.Is<string>(s => s == Storage.DEVICE_GROUP_COLLECTION_ID)),
                     Times.Once);
 
             Assert.Equal(result.Count, groups.Length);
@@ -372,7 +372,7 @@ namespace Services.Test
 
             this.mockClient
                 .Verify(x => x.GetAsync(
-                        It.Is<string>(s => s == Storage.DeviceGroupCollectionId),
+                        It.Is<string>(s => s == Storage.DEVICE_GROUP_COLLECTION_ID),
                         It.Is<string>(s => s == groupId)),
                     Times.Once);
 
@@ -417,7 +417,7 @@ namespace Services.Test
 
             this.mockClient
                 .Verify(x => x.CreateAsync(
-                        It.Is<string>(s => s == Storage.DeviceGroupCollectionId),
+                        It.Is<string>(s => s == Storage.DEVICE_GROUP_COLLECTION_ID),
                         It.Is<string>(s => s == JsonConvert.SerializeObject(group, Formatting.Indented, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }))),
                     Times.Once);
 
@@ -465,7 +465,7 @@ namespace Services.Test
 
             this.mockClient
                 .Verify(x => x.UpdateAsync(
-                        It.Is<string>(s => s == Storage.DeviceGroupCollectionId),
+                        It.Is<string>(s => s == Storage.DEVICE_GROUP_COLLECTION_ID),
                         It.Is<string>(s => s == groupId),
                         It.Is<string>(s => s == JsonConvert.SerializeObject(group, Formatting.Indented, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore })),
                         It.Is<string>(s => s == etagOld)),
@@ -492,7 +492,7 @@ namespace Services.Test
 
             this.mockClient
                 .Verify(x => x.DeleteAsync(
-                        It.Is<string>(s => s == Storage.DeviceGroupCollectionId),
+                        It.Is<string>(s => s == Storage.DEVICE_GROUP_COLLECTION_ID),
                         It.Is<string>(s => s == groupId)),
                     Times.Once);
         }

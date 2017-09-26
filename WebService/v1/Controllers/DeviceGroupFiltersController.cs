@@ -8,7 +8,7 @@ using Microsoft.Azure.IoTSolutions.UIConfig.WebService.v1.Models;
 
 namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService.v1.Controllers
 {
-    [Route(Version.Path + "/[controller]"), TypeFilter(typeof(ExceptionsFilterAttribute))]
+    [Route(Version.PATH + "/[controller]"), TypeFilter(typeof(ExceptionsFilterAttribute))]
     public class DeviceGroupFiltersController : Controller
     {
         private readonly ICache cache;

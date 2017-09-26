@@ -18,7 +18,7 @@ namespace Services.Test
 {
     public class StorageAdapterClientTest
     {
-        private const string MockServiceUri = @"http://mockstorageadapter";
+        private const string MOCK_SERVICE_URI = @"http://mockstorageadapter";
 
         private readonly Mock<IHttpClient> mockHttpClient;
         private readonly StorageAdapterClient client;
@@ -31,7 +31,7 @@ namespace Services.Test
                 this.mockHttpClient.Object,
                 new ServicesConfig
                 {
-                    StorageAdapterApiUrl = MockServiceUri
+                    StorageAdapterApiUrl = MOCK_SERVICE_URI
                 },
                 new Logger("UnitTest", LogLevel.Debug));
             this.rand = new Random();
@@ -65,7 +65,7 @@ namespace Services.Test
 
             this.mockHttpClient
                 .Verify(x => x.GetAsync(
-                        It.Is<IHttpRequest>(r => r.Check($"{MockServiceUri}/collections/{collectionId}/values/{key}"))),
+                        It.Is<IHttpRequest>(r => r.Check($"{MOCK_SERVICE_URI}/collections/{collectionId}/values/{key}"))),
                     Times.Once);
 
             Assert.Equal(result.Key, key);
@@ -134,7 +134,7 @@ namespace Services.Test
 
             this.mockHttpClient
                 .Verify(x => x.GetAsync(
-                        It.Is<IHttpRequest>(r => r.Check($"{MockServiceUri}/collections/{collectionId}/values"))),
+                        It.Is<IHttpRequest>(r => r.Check($"{MOCK_SERVICE_URI}/collections/{collectionId}/values"))),
                     Times.Once);
 
             Assert.Equal(result.Items.Count(), models.Length);
@@ -174,7 +174,7 @@ namespace Services.Test
 
             this.mockHttpClient
                 .Verify(x => x.PostAsync(
-                        It.Is<IHttpRequest>(r => r.Check<ValueApiModel>($"{MockServiceUri}/collections/{collectionId}/values", m => m.Data == data))),
+                        It.Is<IHttpRequest>(r => r.Check<ValueApiModel>($"{MOCK_SERVICE_URI}/collections/{collectionId}/values", m => m.Data == data))),
                     Times.Once);
 
             Assert.Equal(result.Key, key);
@@ -211,7 +211,7 @@ namespace Services.Test
 
             this.mockHttpClient
                 .Verify(x => x.PutAsync(
-                        It.Is<IHttpRequest>(r => r.Check<ValueApiModel>($"{MockServiceUri}/collections/{collectionId}/values/{key}", m => m.Data == data && m.ETag == etagOld))),
+                        It.Is<IHttpRequest>(r => r.Check<ValueApiModel>($"{MOCK_SERVICE_URI}/collections/{collectionId}/values/{key}", m => m.Data == data && m.ETag == etagOld))),
                     Times.Once);
 
             Assert.Equal(result.Key, key);
@@ -261,7 +261,7 @@ namespace Services.Test
 
             this.mockHttpClient
                 .Verify(x => x.DeleteAsync(
-                        It.Is<IHttpRequest>(r => r.Check($"{MockServiceUri}/collections/{collectionId}/values/{key}"))),
+                        It.Is<IHttpRequest>(r => r.Check($"{MOCK_SERVICE_URI}/collections/{collectionId}/values/{key}"))),
                     Times.Once);
         }
     }

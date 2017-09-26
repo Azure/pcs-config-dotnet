@@ -14,7 +14,7 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services.External
 
     public class DeviceSimulationClient : IDeviceSimulationClient
     {
-        private const int SimulationId = 1;
+        private const int SIMULATION_ID = 1;
         private readonly IHttpClientWrapper httpClient;
         private readonly string serviceUri;
 
@@ -28,12 +28,12 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services.External
 
         public async Task<SimulationApiModel> GetSimulationAsync()
         {
-            return await this.httpClient.GetAsync<SimulationApiModel>($"{this.serviceUri}/simulations/{SimulationId}", $"Simulation {SimulationId}", true);
+            return await this.httpClient.GetAsync<SimulationApiModel>($"{this.serviceUri}/simulations/{SIMULATION_ID}", $"Simulation {SIMULATION_ID}", true);
         }
 
         public async Task UpdateSimulation(SimulationApiModel model)
         {
-            await this.httpClient.PutAsync($"{this.serviceUri}/simulations/{SimulationId}", $"Simulation {SimulationId}", model);
+            await this.httpClient.PutAsync($"{this.serviceUri}/simulations/{SIMULATION_ID}", $"Simulation {SIMULATION_ID}", model);
         }
     }
 }

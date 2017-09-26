@@ -8,7 +8,7 @@ using Microsoft.Azure.IoTSolutions.UIConfig.WebService.v1.Models;
 
 namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService.v1.Controllers
 {
-    [Route(Version.Path + "/devicegroups"), TypeFilter(typeof(ExceptionsFilterAttribute))]
+    [Route(Version.PATH + "/devicegroups"), TypeFilter(typeof(ExceptionsFilterAttribute))]
     public class DeviceGroupController : Controller
     {
         private readonly IStorage storage;
