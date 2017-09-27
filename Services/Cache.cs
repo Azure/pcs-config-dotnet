@@ -55,7 +55,7 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services
             }
             catch (ResourceNotFoundException)
             {
-                this.log.Info($"{CACHE_COLLECTION_ID}:{CACHE_KEY} not found.", () => $"{this.GetType().FullName}.GetCacheAsync");
+                this.log.Info($"{CACHE_COLLECTION_ID}:{CACHE_KEY} not found.", () => {});
                 return new CacheValue { Tags = new HashSet<string>(), Reported = new HashSet<string>() };
             }
         }
@@ -76,7 +76,7 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services
                 }
                 catch (ResourceNotFoundException)
                 {
-                    this.log.Info($"{CACHE_COLLECTION_ID}:{CACHE_KEY} not found.", () => $"{this.GetType().FullName}.RebuildCacheAsync");
+                    this.log.Info($"{CACHE_COLLECTION_ID}:{CACHE_KEY} not found.", () => {});
                 }
 
                 bool needBuild = this.NeedBuild(force, cache);
@@ -96,7 +96,7 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services
                 }
                 catch (Exception)
                 {
-                    this.log.Info($"retry{retry}: IothubManagerService and SimulationService  are not both ready,wait 10 seconds ", () => $"{this.GetType().FullName}.RebuildCacheAsync");
+                    this.log.Info($"retry{retry}: IothubManagerService and SimulationService  are not both ready,wait 10 seconds ", () => {});
                     if (retry-- < 1)
                     {
                         return;
@@ -132,7 +132,7 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services
                 }
                 catch (ConflictingResourceException)
                 {
-                    this.log.Info("rebuild Conflicted ", () => $"{this.GetType().FullName}.RebuildCacheAsync");
+                    this.log.Info("rebuild Conflicted ", () => {});
                     continue;
                 }
             }
@@ -154,7 +154,7 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services
                 }
                 catch (ResourceNotFoundException)
                 {
-                    this.log.Info($"{CACHE_COLLECTION_ID}:{CACHE_KEY} not found.", () => $"{this.GetType().FullName}.SetCacheAsync");
+                    this.log.Info($"{CACHE_COLLECTION_ID}:{CACHE_KEY} not found.", () => {});
                 }
 
                 if (model != null)
@@ -189,7 +189,7 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services
                 }
                 catch (ConflictingResourceException)
                 {
-                    this.log.Info("SetCache Conflicted ", () => $"{this.GetType().FullName}.RebuildCacheAsync");
+                    this.log.Info("SetCache Conflicted ", () => {});
                     continue;
                 }
             }
