@@ -74,7 +74,8 @@ https://github.com/Azure/pcs-config-dotnet/issues.
 [build-url]: https://travis-ci.org/Azure/pcs-config-dotnet
 [issues-badge]: https://img.shields.io/github/issues/azure/pcs-config-dotnet.svg
 [issues-url]: https://github.com/azure/pcs-config-dotnet/issues
-[gitter-badge]: https://img.shields.io/gitter/room/azure/iot-pcs.js.svg
-[gitter-url]: https://gitter.im/azure/iot-pcs
+[gitter-badge]: https://img.shields.io/gitter/room/azure/iot-solutions.js.svg
+[gitter-url]: https://gitter.im/azure/iot-solutions
+
 [Storage Adapter]:https://github.com/Azure/pcs-storage-adapter-dotnet/blob/master/README.md
 [Azure DocumentDB]:(https://ms.portal.azure.com/#create/Microsoft.DocumentDB)
