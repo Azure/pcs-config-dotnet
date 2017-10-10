@@ -20,7 +20,6 @@ namespace Services.Test
     {
         private readonly string bingMapKey;
         private readonly Mock<IStorageAdapterClient> mockClient;
-        private readonly ServicesConfig config;
         private readonly Storage storage;
         private readonly Random rand;
 
@@ -30,8 +29,12 @@ namespace Services.Test
 
             this.bingMapKey = this.rand.NextString();
             this.mockClient = new Mock<IStorageAdapterClient>();
-            this.config = new ServicesConfig { BingMapKey = this.bingMapKey };
-            this.storage = new Storage(this.mockClient.Object, this.config);
+            this.storage = new Storage(
+                this.mockClient.Object,
+                new ServicesConfig
+                {
+                    BingMapKey = this.bingMapKey
+                });
         }
 
         [Fact]

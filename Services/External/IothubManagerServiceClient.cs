@@ -1,7 +1,6 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 
 using System.Threading.Tasks;
-using Microsoft.Azure.IoTSolutions.UIConfig.Services.Diagnostics;
 using Microsoft.Azure.IoTSolutions.UIConfig.Services.Http;
 using Microsoft.Azure.IoTSolutions.UIConfig.Services.Models;
 using Microsoft.Azure.IoTSolutions.UIConfig.Services.Runtime;
@@ -12,13 +11,11 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services.External
     public class IothubManagerServiceClient : IIothubManagerServiceClient
     {
         private readonly IHttpClient httpClient;
-        private readonly ILogger log;
         private readonly string serviceUri;
 
-        public IothubManagerServiceClient(IHttpClient httpClient, IServicesConfig config, ILogger logger)
+        public IothubManagerServiceClient(IHttpClient httpClient, IServicesConfig config)
         {
             this.httpClient = httpClient;
-            this.log = logger;
             this.serviceUri = config.HubManagerApiUrl;
         }
 
