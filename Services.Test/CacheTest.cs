@@ -96,7 +96,7 @@ namespace Services.Test
         }
 
         [Fact]
-        public async Task RebuildCacheAsyncSkipByTimeTest()
+        public async Task TryRebuildCacheAsyncSkipByTimeTest()
         {
             var mockStorageAdapterClient = new Mock<IStorageAdapterClient>();
 
@@ -127,7 +127,7 @@ namespace Services.Test
                     }
                 });
 
-            var result = await cache.RebuildCacheAsync();
+            var result = await cache.TryRebuildCacheAsync();
             Assert.False(result);
 
             mockStorageAdapterClient
@@ -138,7 +138,7 @@ namespace Services.Test
         }
 
         [Fact]
-        public async Task RebuildCacheAsyncSkipByConflictTest()
+        public async Task TryRebuildCacheAsyncSkipByConflictTest()
         {
             var mockStorageAdapterClient = new Mock<IStorageAdapterClient>();
 
@@ -170,7 +170,7 @@ namespace Services.Test
                     }
                 });
 
-            var result = await cache.RebuildCacheAsync();
+            var result = await cache.TryRebuildCacheAsync();
             Assert.False(result);
 
             mockStorageAdapterClient
@@ -181,7 +181,7 @@ namespace Services.Test
         }
 
         [Fact]
-        public async Task RebuildCacheAsyncTest()
+        public async Task TryRebuildCacheAsyncTest()
         {
             var mockStorageAdapterClient = new Mock<IStorageAdapterClient>();
             var mockIothubManagerClient = new Mock<IIothubManagerServiceClient>();
@@ -268,7 +268,7 @@ namespace Services.Test
                 }
             };
 
-            var result = await cache.RebuildCacheAsync();
+            var result = await cache.TryRebuildCacheAsync();
             Assert.True(result);
 
             mockStorageAdapterClient

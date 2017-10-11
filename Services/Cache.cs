@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Microsoft.Azure.IoTSolutions.UIConfig.Services.Diagnostics;
 using Microsoft.Azure.IoTSolutions.UIConfig.Services.Exceptions;
 using Microsoft.Azure.IoTSolutions.UIConfig.Services.External;
+using Microsoft.Azure.IoTSolutions.UIConfig.Services.Helpers;
 using Microsoft.Azure.IoTSolutions.UIConfig.Services.Models;
 using Microsoft.Azure.IoTSolutions.UIConfig.Services.Runtime;
 using Newtonsoft.Json;
@@ -19,7 +20,7 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services
 
         Task<CacheValue> SetCacheAsync(CacheValue cache);
 
-        Task<bool> RebuildCacheAsync(bool force = false);
+        Task<bool> TryRebuildCacheAsync(bool force = false);
     }
 
     public class Cache : ICache
@@ -67,89 +68,60 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services
             }
         }
 
-        public async Task<bool> RebuildCacheAsync(bool force = false)
+        public async Task<bool> TryRebuildCacheAsync(bool force = false)
         {
-            int retry = 5;
+            var @lock = new StorageWriteLock<CacheValue>(
+                this.storageClient,
+                CACHE_COLLECTION_ID,
+                CACHE_KEY,
+                (c, b) => c.Rebuilding = b,
+                m => this.NeedBuild(force, m));
+
             while (true)
             {
-                ValueApiModel cache = null;
-
-                // Retrieve cache to check if rebuilding is necessary
-                try
+                var locked = await @lock.TryLockAsync();
+                if (locked == null)
                 {
-                    cache = await this.storageClient.GetAsync(CACHE_COLLECTION_ID, CACHE_KEY);
-                }
-                catch (ResourceNotFoundException)
-                {
-                    this.log.Info($"Cache rebuilding: cache {CACHE_COLLECTION_ID}:{CACHE_KEY} was not found", () => { });
+                    this.log.Warn("Cache rebuilding: lock failed due to conflict. Retry soon", () => { });
+                    continue;
                 }
 
-                var needBuild = this.NeedBuild(force, cache);
-                if (!needBuild)
+                if (!locked.Value)
                 {
-                    this.log.Warn("Cache rebuilding skipped", () => { });
                     return false;
                 }
 
                 // Build the cache content
-                DeviceTwinName twinNames;
+                var twinNamesTask = this.GetValidNamesAsync();
+                var simulationNamesTask = this.simulationClient.GetDevicePropertyNamesAsync();
+
                 try
                 {
-                    var twinNamesTask = this.GetValidNamesAsync();
-                    var simulationNamesTask = this.simulationClient.GetDevicePropertyNamesAsync();
                     Task.WaitAll(twinNamesTask, simulationNamesTask);
-                    twinNames = twinNamesTask.Result;
-                    twinNames.ReportedProperties.UnionWith(simulationNamesTask.Result);
                 }
                 catch (Exception)
                 {
-                    if (retry-- < 1)
-                    {
-                        this.log.Warn("Cache rebuilding failed due to out of retry times", () => { });
-                        return false;
-                    }
-
-                    this.log.Warn($"Service IoTHubManager and/or Simulation are not ready. Retry after {serviceQueryInterval}", () => { });
-                    await Task.Delay(serviceQueryInterval);
+                    this.log.Warn($"Some underlying service is not ready. Retry after {this.serviceQueryInterval}", () => { });
+                    await @lock.ReleaseAsync();
+                    await Task.Delay(this.serviceQueryInterval);
                     continue;
                 }
 
-                // Lock the cache for writing
-                ValueApiModel model;
-                try
-                {
-                    var cacheValue = cache == null ? new CacheValue() : JsonConvert.DeserializeObject<CacheValue>(cache.Data);
-                    cacheValue.Rebuilding = true;
+                var twinNames = twinNamesTask.Result;
+                twinNames.ReportedProperties.UnionWith(simulationNamesTask.Result);
 
-                    model = await this.storageClient.UpdateAsync(CACHE_COLLECTION_ID, CACHE_KEY, JsonConvert.SerializeObject(cacheValue), cache?.ETag);
-                }
-                catch (ConflictingResourceException)
+                var updated = await @lock.WriteAndReleaseAsync(new CacheValue
                 {
-                    this.log.Warn("Cache rebuilding failed due to conflict while writing lock. Retry soon", () => { });
-                    continue;
-                }
+                    Tags = twinNames.Tags,
+                    Reported = twinNames.ReportedProperties
+                });
 
-                // Write the cache to storage                
-                try
+                if (updated)
                 {
-                    await this.storageClient.UpdateAsync(
-                        CACHE_COLLECTION_ID,
-                        CACHE_KEY,
-                        JsonConvert.SerializeObject(new CacheValue
-                        {
-                            Rebuilding = false,
-                            Tags = twinNames.Tags,
-                            Reported = twinNames.ReportedProperties
-                        }),
-                        model.ETag);
-
-                    this.log.Info("Cache rebuilding completed", () => { });
                     return true;
                 }
-                catch (ConflictingResourceException)
-                {
-                    this.log.Warn("Cache rebuilding failed due to conflict while writing value. Retry soon", () => { });
-                }
+
+                this.log.Warn("Cache rebuilding: write failed due to conflict. Retry soon", () => { });
             }
         }
 
@@ -266,18 +238,49 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services
             }
         }
 
-        private bool NeedBuild(bool force, ValueApiModel twin)
+        private bool NeedBuild(bool force, ValueApiModel cache)
         {
-            if (force || twin == null)
+            if (force)
             {
+                this.log.Info("Cache will be rebuilt due to the force flag", () => { });
                 return true;
             }
 
-            var rebuilding = JsonConvert.DeserializeObject<CacheValue>(twin.Data).Rebuilding;
-            var timstamp = DateTimeOffset.Parse(twin.Metadata["$modified"]);
+            if (cache == null)
+            {
+                this.log.Info("Cache will be rebuilt since no cache was found", () => { });
+                return true;
+            }
 
-            return !rebuilding && timstamp.AddSeconds(this.cacheTtl) < DateTimeOffset.UtcNow
-                || rebuilding && timstamp.AddSeconds(this.rebuildTimeout) < DateTimeOffset.UtcNow;
+            var rebuilding = JsonConvert.DeserializeObject<CacheValue>(cache.Data).Rebuilding;
+            var timstamp = DateTimeOffset.Parse(cache.Metadata["$modified"]);
+
+            if (rebuilding)
+            {
+                if (timstamp.AddSeconds(this.rebuildTimeout) < DateTimeOffset.UtcNow)
+                {
+                    this.log.Info("Cache will be rebuilt since last rebuilding was timeout", () => { });
+                    return true;
+                }
+                else
+                {
+                    this.log.Info("Cache rebuilding skipped since it was rebuilding by other instance", () => { });
+                    return false;
+                }
+            }
+            else
+            {
+                if (timstamp.AddSeconds(this.cacheTtl) < DateTimeOffset.UtcNow)
+                {
+                    this.log.Info("Cache will be rebuilt since it was expired", () => { });
+                    return true;
+                }
+                else
+                {
+                    this.log.Info("Cache rebuilding skipped since it was not expired", () => { });
+                    return false;
+                }
+            }
         }
     }
 }

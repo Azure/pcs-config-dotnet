@@ -98,7 +98,7 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService
             await Task.Delay(TimeSpan.FromMinutes(5));
 
             var cache = this.ApplicationContainer.Resolve<ICache>();
-            await cache.RebuildCacheAsync();
+            await cache.TryRebuildCacheAsync();
         }
     }
 }

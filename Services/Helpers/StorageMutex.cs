@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.Azure.IoTSolutions.UIConfig.Services.Exceptions;
 using Microsoft.Azure.IoTSolutions.UIConfig.Services.External;
 
-namespace Microsoft.Azure.IoTSolutions.UIConfig.Services
+namespace Microsoft.Azure.IoTSolutions.UIConfig.Services.Helpers
 {
     public interface IStorageMutex
     {
@@ -38,8 +38,7 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services
                     // The motivation of timeout check is to recovery from stale state due to instance crash
                     if (Convert.ToBoolean(model.Data))
                     {
-                        DateTimeOffset lastModified;
-                        if (model.Metadata.ContainsKey(LAST_MODIFIED_KEY) && DateTimeOffset.TryParse(model.Metadata[LAST_MODIFIED_KEY], out lastModified))
+                        if (model.Metadata.ContainsKey(LAST_MODIFIED_KEY) && DateTimeOffset.TryParse(model.Metadata[LAST_MODIFIED_KEY], out var lastModified))
                         {
                             lastModified = DateTimeOffset.MinValue;
                         }
