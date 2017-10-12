@@ -24,6 +24,7 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService.Runtime
         private const string APPLICATION_KEY = "ConfigService:";
         private const string PORT_KEY = APPLICATION_KEY + "webservice_port";
         private const string SEED_TEMPLATE_KEY = APPLICATION_KEY + "seedTemplate";
+        private const string CACHE_WHITELIST_KEY = APPLICATION_KEY + "cache_whitelist";
         private const string CACHE_TTL_KEY = APPLICATION_KEY + "cache_TTL";
         private const string CACHE_REBUILD_TIMEOUT_KEY = APPLICATION_KEY + "rebuild_timeout";
         private const string BING_MAP_KEY_KEY = APPLICATION_KEY + "bingmap_key";
@@ -66,6 +67,7 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService.Runtime
                 TelemetryApiUrl = configData.GetString(TELEMETRY_URL_KEY),
                 HubManagerApiUrl = configData.GetString(IOTHUB_MANAGER_URL_KEY),
                 SeedTemplate = configData.GetString(SEED_TEMPLATE_KEY),
+                CacheWhiteList = configData.GetString(CACHE_WHITELIST_KEY),
                 CacheTTL = configData.GetInt(CACHE_TTL_KEY),
                 CacheRebuildTimeout = configData.GetInt(CACHE_REBUILD_TIMEOUT_KEY),
                 BingMapKey = configData.GetString(BING_MAP_KEY_KEY)

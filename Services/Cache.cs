@@ -2,10 +2,12 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Azure.IoTSolutions.UIConfig.Services.Diagnostics;
 using Microsoft.Azure.IoTSolutions.UIConfig.Services.Exceptions;
 using Microsoft.Azure.IoTSolutions.UIConfig.Services.External;
+using Microsoft.Azure.IoTSolutions.UIConfig.Services.Helpers;
 using Microsoft.Azure.IoTSolutions.UIConfig.Services.Models;
 using Microsoft.Azure.IoTSolutions.UIConfig.Services.Runtime;
 using Newtonsoft.Json;
@@ -18,7 +20,7 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services
 
         Task<CacheValue> SetCacheAsync(CacheValue cache);
 
-        Task RebuildCacheAsync(bool force = false);
+        Task<bool> TryRebuildCacheAsync(bool force = false);
     }
 
     public class Cache : ICache
@@ -27,10 +29,15 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services
         private readonly IIothubManagerServiceClient iotHubClient;
         private readonly ISimulationServiceClient simulationClient;
         private readonly ILogger log;
+        private readonly string cacheWhitelist;
         private readonly long cacheTtl;
         private readonly long rebuildTimeout;
+        private readonly TimeSpan serviceQueryInterval = TimeSpan.FromSeconds(10);
         internal const string CACHE_COLLECTION_ID = "cache";
         internal const string CACHE_KEY = "twin";
+
+        private const string WHITELIST_TAG_PREFIX = "tags.";
+        private const string WHITELIST_REPORTED_PREFIX = "reported.";
 
         public Cache(IStorageAdapterClient storageClient,
             IIothubManagerServiceClient iotHubClient,
@@ -42,6 +49,7 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services
             this.iotHubClient = iotHubClient;
             this.simulationClient = simulationClient;
             this.log = logger;
+            this.cacheWhitelist = config.CacheWhiteList;
             this.cacheTtl = config.CacheTTL;
             this.rebuildTimeout = config.CacheRebuildTimeout;
         }
@@ -55,87 +63,123 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services
             }
             catch (ResourceNotFoundException)
             {
-                this.log.Info($"{CACHE_COLLECTION_ID}:{CACHE_KEY} not found.", () => {});
+                this.log.Info($"Cache get: cache {CACHE_COLLECTION_ID}:{CACHE_KEY} was not found", () => { });
                 return new CacheValue { Tags = new HashSet<string>(), Reported = new HashSet<string>() };
             }
         }
 
-        public async Task RebuildCacheAsync(bool force = false)
+        public async Task<bool> TryRebuildCacheAsync(bool force = false)
         {
-            int retry = 5;
+            var @lock = new StorageWriteLock<CacheValue>(
+                this.storageClient,
+                CACHE_COLLECTION_ID,
+                CACHE_KEY,
+                (c, b) => c.Rebuilding = b,
+                m => this.NeedBuild(force, m));
+
             while (true)
             {
-                HashSet<string> reportedNames = null;
-                DeviceTwinName twinNames = null;
-                ValueApiModel cache = null;
-                string etag = null;
+                var locked = await @lock.TryLockAsync();
+                if (locked == null)
+                {
+                    this.log.Warn("Cache rebuilding: lock failed due to conflict. Retry soon", () => { });
+                    continue;
+                }
+
+                if (!locked.Value)
+                {
+                    return false;
+                }
+
+                // Build the cache content
+                var twinNamesTask = this.GetValidNamesAsync();
+                var simulationNamesTask = this.simulationClient.GetDevicePropertyNamesAsync();
 
                 try
                 {
-                    cache = await this.storageClient.GetAsync(CACHE_COLLECTION_ID, CACHE_KEY);
-                }
-                catch (ResourceNotFoundException)
-                {
-                    this.log.Info($"{CACHE_COLLECTION_ID}:{CACHE_KEY} not found.", () => {});
-                }
-
-                bool needBuild = this.NeedBuild(force, cache);
-                if (!needBuild)
-                {
-                    return;
-                }
-
-                try
-                {
-                    var twinNamesTask = this.iotHubClient.GetDeviceTwinNamesAsync();
-                    var reportedNamesTask = this.simulationClient.GetDevicePropertyNamesAsync();
-                    Task.WaitAll(twinNamesTask, reportedNamesTask);
-                    twinNames = twinNamesTask.Result;
-                    reportedNames = reportedNamesTask.Result;
-                    reportedNames.UnionWith(twinNames.ReportedProperties);
+                    Task.WaitAll(twinNamesTask, simulationNamesTask);
                 }
                 catch (Exception)
                 {
-                    this.log.Info($"retry{retry}: IothubManagerService and SimulationService  are not both ready,wait 10 seconds ", () => {});
-                    if (retry-- < 1)
-                    {
-                        return;
-                    }
-                    await Task.Delay(10000);
+                    this.log.Warn($"Some underlying service is not ready. Retry after {this.serviceQueryInterval}", () => { });
+                    await @lock.ReleaseAsync();
+                    await Task.Delay(this.serviceQueryInterval);
                     continue;
                 }
 
-                if (cache != null)
-                {
-                    CacheValue model = JsonConvert.DeserializeObject<CacheValue>(cache.Data);
-                    model.Rebuilding = true;
-                    var response = await this.storageClient.UpdateAsync(CACHE_COLLECTION_ID, CACHE_KEY, JsonConvert.SerializeObject(model), cache.ETag);
-                    etag = response.ETag;
-                }
-                else
-                {
-                    var response = await this.storageClient.UpdateAsync(CACHE_COLLECTION_ID, CACHE_KEY, JsonConvert.SerializeObject(new CacheValue { Rebuilding = true }), null);
-                    etag = response.ETag;
-                }
+                var twinNames = twinNamesTask.Result;
+                twinNames.ReportedProperties.UnionWith(simulationNamesTask.Result);
 
-                var value = JsonConvert.SerializeObject(new CacheValue
+                var updated = await @lock.WriteAndReleaseAsync(new CacheValue
                 {
-                    Rebuilding = false,
                     Tags = twinNames.Tags,
-                    Reported = reportedNames
+                    Reported = twinNames.ReportedProperties
                 });
 
-                try
+                if (updated)
                 {
-                    await this.storageClient.UpdateAsync(CACHE_COLLECTION_ID, CACHE_KEY, value, etag);
-                    return;
+                    return true;
                 }
-                catch (ConflictingResourceException)
-                {
-                    this.log.Info("rebuild Conflicted ", () => {});
-                    continue;
-                }
+
+                this.log.Warn("Cache rebuilding: write failed due to conflict. Retry soon", () => { });
             }
+        }
+
+        private async Task<DeviceTwinName> GetValidNamesAsync()
+        {
+            ParseWhitelist(this.cacheWhitelist, out var fullNameWhitelist, out var prefixWhitelist);
+
+            var validNames = new DeviceTwinName
+            {
+                Tags = fullNameWhitelist.Tags,
+                ReportedProperties = fullNameWhitelist.ReportedProperties
+            };
+
+            if (prefixWhitelist.Tags.Any() || prefixWhitelist.ReportedProperties.Any())
+            {
+                var allNames = await this.iotHubClient.GetDeviceTwinNamesAsync();
+
+                validNames.Tags.UnionWith(
+                    allNames.Tags
+                        .Where(s => prefixWhitelist.Tags.Any(s.StartsWith)));
+
+                validNames.ReportedProperties.UnionWith(
+                    allNames.ReportedProperties
+                        .Where(s => prefixWhitelist.ReportedProperties.Any(s.StartsWith)));
+            }
+
+            return validNames;
+        }
+
+        private static void ParseWhitelist(string whitelist, out DeviceTwinName fullNameWhitelist, out DeviceTwinName prefixWhitelist)
+        {
+            var whitelistItems = whitelist.Split(',').Select(s => s.Trim());
+
+            var tags = whitelistItems
+                .Where(s => s.StartsWith(WHITELIST_TAG_PREFIX, StringComparison.OrdinalIgnoreCase))
+                .Select(s => s.Substring(WHITELIST_TAG_PREFIX.Length));
+
+            var reported = whitelistItems
+                .Where(s => s.StartsWith(WHITELIST_REPORTED_PREFIX, StringComparison.OrdinalIgnoreCase))
+                .Select(s => s.Substring(WHITELIST_REPORTED_PREFIX.Length));
+
+            var fixedTags = tags.Where(s => !s.EndsWith("*"));
+            var fixedReported = reported.Where(s => !s.EndsWith("*"));
+
+            var regexTags = tags.Where(s => s.EndsWith("*")).Select(s => s.Substring(0, s.Length - 1));
+            var regexReported = reported.Where(s => s.EndsWith("*")).Select(s => s.Substring(0, s.Length - 1));
+
+            fullNameWhitelist = new DeviceTwinName
+            {
+                Tags = new HashSet<string>(fixedTags),
+                ReportedProperties = new HashSet<string>(fixedReported)
+            };
+
+            prefixWhitelist = new DeviceTwinName
+            {
+                Tags = new HashSet<string>(regexTags),
+                ReportedProperties = new HashSet<string>(regexReported)
+            };
         }
 
         public async Task<CacheValue> SetCacheAsync(CacheValue cache)
@@ -154,7 +198,7 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services
                 }
                 catch (ResourceNotFoundException)
                 {
-                    this.log.Info($"{CACHE_COLLECTION_ID}:{CACHE_KEY} not found.", () => {});
+                    this.log.Info($"Cache updating: cache {CACHE_COLLECTION_ID}:{CACHE_KEY} was not found", () => { });
                 }
 
                 if (model != null)
@@ -189,28 +233,54 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services
                 }
                 catch (ConflictingResourceException)
                 {
-                    this.log.Info("SetCache Conflicted ", () => {});
-                    continue;
+                    this.log.Info("Cache updating: failed due to conflict. Retry soon", () => { });
                 }
             }
         }
 
-        private bool NeedBuild(bool force, ValueApiModel twin)
+        private bool NeedBuild(bool force, ValueApiModel cache)
         {
-            bool needBuild = false;
-            // validate timestamp
-            if (force || twin == null)
+            if (force)
             {
-                needBuild = true;
+                this.log.Info("Cache will be rebuilt due to the force flag", () => { });
+                return true;
+            }
+
+            if (cache == null)
+            {
+                this.log.Info("Cache will be rebuilt since no cache was found", () => { });
+                return true;
+            }
+
+            var rebuilding = JsonConvert.DeserializeObject<CacheValue>(cache.Data).Rebuilding;
+            var timstamp = DateTimeOffset.Parse(cache.Metadata["$modified"]);
+
+            if (rebuilding)
+            {
+                if (timstamp.AddSeconds(this.rebuildTimeout) < DateTimeOffset.UtcNow)
+                {
+                    this.log.Info("Cache will be rebuilt since last rebuilding was timeout", () => { });
+                    return true;
+                }
+                else
+                {
+                    this.log.Info("Cache rebuilding skipped since it was rebuilding by other instance", () => { });
+                    return false;
+                }
             }
             else
             {
-                bool rebuilding = JsonConvert.DeserializeObject<CacheValue>(twin.Data).Rebuilding;
-                DateTimeOffset timstamp = DateTimeOffset.Parse(twin.Metadata["$modified"]);
-                needBuild = needBuild || !rebuilding && timstamp.AddSeconds(this.cacheTtl) < DateTimeOffset.UtcNow;
-                needBuild = needBuild || rebuilding && timstamp.AddSeconds(this.rebuildTimeout) < DateTimeOffset.UtcNow;
+                if (timstamp.AddSeconds(this.cacheTtl) < DateTimeOffset.UtcNow)
+                {
+                    this.log.Info("Cache will be rebuilt since it was expired", () => { });
+                    return true;
+                }
+                else
+                {
+                    this.log.Info("Cache rebuilding skipped since it was not expired", () => { });
+                    return false;
+                }
             }
-            return needBuild;
         }
     }
 }

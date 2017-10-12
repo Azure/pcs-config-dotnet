@@ -15,7 +15,7 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services.External
         {
             if (this.Items?.Count > 0)
             {
-                HashSet<string> set = new HashSet<string>();
+                var set = new HashSet<string>();
                 this.Items.ForEach(m =>
                 {
                     foreach (var item in m.Properties)
@@ -25,6 +25,7 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services.External
                 });
                 return set;
             }
+
             return null;
         }
 
@@ -35,15 +36,16 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services.External
                 set.Add(prefix);
                 return;
             }
-            double outValue;
-            if (obj is bool || obj is string || double.TryParse(obj.ToString(), out outValue))
+
+            if (obj is bool || obj is string || double.TryParse(obj.ToString(), out _))
             {
                 set.Add(prefix);
                 return;
             }
+
             foreach (var item in (obj as JToken).Values())
             {
-                string path = item.Path;
+                var path = item.Path;
                 this.PreparePropNames(set, item, $"{prefix}.{(path.Contains(".") ? path.Substring(path.LastIndexOf('.') + 1) : path)}");
             }
         }
