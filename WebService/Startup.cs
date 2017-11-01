@@ -1,13 +1,10 @@
 // Copyright (c) Microsoft. All rights reserved.
 
 using System;
-using System.Diagnostics;
-using System.Threading.Tasks;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.Azure.IoTSolutions.UIConfig.Services;
 using Microsoft.Azure.IoTSolutions.UIConfig.WebService.Auth;
 using Microsoft.Azure.IoTSolutions.UIConfig.WebService.Runtime;
 using Microsoft.Extensions.Configuration;
@@ -24,10 +21,6 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService
 
         // Initialized in `ConfigureServices`
         public IContainer ApplicationContainer { get; private set; }
-
-        private static readonly TimeSpan seedRetryInterval = TimeSpan.FromSeconds(10);
-        private static readonly TimeSpan rebuildCacheRetryInterval = TimeSpan.FromSeconds(10);
-        private static readonly TimeSpan delayBeforeRebuildCache = TimeSpan.FromMinutes(5);
 
         // Invoked by `Program.cs`
         public Startup(IHostingEnvironment env)
@@ -83,56 +76,13 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService
             // application container, register for the "ApplicationStopped" event.
             appLifetime.ApplicationStopped.Register(() => this.ApplicationContainer.Dispose());
 
-            appLifetime.ApplicationStarted.Register(() =>
-            {
-                var unused = this.OnStartAsync();
-            });
+            appLifetime.ApplicationStarted.Register(() => this.ApplicationContainer.Resolve<IRecurringTasks>().Run());
         }
 
         private void PrintBootstrapInfo(IContainer container)
         {
             var log = container.Resolve<ILogger>();
             log.Info("Web service started", () => new { Uptime.ProcessId });
-        }
-
-        private async Task OnStartAsync()
-        {
-            var seed = this.ApplicationContainer.Resolve<ISeed>();
-            await this.TryActionAsync(
-                "Seed",
-                seed.TrySeedAsync,
-                seedRetryInterval,
-                TimeSpan.MaxValue);
-
-            await Task.Delay(delayBeforeRebuildCache);
-
-            var cache = this.ApplicationContainer.Resolve<ICache>();
-            await this.TryActionAsync(
-                "RebuildCache",
-                async () => await cache.TryRebuildCacheAsync(),
-                rebuildCacheRetryInterval,
-                TimeSpan.MaxValue);
-        }
-
-        private async Task TryActionAsync(string name, Func<Task> entry, TimeSpan interval, TimeSpan timeout)
-        {
-            var log = this.ApplicationContainer.Resolve<ILogger>();
-            var stopwatch = Stopwatch.StartNew();
-
-            while (stopwatch.Elapsed < timeout)
-            {
-                try
-                {
-                    await entry();
-                    return;
-                }
-                catch (Exception ex)
-                {
-                    log.Warn($"Exception raised in '{name}'. Retry after {interval}", () => new { ex });
-                }
-
-                await Task.Delay(interval);
-            }
         }
     }
 }
