@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved.
 
 using System;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
@@ -23,6 +24,10 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService
 
         // Initialized in `ConfigureServices`
         public IContainer ApplicationContainer { get; private set; }
+
+        private static readonly TimeSpan seedRetryInterval = TimeSpan.FromSeconds(10);
+        private static readonly TimeSpan rebuildCacheRetryInterval = TimeSpan.FromSeconds(10);
+        private static readonly TimeSpan delayBeforeRebuildCache = TimeSpan.FromMinutes(5);
 
         // Invoked by `Program.cs`
         public Startup(IHostingEnvironment env)
@@ -93,12 +98,41 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService
         private async Task OnStartAsync()
         {
             var seed = this.ApplicationContainer.Resolve<ISeed>();
-            await seed.TrySeedAsync();
+            await this.TryActionAsync(
+                "Seed",
+                seed.TrySeedAsync,
+                seedRetryInterval,
+                TimeSpan.MaxValue);
 
-            await Task.Delay(TimeSpan.FromMinutes(5));
+            await Task.Delay(delayBeforeRebuildCache);
 
             var cache = this.ApplicationContainer.Resolve<ICache>();
-            await cache.TryRebuildCacheAsync();
+            await this.TryActionAsync(
+                "RebuildCache",
+                async () => await cache.TryRebuildCacheAsync(),
+                rebuildCacheRetryInterval,
+                TimeSpan.MaxValue);
+        }
+
+        private async Task TryActionAsync(string name, Func<Task> entry, TimeSpan interval, TimeSpan timeout)
+        {
+            var log = this.ApplicationContainer.Resolve<ILogger>();
+            var stopwatch = Stopwatch.StartNew();
+
+            while (stopwatch.Elapsed < timeout)
+            {
+                try
+                {
+                    await entry();
+                    return;
+                }
+                catch (Exception ex)
+                {
+                    log.Warn($"Exception raised in '{name}'. Retry after {interval}", () => new { ex });
+                }
+
+                await Task.Delay(interval);
+            }
         }
     }
 }
