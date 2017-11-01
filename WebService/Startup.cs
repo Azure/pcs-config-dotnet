@@ -25,6 +25,10 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService
         // Initialized in `ConfigureServices`
         public IContainer ApplicationContainer { get; private set; }
 
+        private static readonly TimeSpan seedRetryInterval = TimeSpan.FromSeconds(10);
+        private static readonly TimeSpan rebuildCacheRetryInterval = TimeSpan.FromSeconds(10);
+        private static readonly TimeSpan delayBeforeRebuildCache = TimeSpan.FromMinutes(5);
+
         // Invoked by `Program.cs`
         public Startup(IHostingEnvironment env)
         {
@@ -97,16 +101,16 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService
             await this.TryActionAsync(
                 "Seed",
                 seed.TrySeedAsync,
-                TimeSpan.FromSeconds(10),
+                seedRetryInterval,
                 TimeSpan.MaxValue);
 
-            await Task.Delay(TimeSpan.FromMinutes(5));
+            await Task.Delay(delayBeforeRebuildCache);
 
             var cache = this.ApplicationContainer.Resolve<ICache>();
             await this.TryActionAsync(
                 "RebuildCache",
                 async () => await cache.TryRebuildCacheAsync(),
-                TimeSpan.FromSeconds(10),
+                rebuildCacheRetryInterval,
                 TimeSpan.MaxValue);
         }
 
@@ -124,7 +128,7 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService
                 }
                 catch (Exception ex)
                 {
-                    log.Warn($"Exception raised in {name}. Retry after {interval}", () => new { ex });
+                    log.Warn($"Exception raised in '{name}'. Retry after {interval}", () => new { ex });
                 }
 
                 await Task.Delay(interval);
