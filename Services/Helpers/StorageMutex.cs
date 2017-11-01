@@ -40,6 +40,11 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services.Helpers
                     {
                         if (model.Metadata.ContainsKey(LAST_MODIFIED_KEY) && DateTimeOffset.TryParse(model.Metadata[LAST_MODIFIED_KEY], out var lastModified))
                         {
+                            // Timestamp retrieved successfully, nothing to do
+                        }
+                        else
+                        {
+                            // Treat it as timeout if the timestamp could not be retrieved
                             lastModified = DateTimeOffset.MinValue;
                         }
 
@@ -51,6 +56,7 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services.Helpers
                 }
                 catch (ResourceNotFoundException)
                 {
+                    // Mutex is not initialized, treat it as released
                 }
 
                 try

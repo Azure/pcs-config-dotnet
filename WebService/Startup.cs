@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved.
 
 using System;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
@@ -93,12 +94,41 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService
         private async Task OnStartAsync()
         {
             var seed = this.ApplicationContainer.Resolve<ISeed>();
-            await seed.TrySeedAsync();
+            await this.TryActionAsync(
+                "Seed",
+                seed.TrySeedAsync,
+                TimeSpan.FromSeconds(10),
+                TimeSpan.MaxValue);
 
             await Task.Delay(TimeSpan.FromMinutes(5));
 
             var cache = this.ApplicationContainer.Resolve<ICache>();
-            await cache.TryRebuildCacheAsync();
+            await this.TryActionAsync(
+                "RebuildCache",
+                async () => await cache.TryRebuildCacheAsync(),
+                TimeSpan.FromSeconds(10),
+                TimeSpan.MaxValue);
+        }
+
+        private async Task TryActionAsync(string name, Func<Task> entry, TimeSpan interval, TimeSpan timeout)
+        {
+            var log = this.ApplicationContainer.Resolve<ILogger>();
+            var stopwatch = Stopwatch.StartNew();
+
+            while (stopwatch.Elapsed < timeout)
+            {
+                try
+                {
+                    await entry();
+                    return;
+                }
+                catch (Exception ex)
+                {
+                    log.Warn($"Exception raised in {name}. Retry after {interval}", () => new { ex });
+                }
+
+                await Task.Delay(interval);
+            }
         }
     }
 }
