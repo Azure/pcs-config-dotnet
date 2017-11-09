@@ -147,14 +147,17 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services
 
             foreach (var group in template.Groups)
             {
+                this.log.Info("Creating seed device group", () => group);
                 await this.storage.UpdateDeviceGroupAsync(group.Id, group, "*");
             }
 
             foreach (var rule in template.Rules)
             {
+                this.log.Info("Creating seed rule", () => rule);
                 await this.telemetryClient.UpdateRuleAsync(rule, "*");
             }
 
+            this.log.Info("Checking for whether simulation seed data already exists", () => { });
             var simulationModel = await this.simulationClient.GetSimulationAsync();
 
             if (simulationModel != null)
@@ -163,6 +166,8 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services
             }
             else
             {
+                this.log.Info("Simulation seed data does not exist, attempting to create it", () => { });
+
                 simulationModel = new SimulationApiModel
                 {
                     Id = "1",
