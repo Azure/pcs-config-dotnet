@@ -154,6 +154,7 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services
                 catch (Exception ex)
                 {
                     this.log.Error($"Failed to seed default group {group.DisplayName}", () => new { group, ex.Message });
+                    throw;
                 }
             }
 
@@ -166,6 +167,7 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services
                 catch (Exception ex)
                 {
                     this.log.Error($"Failed to seed default rule {rule.Description}", () => new { rule, ex.Message });
+                    throw;
                 }
             }
 
@@ -175,7 +177,7 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services
 
                 if (simulationModel != null)
                 {
-                    this.log.Info("Skip seed simulation since there is already one simuation", () => new { simulationModel });
+                    this.log.Info("Skip seed simulation since there is already one simulation", () => new { simulationModel });
                 }
                 else
                 {
@@ -192,6 +194,7 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services
             catch (Exception ex)
             {
                 this.log.Error("Failed to seed default simulation", () => new { ex.Message });
+                throw;
             }
         }
     }
