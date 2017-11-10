@@ -147,35 +147,54 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services
 
             foreach (var group in template.Groups)
             {
-                this.log.Info("Creating seed device group", () => group);
-                await this.storage.UpdateDeviceGroupAsync(group.Id, group, "*");
+                try
+                {
+                    await this.storage.UpdateDeviceGroupAsync(group.Id, group, "*");
+                }
+                catch (Exception ex)
+                {
+                    this.log.Error($"Failed to seed default group {group.DisplayName}", () => new { group, ex.Message });
+                    throw;
+                }
             }
 
             foreach (var rule in template.Rules)
             {
-                this.log.Info("Creating seed rule", () => rule);
-                await this.telemetryClient.UpdateRuleAsync(rule, "*");
-            }
-
-            this.log.Info("Checking for whether simulation seed data already exists", () => { });
-            var simulationModel = await this.simulationClient.GetSimulationAsync();
-
-            if (simulationModel != null)
-            {
-                this.log.Info("Skip seed simulation since there is already one simulation", () => new { simulationModel });
-            }
-            else
-            {
-                this.log.Info("Simulation seed data does not exist, attempting to create it", () => { });
-
-                simulationModel = new SimulationApiModel
+                try
                 {
-                    Id = "1",
-                    Etag = "*",
-                    DeviceModels = template.DeviceModels.ToList()
-                };
+                    await this.telemetryClient.UpdateRuleAsync(rule, "*");
+                }
+                catch (Exception ex)
+                {
+                    this.log.Error($"Failed to seed default rule {rule.Description}", () => new { rule, ex.Message });
+                    throw;
+                }
+            }
 
-                await this.simulationClient.UpdateSimulation(simulationModel);
+            try
+            {
+                var simulationModel = await this.simulationClient.GetSimulationAsync();
+
+                if (simulationModel != null)
+                {
+                    this.log.Info("Skip seed simulation since there is already one simulation", () => new { simulationModel });
+                }
+                else
+                {
+                    simulationModel = new SimulationApiModel
+                    {
+                        Id = "1",
+                        Etag = "*"
+                    };
+
+                    simulationModel.DeviceModels = template.DeviceModels.ToList();
+                    await this.simulationClient.UpdateSimulation(simulationModel);
+                }
+            }
+            catch (Exception ex)
+            {
+                this.log.Error("Failed to seed default simulation", () => new { ex.Message });
+                throw;
             }
         }
     }
