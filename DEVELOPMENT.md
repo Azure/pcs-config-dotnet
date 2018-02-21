@@ -96,7 +96,7 @@ Development setup
 
 ## .NET setup
 
-The project workflow is managed via .NET Core 1.0.4, which you need
+The project workflow is managed via .NET Core 2, which you need
 to install in your environment, so that you can run all the scripts
 and ensure that your IDE works as expected.
 
