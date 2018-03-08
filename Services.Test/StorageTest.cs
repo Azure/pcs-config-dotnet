@@ -567,7 +567,6 @@ namespace Services.Test
 
         private async Task<Logo> SetLogoHelper(Logo logo, string oldImage, string oldName, string oldType, bool isDefault)
         {
-
             this.mockClient
                 .Setup(x => x.UpdateAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
                 .ReturnsAsync((string id, string key, string value, string etag) => new ValueApiModel

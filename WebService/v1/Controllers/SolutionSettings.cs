@@ -66,7 +66,7 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService.v1.Controllers
             var response = await this.storage.SetLogoAsync(model);
             this.SetImageResponse(response);
         }
-        
+   
         private void SetImageResponse(Logo model)
         {
             if(model.Name != null)
