@@ -97,7 +97,8 @@ namespace WebService.Test.Controllers
                     .ReturnsAsync(new Logo
                     {
                         Image = image,
-                        Type = type
+                        Type = type,
+                        IsDefault = true
                     });
 
                 await this.controller.GetLogoAsync();
@@ -105,8 +106,42 @@ namespace WebService.Test.Controllers
                 this.mockStorage
                     .Verify(x => x.GetLogoAsync(), Times.Once);
 
-                Assert.Equal(mockContext.GetBody(), image);
-                Assert.Equal(mockContext.GetHeader("content-type"), type);
+                Assert.Equal(image, mockContext.GetBody());
+                Assert.Equal(type, mockContext.Object.Response.ContentType);
+                Assert.Equal("True", mockContext.GetHeader(Logo.IS_DEFAULT_HEADER));
+            }
+        }
+
+        [Fact]
+        public async Task GetLogoAndNameAsyncTest()
+        {
+            var image = this.rand.NextString();
+            var type = this.rand.NextString();
+            var name = this.rand.NextString();
+
+            using (var mockContext = new MockHttpContext())
+            {
+                this.controller.ControllerContext.HttpContext = mockContext.Object;
+
+                this.mockStorage
+                    .Setup(x => x.GetLogoAsync())
+                    .ReturnsAsync(new Logo
+                    {
+                        Image = image,
+                        Type = type,
+                        Name = name,
+                        IsDefault = false
+                    });
+
+                await this.controller.GetLogoAsync();
+
+                this.mockStorage
+                    .Verify(x => x.GetLogoAsync(), Times.Once);
+
+                Assert.Equal(image, mockContext.GetBody());
+                Assert.Equal(type, mockContext.Object.Response.ContentType);
+                Assert.Equal(name, mockContext.GetHeader(Logo.NAME_HEADER));
+                Assert.Equal("False", mockContext.GetHeader(Logo.IS_DEFAULT_HEADER));
             }
         }
 
@@ -115,6 +150,37 @@ namespace WebService.Test.Controllers
         {
             var image = this.rand.NextString();
             var type = this.rand.NextString();
+ 
+            using (var mockContext = new MockHttpContext())
+            {
+                this.controller.ControllerContext.HttpContext = mockContext.Object;
+               
+                this.mockStorage
+                    .Setup(x => x.SetLogoAsync(It.IsAny<Logo>()))
+                    .ReturnsAsync((Logo logo) => logo);
+                
+                mockContext.Object.Request.ContentType = type;
+                mockContext.SetBody(image);
+
+                await this.controller.SetLogoAsync();
+
+                this.mockStorage
+                    .Verify(x => x.SetLogoAsync(
+                        It.Is<Logo>(m => m.Image == image && m.Type == type && !m.IsDefault)),
+                        Times.Once);
+                
+                Assert.Equal(image, mockContext.GetBody());
+                Assert.Equal(type, mockContext.Object.Response.ContentType);
+                Assert.Equal("False", mockContext.GetHeader(Logo.IS_DEFAULT_HEADER));
+            }
+        }
+
+        [Fact]
+        public async Task SetLogoAndNameAsyncTest()
+        {
+            var image = this.rand.NextString();
+            var type = this.rand.NextString();
+            var name = this.rand.NextString();
 
             using (var mockContext = new MockHttpContext())
             {
@@ -122,23 +188,23 @@ namespace WebService.Test.Controllers
 
                 this.mockStorage
                     .Setup(x => x.SetLogoAsync(It.IsAny<Logo>()))
-                    .ReturnsAsync(new Logo
-                    {
-                        Image = image,
-                        Type = type
-                    });
+                    .ReturnsAsync((Logo logo) => logo);
 
-                mockContext.SetHeader("content-type", type);
+                mockContext.Object.Request.ContentType = type;
                 mockContext.SetBody(image);
+                mockContext.SetHeader(Logo.NAME_HEADER, name);
+
                 await this.controller.SetLogoAsync();
 
                 this.mockStorage
                     .Verify(x => x.SetLogoAsync(
-                        It.Is<Logo>(m => m.Image == image && m.Type == type)),
+                        It.Is<Logo>(m => m.Image == image && m.Type == type && m.Name == name && !m.IsDefault)),
                         Times.Once);
 
-                Assert.Equal(mockContext.GetBody(), image);
-                Assert.Equal(mockContext.GetHeader("content-type"), type);
+                Assert.Equal(image, mockContext.GetBody());
+                Assert.Equal(type, mockContext.Object.Response.ContentType);
+                Assert.Equal(name, mockContext.GetHeader(Logo.NAME_HEADER));
+                Assert.Equal("False", mockContext.GetHeader(Logo.IS_DEFAULT_HEADER));
             }
         }
     }
