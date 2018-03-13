@@ -20,3 +20,7 @@ export PCS_DEVICESIMULATION_WEBSERVICE_URL="http://127.0.0.1:9003/v1"
 
 # The URL where IoTHub Manager web service is listening
 export PCS_IOTHUBMANAGER_WEBSERVICE_URL="http://127.0.0.1:9002/v1"
+
+# The Bing Maps Api key
+export PCS_BINGMAP_KEY="static"
+
