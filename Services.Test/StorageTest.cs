@@ -186,7 +186,7 @@ namespace Services.Test
         }
 
         [Fact]
-        public async Task GetLogoAsyncTest()
+        public async Task GetLogoShouldReturnExpectedLogo()
         {
             var image = this.rand.NextString();
             var type = this.rand.NextString();
@@ -218,7 +218,7 @@ namespace Services.Test
         }
 
         [Fact]
-        public async Task GetLogoAndNameAsyncTest()
+        public async Task GetLogoShouldReturnExpectedLogoAndName()
         {
             var image = this.rand.NextString();
             var type = this.rand.NextString();
@@ -252,7 +252,7 @@ namespace Services.Test
         }
 
         [Fact]
-        public async Task GetLogoAsyncDefaultTest()
+        public async Task GetLogoShouldReturnDefaultLogoOnException()
         {
             this.mockClient
                 .Setup(x => x.GetAsync(It.IsAny<string>(), It.IsAny<string>()))
@@ -273,7 +273,7 @@ namespace Services.Test
         }
 
         [Fact]
-        public async Task SetLogoAsyncTest()
+        public async Task SetLogoShouldNotOverwriteOldNameWithNull()
         {
             var image = this.rand.NextString();
             var type = this.rand.NextString();
@@ -306,7 +306,7 @@ namespace Services.Test
         }
 
         [Fact]
-        public async Task SetLogoAndNameAsyncTest()
+        public async Task SetLogoShouldSetAllPartsOfLogoIfNotNull()
         {
             var image = this.rand.NextString();
             var type = this.rand.NextString();

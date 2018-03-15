@@ -125,7 +125,7 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services
                 if(!current.IsDefault)
                 {
                     model.Name = model.Name ?? current.Name;
-                    if (model.Image == null)
+                    if (model.Image == null && current.Image != null)
                     {
                         model.Image = current.Image;
                         model.Type = current.Type;

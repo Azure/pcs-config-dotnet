@@ -83,11 +83,8 @@ namespace WebService.Test.Controllers
         }
 
         [Fact]
-        public async Task GetLogoAsyncTest()
+        public async Task GetLogoShouldReturnDefaultLogo()
         {
-            var image = this.rand.NextString();
-            var type = this.rand.NextString();
-
             using (var mockContext = new MockHttpContext())
             {
                 this.controller.ControllerContext.HttpContext = mockContext.Object;
@@ -96,8 +93,8 @@ namespace WebService.Test.Controllers
                     .Setup(x => x.GetLogoAsync())
                     .ReturnsAsync(new Logo
                     {
-                        Image = image,
-                        Type = type,
+                        Image = Logo.Default.Image,
+                        Type = Logo.Default.Type,
                         IsDefault = true
                     });
 
@@ -106,14 +103,14 @@ namespace WebService.Test.Controllers
                 this.mockStorage
                     .Verify(x => x.GetLogoAsync(), Times.Once);
 
-                Assert.Equal(image, mockContext.GetBody());
-                Assert.Equal(type, mockContext.Object.Response.ContentType);
+                Assert.Equal(Logo.Default.Image, mockContext.GetBody());
+                Assert.Equal(Logo.Default.Type, mockContext.Object.Response.ContentType);
                 Assert.Equal("True", mockContext.GetHeader(Logo.IS_DEFAULT_HEADER));
             }
         }
 
         [Fact]
-        public async Task GetLogoAndNameAsyncTest()
+        public async Task GetLogoShouldReturnExpectedNameAndType()
         {
             var image = this.rand.NextString();
             var type = this.rand.NextString();
@@ -146,7 +143,7 @@ namespace WebService.Test.Controllers
         }
 
         [Fact]
-        public async Task SetLogoAsyncTest()
+        public async Task SetLogoShouldReturnGivenLogo()
         {
             var image = this.rand.NextString();
             var type = this.rand.NextString();
@@ -176,7 +173,7 @@ namespace WebService.Test.Controllers
         }
 
         [Fact]
-        public async Task SetLogoAndNameAsyncTest()
+        public async Task SetLogoShouldReturnGivenLogoAndName()
         {
             var image = this.rand.NextString();
             var type = this.rand.NextString();
