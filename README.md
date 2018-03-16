@@ -19,7 +19,7 @@ How to use the microservice
 
 ### 1. Environment Variables
 
-Run `scripts\env-vars-setup.cmd` on Windows or `source scripts\env-vars-setup`
+Run `scripts\env-vars-setup.cmd` on Windows or `source scripts/env-vars-setup`
 on Mac/Linux to set up the environment variables needed to run the service locally.
 In Windows you can also set these [in your system][windows-envvars-howto-url].
 
