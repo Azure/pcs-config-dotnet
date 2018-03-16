@@ -19,9 +19,11 @@ How to use the microservice
 
 ### 1. Environment Variables
 
-Run `scripts\env-vars-setup.cmd` on Windows or `source scripts/env-vars-setup`
+Run `scripts\env-vars-setup.cmd` on Windows or `source scripts\env-vars-setup`
 on Mac/Linux to set up the environment variables needed to run the service locally.
-If using environment variables, this service requires the following environment
+In Windows you can also set these [in your system][windows-envvars-howto-url].
+
+If using envornemnt variables, this service requires the following environment
 variables to be set:
 - `PCS_STORAGEADAPTER_WEBSERVICE_URL` - the url for
   the [Storage Adapter Webservice](https://github.com/Azure/pcs-storage-adapter-dotnet)
