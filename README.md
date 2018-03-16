@@ -87,6 +87,6 @@ https://github.com/Azure/pcs-config-dotnet/issues.
 [issues-url]: https://github.com/azure/pcs-config-dotnet/issues
 [gitter-badge]: https://img.shields.io/gitter/room/azure/iot-solutions.js.svg
 [gitter-url]: https://gitter.im/azure/iot-solutions
-
+[windows-envvars-howto-url]: https://superuser.com/questions/949560/how-do-i-set-system-environment-variables-in-windows-10
 [Storage Adapter]:https://github.com/Azure/pcs-storage-adapter-dotnet/blob/master/README.md
 [Azure DocumentDB]:(https://ms.portal.azure.com/#create/Microsoft.DocumentDB)
