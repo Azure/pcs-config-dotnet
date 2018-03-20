@@ -118,6 +118,21 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services
 
         public async Task<Logo> SetLogoAsync(Logo model)
         {
+            //Do not overwrite existing name or image with null
+            if(model.Name == null || model.Image == null)
+            {
+                Logo current = await this.GetLogoAsync();
+                if(!current.IsDefault)
+                {
+                    model.Name = model.Name ?? current.Name;
+                    if (model.Image == null && current.Image != null)
+                    {
+                        model.Image = current.Image;
+                        model.Type = current.Type;
+                    }
+                }
+            }
+
             var value = JsonConvert.SerializeObject(model);
             var response = await this.client.UpdateAsync(SOLUTION_COLLECTION_ID, LOGO_KEY, value, "*");
             return JsonConvert.DeserializeObject<Logo>(response.Data);

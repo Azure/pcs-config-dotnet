@@ -186,7 +186,7 @@ namespace Services.Test
         }
 
         [Fact]
-        public async Task GetLogoAsyncTest()
+        public async Task GetLogoShouldReturnExpectedLogo()
         {
             var image = this.rand.NextString();
             var type = this.rand.NextString();
@@ -198,7 +198,8 @@ namespace Services.Test
                     Data = JsonConvert.SerializeObject(new Logo
                     {
                         Image = image,
-                        Type = type
+                        Type = type,
+                        IsDefault = false
                     })
                 });
 
@@ -210,12 +211,48 @@ namespace Services.Test
                         It.Is<string>(s => s == Storage.LOGO_KEY)),
                     Times.Once);
 
-            Assert.Equal(result.Image.ToString(), image);
-            Assert.Equal(result.Type.ToString(), type);
+            Assert.Equal(image, result.Image.ToString());
+            Assert.Equal(type, result.Type.ToString());
+            Assert.Null(result.Name);
+            Assert.False(result.IsDefault);
         }
 
         [Fact]
-        public async Task GetLogoAsyncDefaultTest()
+        public async Task GetLogoShouldReturnExpectedLogoAndName()
+        {
+            var image = this.rand.NextString();
+            var type = this.rand.NextString();
+            var name = this.rand.NextString();
+
+            this.mockClient
+                .Setup(x => x.GetAsync(It.IsAny<string>(), It.IsAny<string>()))
+                .ReturnsAsync(new ValueApiModel
+                {
+                    Data = JsonConvert.SerializeObject(new Logo
+                    {
+                        Image = image,
+                        Type = type,
+                        Name = name,
+                        IsDefault = false
+                    })
+                });
+
+            var result = await this.storage.GetLogoAsync() as dynamic;
+
+            this.mockClient
+                .Verify(x => x.GetAsync(
+                        It.Is<string>(s => s == Storage.SOLUTION_COLLECTION_ID),
+                        It.Is<string>(s => s == Storage.LOGO_KEY)),
+                    Times.Once);
+
+            Assert.Equal(image, result.Image.ToString());
+            Assert.Equal(type, result.Type.ToString());
+            Assert.Equal(name, result.Name.ToString());
+            Assert.False(result.IsDefault);
+        }
+
+        [Fact]
+        public async Task GetLogoShouldReturnDefaultLogoOnException()
         {
             this.mockClient
                 .Setup(x => x.GetAsync(It.IsAny<string>(), It.IsAny<string>()))
@@ -229,30 +266,29 @@ namespace Services.Test
                         It.Is<string>(s => s == Storage.LOGO_KEY)),
                     Times.Once);
 
-            Assert.Equal(result.Image.ToString(), Logo.Default.Image);
-            Assert.Equal(result.Type.ToString(), Logo.Default.Type);
+            Assert.Equal(Logo.Default.Image, result.Image.ToString());
+            Assert.Equal(Logo.Default.Type, result.Type.ToString());
+            Assert.Equal(Logo.Default.Name, result.Name.ToString());
+            Assert.True(result.IsDefault);
         }
 
         [Fact]
-        public async Task SetLogoAsyncTest()
+        public async Task SetLogoShouldNotOverwriteOldNameWithNull()
         {
             var image = this.rand.NextString();
             var type = this.rand.NextString();
+
+            var oldImage = this.rand.NextString();
+            var oldType = this.rand.NextString();
+            var oldName = this.rand.NextString();
 
             var logo = new Logo
             {
                 Image = image,
                 Type = type
             };
-
-            this.mockClient
-                .Setup(x => x.UpdateAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
-                .ReturnsAsync(new ValueApiModel
-                {
-                    Data = JsonConvert.SerializeObject(logo)
-                });
-
-            var result = await this.storage.SetLogoAsync(logo) as dynamic;
+            
+            Logo result = await SetLogoHelper(logo, oldImage, oldName, oldType, false);
 
             this.mockClient
                 .Verify(x => x.UpdateAsync(
@@ -262,8 +298,37 @@ namespace Services.Test
                         It.Is<string>(s => s == "*")),
                     Times.Once);
 
-            Assert.Equal(result.Image.ToString(), image);
-            Assert.Equal(result.Type.ToString(), type);
+            Assert.Equal(image, result.Image.ToString());
+            Assert.Equal(type, result.Type.ToString());
+            // If name is not set, old name should remain
+            Assert.Equal(oldName, result.Name.ToString());
+            Assert.False(result.IsDefault);
+        }
+
+        [Fact]
+        public async Task SetLogoShouldSetAllPartsOfLogoIfNotNull()
+        {
+            var image = this.rand.NextString();
+            var type = this.rand.NextString();
+            var name = this.rand.NextString();
+
+            var oldImage = this.rand.NextString();
+            var oldType = this.rand.NextString();
+            var oldName = this.rand.NextString();
+
+            var logo = new Logo
+            {
+                Image = image,
+                Type = type,
+                Name = name
+            };
+
+            Logo result = await SetLogoHelper(logo, oldImage, oldName, oldType, false);
+
+            Assert.Equal(image, result.Image.ToString());
+            Assert.Equal(type, result.Type.ToString());
+            Assert.Equal(name, result.Name.ToString());
+            Assert.False(result.IsDefault);
         }
 
         [Fact]
@@ -499,5 +564,40 @@ namespace Services.Test
                         It.Is<string>(s => s == groupId)),
                     Times.Once);
         }
+
+        private async Task<Logo> SetLogoHelper(Logo logo, string oldImage, string oldName, string oldType, bool isDefault)
+        {
+            this.mockClient
+                .Setup(x => x.UpdateAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
+                .ReturnsAsync((string id, string key, string value, string etag) => new ValueApiModel
+                {
+                    Data = value
+                });
+
+            this.mockClient.Setup(x => x.GetAsync(It.IsAny<string>(), It.IsAny<string>()))
+                .ReturnsAsync(new ValueApiModel
+                {
+                    Data = JsonConvert.SerializeObject(new Logo
+                    {
+                        Image = oldImage,
+                        Type = oldType,
+                        Name = oldName,
+                        IsDefault = false
+                    })
+                });
+
+            Logo result = await this.storage.SetLogoAsync(logo);
+
+            this.mockClient
+                .Verify(x => x.UpdateAsync(
+                        It.Is<string>(s => s == Storage.SOLUTION_COLLECTION_ID),
+                        It.Is<string>(s => s == Storage.LOGO_KEY),
+                        It.Is<string>(s => s == JsonConvert.SerializeObject(logo)),
+                        It.Is<string>(s => s == "*")),
+                    Times.Once);
+
+            return result;
+        }
+
     }
 }

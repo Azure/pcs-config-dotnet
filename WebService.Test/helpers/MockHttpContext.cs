@@ -22,10 +22,12 @@ namespace WebService.Test.helpers
             var request = new Mock<HttpRequest>();
             request.SetupGet(x => x.Headers).Returns(this.requestHeaders);
             request.SetupGet(x => x.Body).Returns(this.requestBody);
+            request.SetupProperty(x => x.ContentType);
 
             var response = new Mock<HttpResponse>();
             response.SetupGet(x => x.Headers).Returns(this.responseHeaders);
             response.SetupGet(x => x.Body).Returns(this.responseBody);
+            response.SetupProperty(x => x.ContentType);
 
             this.mockContext.SetupGet(x => x.Request).Returns(request.Object);
             this.mockContext.SetupGet(x => x.Response).Returns(response.Object);
