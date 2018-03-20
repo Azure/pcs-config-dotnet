@@ -162,7 +162,14 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services
             {
                 try
                 {
-                    await this.telemetryClient.UpdateRuleAsync(rule, "*");
+                    if (null == await this.telemetryClient.GetRuleAsync(rule.Id))
+                    {
+                        await this.telemetryClient.CreateRuleAsync(rule);
+                    }
+                    else
+                    {
+                        await this.telemetryClient.UpdateRuleAsync(rule, "*");
+                    }
                 }
                 catch (Exception ex)
                 {

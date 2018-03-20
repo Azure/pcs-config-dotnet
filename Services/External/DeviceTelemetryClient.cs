@@ -8,6 +8,8 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services.External
 {
     public interface IDeviceTelemetryClient
     {
+        Task<RuleApiModel> GetRuleAsync(string id);
+        Task CreateRuleAsync(RuleApiModel rule);
         Task UpdateRuleAsync(RuleApiModel rule, string etag);
     }
 
@@ -22,6 +24,16 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services.External
         {
             this.httpClient = httpClient;
             this.serviceUri = config.TelemetryApiUrl;
+        }
+
+        public async Task<RuleApiModel> GetRuleAsync(string id)
+        {
+            return await this.httpClient.GetAsync<RuleApiModel>($"{this.serviceUri}/rules/{id}", "Get rule", true);
+        }
+
+        public async Task CreateRuleAsync(RuleApiModel rule)
+        {
+            await this.httpClient.PostAsync($"{this.serviceUri}/rules", $"Rule {rule.Id}", rule);
         }
 
         public async Task UpdateRuleAsync(RuleApiModel rule, string etag)
