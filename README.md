@@ -31,12 +31,6 @@ variables to be set:
 - `PCS_TELEMETRY_WEBSERVICE_URL` - the url for
   the [Telemetry Webservice](https://github.com/Azure/device-telemetry-dotnet.git)
   used for key value storage
-- `PCS_DEVICESIMULATION_WEBSERVICE_URL` - the url for
-  the [Device Simulation Webservice](https://github.com/Azure/device-simulation-dotnet.git)
-  used for key value storage
-- `PCS_IOTHUBMANAGER_WEBSERVICE_URL` - the url for
-  the [IOT Hub Manager Webservice](https://github.com/Azure/iothub-manager-dotnet.git)
-  used for key value storage
 
 ## Quickstart - Running the service with Docker
 You can quickly start the Config service and its dependencies in one simple step, using Docker Compose with the

@@ -24,22 +24,13 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService.Runtime
         private const string APPLICATION_KEY = "ConfigService:";
         private const string PORT_KEY = APPLICATION_KEY + "webservice_port";
         private const string SEED_TEMPLATE_KEY = APPLICATION_KEY + "seedTemplate";
-        private const string CACHE_WHITELIST_KEY = APPLICATION_KEY + "cache_whitelist";
-        private const string CACHE_TTL_KEY = APPLICATION_KEY + "cache_TTL";
-        private const string CACHE_REBUILD_TIMEOUT_KEY = APPLICATION_KEY + "rebuild_timeout";
         private const string BING_MAP_KEY_KEY = APPLICATION_KEY + "bingmap_key";
 
         private const string STORAGE_ADAPTER_KEY = "StorageAdapterService:";
         private const string STORAGE_ADAPTER_URL_KEY = STORAGE_ADAPTER_KEY + "webservice_url";
 
-        private const string DEVICE_SIMULATION_KEY = "DeviceSimulationService:";
-        private const string DEVICE_SIMULATION_URL_KEY = DEVICE_SIMULATION_KEY + "webservice_url";
-
         private const string TELEMETRY_KEY = "TelemetryService:";
         private const string TELEMETRY_URL_KEY = TELEMETRY_KEY + "webservice_url";
-
-        private const string IOTHUB_MANAGER_KEY = "IothubManagerService:";
-        private const string IOTHUB_MANAGER_URL_KEY = IOTHUB_MANAGER_KEY + "webservice_url";
 
         private const string CLIENT_AUTH_KEY = APPLICATION_KEY + "ClientAuth:";
         private const string CORS_WHITELIST_KEY = CLIENT_AUTH_KEY + "cors_whitelist";
@@ -63,7 +54,6 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService.Runtime
             this.ServicesConfig = new ServicesConfig
             {
                 StorageAdapterApiUrl = configData.GetString(STORAGE_ADAPTER_URL_KEY),
-                DeviceSimulationApiUrl = configData.GetString(DEVICE_SIMULATION_URL_KEY),
                 TelemetryApiUrl = configData.GetString(TELEMETRY_URL_KEY),
                 SeedTemplate = configData.GetString(SEED_TEMPLATE_KEY),
                 BingMapKey = configData.GetString(BING_MAP_KEY_KEY)
