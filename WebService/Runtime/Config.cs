@@ -29,6 +29,8 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService.Runtime
         private const string STORAGE_ADAPTER_KEY = "StorageAdapterService:";
         private const string STORAGE_ADAPTER_URL_KEY = STORAGE_ADAPTER_KEY + "webservice_url";
 
+        private const string DEVICE_SIMULATION_KEY = "DeviceSimulationService:";
+        private const string DEVICE_SIMULATION_URL_KEY = DEVICE_SIMULATION_KEY + "webservice_url";
         private const string TELEMETRY_KEY = "TelemetryService:";
         private const string TELEMETRY_URL_KEY = TELEMETRY_KEY + "webservice_url";
 
@@ -54,6 +56,7 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService.Runtime
             this.ServicesConfig = new ServicesConfig
             {
                 StorageAdapterApiUrl = configData.GetString(STORAGE_ADAPTER_URL_KEY),
+                DeviceSimulationApiUrl = configData.GetString(DEVICE_SIMULATION_URL_KEY),
                 TelemetryApiUrl = configData.GetString(TELEMETRY_URL_KEY),
                 SeedTemplate = configData.GetString(SEED_TEMPLATE_KEY),
                 BingMapKey = configData.GetString(BING_MAP_KEY_KEY)

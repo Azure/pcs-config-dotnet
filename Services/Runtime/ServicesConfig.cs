@@ -5,6 +5,7 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services.Runtime
     public interface IServicesConfig
     {
         string StorageAdapterApiUrl { get; }
+        string DeviceSimulationApiUrl { get; }
         string TelemetryApiUrl { get; }
         string SeedTemplate { get; }
         string BingMapKey { get; }
@@ -13,6 +14,7 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services.Runtime
     public class ServicesConfig : IServicesConfig
     {
         public string StorageAdapterApiUrl { get; set; }
+        public string DeviceSimulationApiUrl { get; set; }
         public string TelemetryApiUrl { get; set; }
         public string SeedTemplate { get; set; }
         public string BingMapKey { get; set; }
