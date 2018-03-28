@@ -65,11 +65,7 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService.Runtime
                 StorageAdapterApiUrl = configData.GetString(STORAGE_ADAPTER_URL_KEY),
                 DeviceSimulationApiUrl = configData.GetString(DEVICE_SIMULATION_URL_KEY),
                 TelemetryApiUrl = configData.GetString(TELEMETRY_URL_KEY),
-                HubManagerApiUrl = configData.GetString(IOTHUB_MANAGER_URL_KEY),
                 SeedTemplate = configData.GetString(SEED_TEMPLATE_KEY),
-                CacheWhiteList = configData.GetString(CACHE_WHITELIST_KEY),
-                CacheTTL = configData.GetInt(CACHE_TTL_KEY),
-                CacheRebuildTimeout = configData.GetInt(CACHE_REBUILD_TIMEOUT_KEY),
                 BingMapKey = configData.GetString(BING_MAP_KEY_KEY)
             };
 

@@ -74,7 +74,6 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService
             // leaks, but not so good for the overall performance.
             builder.RegisterType<Storage>().As<IStorage>().SingleInstance();
             builder.RegisterType<StorageAdapterClient>().As<IStorageAdapterClient>().SingleInstance();
-            builder.RegisterType<SimulationServiceClient>().As<ISimulationServiceClient>().SingleInstance();
 
             // TODO: why is the HTTP client registered as a singleton? shouldn't be required
             var httpClient = new HttpClient(logger);
