@@ -18,7 +18,6 @@ Steps using Visual Studio 2017:
    `PCS_STORAGEADAPTER_WEBSERVICE_URL` and value `http://localhost:9022/v1`
    `PCS_TELEMETRY_WEBSERVICE_URL` and value `http://localhost:9004/v1`
    `PCS_DEVICESIMULATION_WEBSERVICE_URL` and value `http://localhost:9003/v1`
-   `PCS_IOTHUBMANAGER_WEBSERVICE_URL` and value `http://localhost:9002/v1`
    which is where you should have the storage adapter running.
 1. In the same section set the `App URL` to
    `http://localhost:9005/v1/status`
