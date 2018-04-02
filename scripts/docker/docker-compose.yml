@@ -8,7 +8,7 @@ version: "3"
 
 services:
   config:
-    image: azureiotpcs/pcs-config-dotnet:testing
+    image: isaac73/pcs-config-dotnet
     depends_on:
       - storageadapter
       - telemetry
