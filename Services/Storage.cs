@@ -37,7 +37,7 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services
         internal const string LOGO_KEY = "logo";
         internal const string USER_COLLECTION_ID = "user-settings";
         internal const string DEVICE_GROUP_COLLECTION_ID = "devicegroups";
-        private const string BING_MAP_KEY_KEY = "BingMapKey";
+        private const string AZURE_MAPS_KEY = "AzureMapsKey";
 
         public Storage(
             IStorageAdapterClient client,
@@ -62,7 +62,7 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services
             }
 
             var themeOut = JsonConvert.DeserializeObject(data) as JToken ?? new JObject();
-            this.AppendBingMapKey(themeOut);
+            this.AppendAzureMapsKey(themeOut);
             return themeOut;
         }
 
@@ -71,15 +71,15 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services
             var value = JsonConvert.SerializeObject(themeIn);
             var response = await this.client.UpdateAsync(SOLUTION_COLLECTION_ID, THEME_KEY, value, "*");
             var themeOut = JsonConvert.DeserializeObject(response.Data) as JToken ?? new JObject();
-            this.AppendBingMapKey(themeOut);
+            this.AppendAzureMapsKey(themeOut);
             return themeOut;
         }
 
-        private void AppendBingMapKey(JToken theme)
+        private void AppendAzureMapsKey(JToken theme)
         {
-            if (theme[BING_MAP_KEY_KEY] == null)
+            if (theme[AZURE_MAPS_KEY] == null)
             {
-                theme[BING_MAP_KEY_KEY] = this.config.BingMapKey;
+                theme[AZURE_MAPS_KEY] = this.config.AzureMapsKey;
             }
         }
 

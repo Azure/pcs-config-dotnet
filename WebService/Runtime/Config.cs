@@ -27,7 +27,7 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService.Runtime
         private const string CACHE_WHITELIST_KEY = APPLICATION_KEY + "cache_whitelist";
         private const string CACHE_TTL_KEY = APPLICATION_KEY + "cache_TTL";
         private const string CACHE_REBUILD_TIMEOUT_KEY = APPLICATION_KEY + "rebuild_timeout";
-        private const string BING_MAP_KEY_KEY = APPLICATION_KEY + "bingmap_key";
+        private const string AZURE_MAPS_KEY = APPLICATION_KEY + "azuremaps_key";
 
         private const string STORAGE_ADAPTER_KEY = "StorageAdapterService:";
         private const string STORAGE_ADAPTER_URL_KEY = STORAGE_ADAPTER_KEY + "webservice_url";
@@ -70,7 +70,7 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService.Runtime
                 CacheWhiteList = configData.GetString(CACHE_WHITELIST_KEY),
                 CacheTTL = configData.GetInt(CACHE_TTL_KEY),
                 CacheRebuildTimeout = configData.GetInt(CACHE_REBUILD_TIMEOUT_KEY),
-                BingMapKey = configData.GetString(BING_MAP_KEY_KEY)
+                AzureMapsKey = configData.GetString(AZURE_MAPS_KEY)
             };
 
             this.ClientAuthConfig = new ClientAuthConfig

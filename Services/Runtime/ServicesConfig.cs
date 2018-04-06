@@ -13,7 +13,7 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services.Runtime
         // ReSharper disable once InconsistentNaming
         long CacheTTL { get; }
         long CacheRebuildTimeout { get; }
-        string BingMapKey { get; }
+        string AzureMapsKey { get; }
     }
 
     public class ServicesConfig : IServicesConfig
@@ -26,6 +26,6 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services.Runtime
         public string CacheWhiteList { get; set; }
         public long CacheTTL { get; set; }
         public long CacheRebuildTimeout { get; set; }
-        public string BingMapKey { get; set; }
+        public string AzureMapsKey { get; set; }
     }
 }
