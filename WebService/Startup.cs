@@ -76,7 +76,7 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.WebService
             // application container, register for the "ApplicationStopped" event.
             appLifetime.ApplicationStopped.Register(() => this.ApplicationContainer.Dispose());
 
-            appLifetime.ApplicationStarted.Register(() => this.ApplicationContainer.Resolve<IRecurringTasks>().Run());
+            // appLifetime.ApplicationStarted.Register(() => this.ApplicationContainer.Resolve<IRecurringTasks>().Run());
         }
 
         private void PrintBootstrapInfo(IContainer container)
