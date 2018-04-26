@@ -1,5 +1,6 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 
+using System;
 using System.Collections.Generic;
 using Newtonsoft.Json;
 
@@ -30,5 +31,13 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services.External
 
         [JsonProperty(PropertyName = "Conditions")]
         public List<ConditionApiModel> Conditions { get; set; }
+
+        // Possible values -["Average", "Instant"]
+        [JsonProperty(PropertyName = "Calculation")]
+        public string Calculation { get; set; }
+
+        // Possible values -["00:01:00", "00:05:00", "00:10:00"]
+        [JsonProperty(PropertyName = "TimePeriod")]
+        public TimeSpan TimePeriod { get; set; }
     }
 }
