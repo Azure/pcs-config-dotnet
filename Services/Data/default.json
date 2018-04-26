@@ -69,6 +69,8 @@
       "Description": "Pressure > 250",
       "GroupId": "default_Chillers",
       "Severity": "critical",
+      "Calculation": "instant",
+      "TimePeriod": "00:00:00",
       "Conditions": [
         {
           "Field": "pressure",
@@ -84,6 +86,8 @@
       "Description": "Temperature > 80 degrees",
       "GroupId": "default_PrototypingDevices",
       "Severity": "critical",
+      "Calculation": "instant",
+      "TimePeriod": "00:00:00",
       "Conditions": [
         {
           "Field": "temperature",
@@ -99,6 +103,8 @@
       "Description": "Fuel level is less than 5",
       "GroupId": "default_Engines",
       "Severity": "info",
+      "Calculation": "instant",
+      "TimePeriod": "00:00:00",
       "Conditions": [
         {
           "Field": "fuellevel",
@@ -114,6 +120,8 @@
       "Description": "Cargo temperature is > 45 degrees",
       "GroupId": "default_Trucks",
       "Severity": "warning",
+      "Calculation": "instant",
+      "TimePeriod": "00:00:00",
       "Conditions": [
         {
           "Field": "cargotemperature",
@@ -129,6 +137,8 @@
       "Description": "Vibration < 0.1",
       "GroupId": "default_Elevators",
       "Severity": "warning",
+      "Calculation": "instant",
+      "TimePeriod": "00:00:00",
       "Conditions": [
         {
           "Field": "vibration",
