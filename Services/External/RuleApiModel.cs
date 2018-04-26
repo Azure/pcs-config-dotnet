@@ -32,7 +32,7 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services.External
         [JsonProperty(PropertyName = "Conditions")]
         public List<ConditionApiModel> Conditions { get; set; }
 
-        // Possible values -["average", "instant"]
+        // Possible values -["Average", "Instant"]
         [JsonProperty(PropertyName = "Calculation")]
         public string Calculation { get; set; }
 
