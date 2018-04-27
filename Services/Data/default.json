@@ -124,7 +124,7 @@
       "TimePeriod": "00:05:00",
       "Conditions": [
         {
-          "Field": "cargotemperature",
+          "Field": "temperature",
           "Operator": "GreaterThan",
           "Value": "45"
         }
