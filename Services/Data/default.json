@@ -116,7 +116,7 @@
       "Severity": "warning",
       "Conditions": [
         {
-          "Field": "cargotemperature",
+          "Field": "temperature",
           "Operator": "GreaterThan",
           "Value": "45"
         }
