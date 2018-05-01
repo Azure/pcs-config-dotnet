@@ -36,8 +36,8 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services.External
         [JsonProperty(PropertyName = "Calculation")]
         public string Calculation { get; set; }
 
-        // Possible values -["00:01:00", "00:05:00", "00:10:00"]
+        // Possible values -["60000", "300000", "600000"] in milliseconds
         [JsonProperty(PropertyName = "TimePeriod")]
-        public TimeSpan TimePeriod { get; set; }
+        public string TimePeriod { get; set; }
     }
 }
