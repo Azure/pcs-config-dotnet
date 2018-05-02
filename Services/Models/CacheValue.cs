@@ -11,5 +11,7 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services.Models
         public HashSet<string> Tags { get; set; }
 
         public HashSet<string> Reported { get; set; }
+
+        public bool IsNullOrEmpty() => (Tags == null || Tags.Count == 0) && (Reported == null || Reported.Count == 0);
     }
 }

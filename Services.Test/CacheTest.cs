@@ -119,7 +119,8 @@ namespace Services.Test
                     ETag = this.rand.NextString(),
                     Data = JsonConvert.SerializeObject(new CacheValue
                     {
-                        Rebuilding = false
+                        Rebuilding = false,
+                        Tags = new HashSet<string> { "tags.IsSimulated" }
                     }),
                     Metadata = new Dictionary<string, string>
                     {
