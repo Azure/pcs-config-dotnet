@@ -252,10 +252,10 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services
                 return true;
             }
 
-            var rebuilding = JsonConvert.DeserializeObject<CacheValue>(cache.Data).Rebuilding;
+            var cacheValue = JsonConvert.DeserializeObject<CacheValue>(cache.Data);
             var timstamp = DateTimeOffset.Parse(cache.Metadata["$modified"]);
 
-            if (rebuilding)
+            if (cacheValue.Rebuilding)
             {
                 if (timstamp.AddSeconds(this.rebuildTimeout) < DateTimeOffset.UtcNow)
                 {
@@ -270,6 +270,12 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services
             }
             else
             {
+                if (cacheValue.IsNullOrEmpty())
+                {
+                    this.log.Info("Cache will be rebuilt since it is empty", () => { });
+                    return true;
+                }
+
                 if (timstamp.AddSeconds(this.cacheTtl) < DateTimeOffset.UtcNow)
                 {
                     this.log.Info("Cache will be rebuilt since it was expired", () => { });
