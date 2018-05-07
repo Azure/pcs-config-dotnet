@@ -160,7 +160,6 @@ https://github.com/Azure/pcs-config-dotnet/issues.
 [gitter-url]: https://gitter.im/azure/iot-solutions
 [windows-envvars-howto-url]: https://superuser.com/questions/949560/how-do-i-set-system-environment-variables-in-windows-10
 [Storage Adapter]:https://github.com/Azure/pcs-storage-adapter-dotnet/blob/master/README.md
-[Azure DocumentDB]:(https://ms.portal.azure.com/#create/Microsoft.DocumentDB)
 [rm-arch-url]:https://docs.microsoft.com/en-us/azure/iot-suite/iot-suite-remote-monitoring-sample-walkthrough
-[run-with-docker-url]:(https://docs.microsoft.com/azure/iot-suite/iot-suite-remote-monitoring-deploy-local#run-the-microservices-in-docker)
+[run-with-docker-url]:https://docs.microsoft.com/azure/iot-suite/iot-suite-remote-monitoring-deploy-local#run-the-microservices-in-docker
 [postman-url]: https://www.getpostman.com
