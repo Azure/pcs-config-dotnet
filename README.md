@@ -22,8 +22,8 @@ More information [here][rm-arch-url].
 * Create or update device groups
 * Get all or a single device group
 * Get or upload logo
-* Set or get overall solution settings
-* Set or get individual user settings
+* Get or set overall solution settings
+* Get or set individual user settings
 
 ## Documentation
 * View the API documentation in the [Wiki](https://github.com/Azure/pcs-config-dotnet/wiki)
@@ -115,7 +115,7 @@ More information on environment variables
 1. Use the scripts in the [scripts](scripts) folder for many frequent tasks:
    *  `build`: compile all the projects and run the tests.
    *  `compile`: compile all the projects.
-   * `run`: compile the projects and run the service. This will prompt for
+   *  `run`: compile the projects and run the service. This will prompt for
   elevated privileges in Windows to run the web service.
 
 ## Project Structure
@@ -126,7 +126,7 @@ This microservice contains the following projects:
 with storage microserivce, telemetry microservice, device simulation microservice
 and IoTHub manager microservice
 * **Services.Test.csproj** - Unit tests for services functionality
-* **Solution/scripts** - contains build scripts, docker container creation scripts, 
+* **Solution/scripts** - Contains build scripts, docker container creation scripts, 
 and scripts for running the microservice from the command line
 
 # Updating the Docker image
