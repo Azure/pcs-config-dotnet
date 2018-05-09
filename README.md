@@ -171,8 +171,8 @@ Please follow our [contribution guildelines](CONTRIBUTING.md) and code style
 conventions.
 
 # Feedback
-Please enter issues, bugs, or suggestions as GitHub Issues here:
-https://github.com/Azure/pcs-config-dotnet/issues.
+Please enter issues, bugs, or suggestions as 
+[GitHub Issues](https://github.com/Azure/pcs-config-dotnet/issues).
 
 # License
 Copyright (c) Microsoft Corporation. All rights reserved.
