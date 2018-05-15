@@ -66,14 +66,16 @@
       "Id": "default_Chiller_Pressure_High",
       "Name": "Chiller pressure too high",
       "Enabled": true,
-      "Description": "Pressure > 250",
+      "Description": "Pressure > 298",
       "GroupId": "default_Chillers",
-      "Severity": "critical",
+      "Severity": "Critical",
+      "Calculation": "Instant",
+      "TimePeriod": "0",
       "Conditions": [
         {
           "Field": "pressure",
           "Operator": "GreaterThan",
-          "Value": "250"
+          "Value": "298"
         }
       ]
     },
@@ -83,7 +85,9 @@
       "Enabled": true,
       "Description": "Temperature > 80 degrees",
       "GroupId": "default_PrototypingDevices",
-      "Severity": "critical",
+      "Severity": "Critical",
+      "Calculation": "Average",
+      "TimePeriod": "60000",
       "Conditions": [
         {
           "Field": "temperature",
@@ -93,30 +97,17 @@
       ]
     },
     {
-      "Id": "default_Engine_Fuel_Empty",
-      "Name": "Engine tank empty",
-      "Enabled": true,
-      "Description": "Fuel level is less than 5",
-      "GroupId": "default_Engines",
-      "Severity": "info",
-      "Conditions": [
-        {
-          "Field": "fuellevel",
-          "Operator": "LessThan",
-          "Value": "5"
-        }
-      ]
-    },
-    {
       "Id": "default_Truck_Temperature_High",
       "Name": "Higher than normal cargo temperature",
       "Enabled": true,
       "Description": "Cargo temperature is > 45 degrees",
       "GroupId": "default_Trucks",
-      "Severity": "warning",
+      "Severity": "Warning",
+      "Calculation": "Average",
+      "TimePeriod": "300000",
       "Conditions": [
         {
-          "Field": "cargotemperature",
+          "Field": "temperature",
           "Operator": "GreaterThan",
           "Value": "45"
         }
@@ -128,7 +119,9 @@
       "Enabled": true,
       "Description": "Vibration < 0.1",
       "GroupId": "default_Elevators",
-      "Severity": "warning",
+      "Severity": "Warning",
+      "Calculation": "Average",
+      "TimePeriod": "600000",
       "Conditions": [
         {
           "Field": "vibration",

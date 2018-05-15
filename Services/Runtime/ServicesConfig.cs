@@ -8,7 +8,7 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services.Runtime
         string DeviceSimulationApiUrl { get; }
         string TelemetryApiUrl { get; }
         string SeedTemplate { get; }
-        string BingMapKey { get; }
+        string AzureMapsKey { get; }
     }
 
     public class ServicesConfig : IServicesConfig
@@ -17,6 +17,6 @@ namespace Microsoft.Azure.IoTSolutions.UIConfig.Services.Runtime
         public string DeviceSimulationApiUrl { get; set; }
         public string TelemetryApiUrl { get; set; }
         public string SeedTemplate { get; set; }
-        public string BingMapKey { get; set; }
+        public string AzureMapsKey { get; set; }
     }
 }

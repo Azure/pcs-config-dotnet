@@ -18,7 +18,7 @@ namespace Services.Test
 {
     public class StorageTest
     {
-        private readonly string bingMapKey;
+        private readonly string azureMapsKey;
         private readonly Mock<IStorageAdapterClient> mockClient;
         private readonly Storage storage;
         private readonly Random rand;
@@ -27,13 +27,13 @@ namespace Services.Test
         {
             this.rand = new Random();
 
-            this.bingMapKey = this.rand.NextString();
+            this.azureMapsKey = this.rand.NextString();
             this.mockClient = new Mock<IStorageAdapterClient>();
             this.storage = new Storage(
                 this.mockClient.Object,
                 new ServicesConfig
                 {
-                    BingMapKey = this.bingMapKey
+                    AzureMapsKey = this.azureMapsKey
                 });
         }
 
@@ -64,7 +64,7 @@ namespace Services.Test
 
             Assert.Equal(result.Name.ToString(), name);
             Assert.Equal(result.Description.ToString(), description);
-            Assert.Equal(result.BingMapKey.ToString(), this.bingMapKey);
+            Assert.Equal(result.AzureMapsKey.ToString(), this.azureMapsKey);
         }
 
         [Fact]
@@ -84,7 +84,7 @@ namespace Services.Test
 
             Assert.Equal(result.Name.ToString(), Theme.Default.Name);
             Assert.Equal(result.Description.ToString(), Theme.Default.Description);
-            Assert.Equal(result.BingMapKey.ToString(), this.bingMapKey);
+            Assert.Equal(result.AzureMapsKey.ToString(), this.azureMapsKey);
         }
 
         [Fact]
@@ -118,7 +118,7 @@ namespace Services.Test
 
             Assert.Equal(result.Name.ToString(), name);
             Assert.Equal(result.Description.ToString(), description);
-            Assert.Equal(result.BingMapKey.ToString(), this.bingMapKey);
+            Assert.Equal(result.AzureMapsKey.ToString(), this.azureMapsKey);
         }
 
         [Fact]
