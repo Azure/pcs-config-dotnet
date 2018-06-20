@@ -55,7 +55,6 @@ Run those services from the instructions in their READMEs in the following order
 
 1. [Storage Adapter Dotnet Microservice](https://github.com/Azure/pcs-storage-adapter-dotnet)
 1. [Telemetry Dotnet Microservice](https://github.com/Azure/device-telemetry-dotnet)
-1. [IoTHub Manager Dotnet Microservice](https://github.com/Azure/iothub-manager-dotnet)
 1. [Device Simulation Dotnet Microservice](https://github.com/Azure/device-simulation-dotnet)
 
 ### 3. Environment variables required to run the service
@@ -67,14 +66,11 @@ variables [here](#configuration-and-environment-variables).
 * `PCS_STORAGEADAPTER_WEBSERVICE_URL` - the url for
   the [Storage Adapter Webservice](https://github.com/Azure/pcs-storage-adapter-dotnet)
   used for key value storage
-* `PCS_TELEMETRY_WEBSERVICE_URL` - the url for
-  the [Telemetry Webservice](https://github.com/Azure/device-telemetry-dotnet.git)
-  used for key value storage
 * `PCS_DEVICESIMULATION_WEBSERVICE_URL` - the url for
   the [Device Simulation Webservice](https://github.com/Azure/device-simulation-dotnet.git)
   used for key value storage
-* `PCS_IOTHUBMANAGER_WEBSERVICE_URL` - the url for
-  the [IOT Hub Manager Webservice](https://github.com/Azure/iothub-manager-dotnet.git)
+- `PCS_TELEMETRY_WEBSERVICE_URL` - the url for
+  the [Telemetry Webservice](https://github.com/Azure/device-telemetry-dotnet.git)
   used for key value storage
 *  `PCS_AZUREMAPS_KEY` - the [Azure Maps](https://azure.microsoft.com/services/azure-maps/) 
   API Key. This can be set to "static" if you do not have one.
@@ -93,7 +89,6 @@ variables to the Debug settings. In Windows you can also set these
 [in your system][windows-envvars-howto-url].
    1. `PCS_STORAGEADAPTER_WEBSERVICE_URL` = http://localhost:9022/v1
    1. `PCS_DEVICESIMULATION_WEBSERVICE_URL` = http://localhost:9003/v1
-   1. `PCS_IOTHUBMANAGER_WEBSERVICE_URL` = http://localhost:9002/v1
    1. `PCS_TELEMETRY_WEBSERVICE_URL` = http://localhost:9004/v1
    1. `PCS_AZUREMAPS_KEY` = static
 1. In Visual Studio, start the WebService project
@@ -109,7 +104,6 @@ More information on environment variables
 [here](#configuration-and-environment-variables).
    1. `PCS_STORAGEADAPTER_WEBSERVICE_URL` = http://localhost:9022/v1
    1. `PCS_DEVICESIMULATION_WEBSERVICE_URL` = http://localhost:9003/v1
-   1. `PCS_IOTHUBMANAGER_WEBSERVICE_URL` = http://localhost:9002/v1
    1. `PCS_TELEMETRY_WEBSERVICE_URL` = http://localhost:9004/v1
    1. `PCS_AZUREMAPS_KEY` = static
 1. Use the scripts in the [scripts](scripts) folder for many frequent tasks:
@@ -123,8 +117,7 @@ This microservice contains the following projects:
 * **WebService.csproj** - C# web service exposing REST interface for config functionality
 * **WebService.Test.csproj** - Unit tests for web services functionality
 * **Services.csproj** - C# assembly containining business logic for interacting 
-with storage microserivce, telemetry microservice, device simulation microservice
-and IoTHub manager microservice
+with storage microserivce, telemetry microservice and device simulation microservice
 * **Services.Test.csproj** - Unit tests for services functionality
 * **Solution/scripts** - Contains build scripts, docker container creation scripts, 
 and scripts for running the microservice from the command line
