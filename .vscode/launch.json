@@ -11,8 +11,8 @@
                 "ASPNETCORE_ENVIRONMENT": "Development",
                 // Environment variables used in appsettings.ini.  
                 // Required Settings. 
-                "PCS_AZUREMAPS_KEY": "huW1r8n5r6da8OqsFhM73P8dv26XmxAfxPiYslOkVbo",
-                "PCS_DEVICESIMULATION_WEBSERVICE_URL": "https://maryellen-0507.azurewebsites.net/devicesimulation/v1",
+                "PCS_AZUREMAPS_KEY": "your Azure Maps key",
+                "PCS_DEVICESIMULATION_WEBSERVICE_URL": "http://localhost:9003/v1",
                 "PCS_STORAGEADAPTER_WEBSERVICE_URL": "http://localhost:9022/v1/",
                 // Optional Settings. For additonal optional settings, refer to appsettings.ini directly.
                 "PCS_LOG_LEVEL": "Debug"
