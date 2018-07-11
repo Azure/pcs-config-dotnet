@@ -146,11 +146,11 @@ The configuration file in the repository references some environment
 variables that need to be defined. Depending on the OS and the IDE used,
 there are several ways to manage environment variables.
 
-1. If you're using Visual Studio or Visual Studio for Mac, the environment
+1. If you're using Visual Studio (Windows/MacOS), the environment
    variables are loaded from the project settings. Right click on WebService,
    and select Options/Properties, and find the section with the list of env
    vars. See [WebService/Properties/launchSettings.json](WebService/Properties/launchSettings.json).
-1. Visual Studio Code loads the environment variables from
+1. Visual Studio Code (Windows/MacOS/Linux) loads the environment variables from
    [.vscode/launch.json](.vscode/launch.json)
 1. When running the service **with Docker** or **from the command line**, the
    application will inherit environment variables values from the system. 
